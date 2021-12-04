@@ -1,0 +1,201 @@
+<template>
+	<div class="Product">
+		<img class="Product__image" src="../assets/images/product1.jpg" />
+		<div class="Product__main">
+			<h4 class="Product__name">{{ product.name }}</h4>
+			<p class="Product__description">
+				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Debitis vitae
+				tenetur numquam quam assumenda officiis ea, aliquam unde. Cumque
+				delectus voluptatem vel molestias dolorum incidunt nobis repellendus
+				architecto, a magnam.
+			</p>
+			<a class="Product__disclaimer">Terminos y condiciones</a>
+			<div class="Product__container">
+				<label class="Product__label" v-if="extraCheese">
+					<input
+						class="Product__checkbox"
+						type="checkbox"
+						v-model="withCheese"
+					/>
+					<!-- <span class="Product__check"></span> -->
+					Extra queso
+				</label>
+				<span class="Product__price">S/ {{ endPrice.toFixed(2) }}</span>
+			</div>
+			<button
+				class="Product__button"
+				@click="sendToCart"
+				v-if="!product.includes"
+			>
+				<img class="Product__ico" src="../assets/icons/cart.svg" />
+				Añadir
+				<img class="Product__ico" src="../assets/icons/plus.svg" />
+			</button>
+			<button class="Product__button" @click="openComboModal(product)" v-else>
+				<img class="Product__ico" src="../assets/icons/cart.svg" />
+				Escoger pizzas
+				<img class="Product__ico" src="../assets/icons/plus.svg" />
+			</button>
+		</div>
+	</div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, computed, PropType } from "vue"
+import { useStore } from "vuex"
+import { Notyf } from "notyf"
+
+import { key } from "../store"
+import useComboModal from "../hooks/useComboModal"
+import { IProduct } from "../interfaces/products"
+import { ICartItem } from "../interfaces/cart"
+
+export default defineComponent({
+	name: "Product",
+	props: {
+		product: {
+			type: Object as PropType<IProduct>,
+			required: true,
+		},
+		extraCheese: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	setup(props, ctx) {
+		const store = useStore(key)
+		const notyf = new Notyf()
+
+		const { openComboModal } = useComboModal()
+
+		let withCheese = ref(false)
+		const cheesePrice = 2
+		let endPrice = computed(() => {
+			if (withCheese.value) {
+				return props.product.price + cheesePrice
+			} else {
+				return props.product.price
+			}
+		})
+
+		function sendToCart() {
+			let item: ICartItem = {
+				id: props.product.id,
+				name: props.product.name,
+				code: props.product.code,
+				price: props.product.price,
+				quantity: 1,
+			}
+			if (withCheese.value) {
+				item.contains = { cheese: true }
+				item.price = item.price + cheesePrice
+			}
+			store.commit({ type: "addToCart", product: item })
+			notyf.success(
+				`x1 ${props.product.name} ${
+					withCheese.value ? "extra queso" : ""
+				} agregado al carrito`
+			)
+		}
+
+		return {
+			openComboModal,
+			withCheese,
+			endPrice,
+			sendToCart,
+		}
+	},
+})
+</script>
+
+<style lang="scss">
+@import "../assets/styles/variables";
+
+.Product {
+	width: 100%;
+	background: #fff;
+	border-radius: 1rem;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
+
+	&__image {
+		display: block;
+		width: 100%;
+	}
+
+	&__main {
+		padding: 1rem;
+	}
+
+	&__name {
+		font-size: 1.2rem;
+		font-weight: 600;
+	}
+
+	&__description {
+		margin-top: 1rem;
+		font-size: 0.9rem;
+	}
+
+	&__disclaimer {
+		display: block;
+		margin: 0.5rem 0;
+		text-decoration: underline;
+		font-weight: 500;
+	}
+
+	&__container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&__label {
+		position: relative;
+		margin: 0.5rem 0;
+		font-size: 1rem;
+	}
+
+	&__checkbox {
+		&:checked {
+			~ .Product__check {
+				background: blue;
+			}
+		}
+	}
+
+	&__check {
+		position: absolute;
+		width: 1rem;
+		height: 1rem;
+		background: red;
+	}
+
+	&__price {
+		display: block;
+		font-size: 1.2rem;
+		font-weight: 600;
+	}
+
+	&__button {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		width: 100%;
+		margin-top: 1rem;
+		padding: 0.6rem;
+		background: $green;
+		color: #fff;
+		border: none;
+		border-radius: 0.5rem;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	&__ico {
+		display: block;
+		width: 1rem;
+		height: auto;
+	}
+}
+</style>

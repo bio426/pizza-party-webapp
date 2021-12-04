@@ -1,0 +1,25 @@
+{
+  "name": "pizza-party-webapp",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^1.12.10",
+    "firebase": "^9.4.1",
+    "notyf": "^3.10.0",
+    "vue": "^3.2.16",
+    "vue-router": "^4.0.12",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.47.0",
+    "@vitejs/plugin-vue": "^1.9.3",
+    "sass": "^1.43.4",
+    "typescript": "^4.4.3",
+    "vite": "^2.6.4",
+    "vue-tsc": "^0.3.0"
+  }
+}
