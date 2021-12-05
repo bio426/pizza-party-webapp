@@ -37,7 +37,22 @@ export default createStore<State>({
 	},
 	mutations: {
 		addToCart(state, payload) {
-			state.cart.push(payload.product)
+			let newItem = payload.product as ICartItem
+			if (newItem.tag == "combo" || state.cart.length == 0) {
+				state.cart.push(newItem)
+			} else {
+				for (let i = 0; i < state.cart.length; i++) {
+					let sameCode = state.cart[i].code == newItem.code
+					let bothHaveCheese =
+						typeof state.cart[i].contains == typeof newItem.contains
+
+					if (sameCode && bothHaveCheese) {
+						state.cart[i].quantity += 1
+						return
+					}
+				}
+				state.cart.push(newItem)
+			}
 		},
 		removeFromCart(state, payload) {
 			state.cart.splice(payload.index, 1)

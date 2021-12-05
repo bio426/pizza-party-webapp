@@ -1,7 +1,7 @@
 <template>
 	<div class="Sidebar">
 		<transition name="slide">
-			<div class="Sidebar__main" v-if="showTransition">
+			<div class="Sidebar__main" v-if="showMain">
 				<div class="Sidebar__container Sidebar__container--close">
 					<button class="Sidebar__close" @click="$emit('hideSidebar')">
 						<img class="Sidebar__ico" src="../assets/icons/close.svg" />
@@ -34,23 +34,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from "vue"
+import { defineComponent, ref, onMounted } from "vue"
 
 export default defineComponent({
 	name: "Sidebar",
 	setup() {
-		let showTransition = ref(false)
+		let showMain = ref(false)
 
-		onMounted(() => {
-			showTransition.value = true
-		})
-
-		onBeforeUnmount(() => {
-			showTransition.value = false
-		})
+		onMounted(() => (showMain.value = true))
 
 		return {
-			showTransition,
+			showMain,
 		}
 	},
 })
@@ -105,6 +99,7 @@ export default defineComponent({
 
 	&__link {
 		margin: 0.5rem;
+		color: #000;
 		font-size: 1.2rem;
 		text-decoration: none;
 

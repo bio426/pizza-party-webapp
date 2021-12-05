@@ -77,7 +77,6 @@ export default defineComponent({
 	},
 	setup() {
 		const store = useStore(key)
-		const notyf = new Notyf()
 		const { closeComboModal, comboData } = useComboModal()
 
 		let classics = ref<IProduct[]>([])
@@ -170,6 +169,7 @@ export default defineComponent({
 				name: comboData.name,
 				code: comboData.code,
 				price: comboData.price,
+				tag: comboData.tag,
 				quantity: 1,
 			}
 			let pizzas: string[] = []
@@ -194,7 +194,6 @@ export default defineComponent({
 
 			store.commit({ type: "addToCart", product: item })
 			closeComboModal()
-			notyf.success("Combo agregado")
 		}
 
 		return {

@@ -138,7 +138,9 @@ export default defineComponent({
 						break
 					case "drink":
 						drinks.value.push(product)
-						store.commit({ type: "addComboSelectable", product })
+						if (product.code.includes("-m")) {
+							store.commit({ type: "addComboSelectable", product })
+						}
 						break
 					case "extra":
 						extras.value.push(product)

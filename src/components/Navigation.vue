@@ -2,27 +2,49 @@
 	<div class="Navigation" :class="[cart ? 'Navigation--fixed' : '']">
 		<div class="Navigation__container">
 			<a
-				class="Navigation__link Navigation__link--active"
+				class="Navigation__link"
 				href="#combosSection"
+				:class="[activeLink == 1 ? 'Navigation__link--active' : '']"
+				@click="activeLink = 1"
 			>
 				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
 				Combos</a
 			>
-			<a class="Navigation__link" href="#classicsSection">
+			<a
+				class="Navigation__link"
+				href="#classicsSection"
+				:class="[activeLink == 2 ? 'Navigation__link--active' : '']"
+				@click="activeLink = 2"
+			>
 				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
 				Clasicas</a
 			>
-			<a class="Navigation__link" href="#premiumsSection">
+			<a
+				class="Navigation__link"
+				href="#premiumsSection"
+				:class="[activeLink == 3 ? 'Navigation__link--active' : '']"
+				@click="activeLink = 3"
+			>
 				<img
 					class="Navigation__ico"
 					src="../assets/icons/pizza.svg"
 				/>Premium</a
 			>
-			<a class="Navigation__link" href="#drinksSection">
+			<a
+				class="Navigation__link"
+				href="#drinksSection"
+				:class="[activeLink == 4 ? 'Navigation__link--active' : '']"
+				@click="activeLink = 4"
+			>
 				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
 				Bebidas</a
 			>
-			<a class="Navigation__link" href="#extrasSection">
+			<a
+				class="Navigation__link"
+				href="#extrasSection"
+				:class="[activeLink == 5 ? 'Navigation__link--active' : '']"
+				@click="activeLink = 5"
+			>
 				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
 				Extras</a
 			>
@@ -40,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, ref, computed } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -58,9 +80,12 @@ export default defineComponent({
 		const store = useStore(key)
 		const { toogleCart } = useCart()
 
+		let activeLink = ref(1)
+
 		return {
 			toogleCart,
 			cartPrice: computed<number>(() => store.getters.cartPrice),
+			activeLink,
 		}
 	},
 })

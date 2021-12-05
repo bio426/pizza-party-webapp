@@ -110,6 +110,10 @@ export default defineComponent({
 	padding: 1rem 0;
 	border-top: 1px solid #000;
 
+	&:last-child{
+		border-bottom: 1px solid #000;
+	}
+
 	&__main {
 		display: flex;
 		gap: 1rem;

@@ -51,4 +51,16 @@
 		font-size: 1rem;
 		font-weight: 600;
 	}
+
+	@media (min-width: 768px) {
+		&__main{
+			width: 70%;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		&__main{
+			width: 50%;
+		}
+	}
 }

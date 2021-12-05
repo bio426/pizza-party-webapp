@@ -4,6 +4,7 @@ export interface ICartItem {
 	code: string
 	price: number
 	quantity: number
+	tag: string
 	contains?: ItemContains
 }
 
@@ -11,5 +12,4 @@ interface ItemContains {
 	cheese?: boolean
 	pizza?: string[]
   drink?: string[]
-  bread?: number
 }

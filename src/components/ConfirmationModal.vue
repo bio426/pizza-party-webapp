@@ -34,7 +34,6 @@ import {
 	Timestamp,
 	GeoPoint,
 } from "firebase/firestore"
-import {Notyf} from "notyf"
 
 import { key } from "../store"
 import useConfirmationModal from "../hooks/useConfirmationModal"
@@ -45,7 +44,6 @@ export default defineComponent({
 		const store = useStore(key)
 		const db = getFirestore()
 		const { closeConfirmationModal, confirmationPrice } = useConfirmationModal()
-		const notyf = new Notyf()
 
 		let address = unref(computed(() => store.state.address))
 		let deliveryTime = computed(() => {
@@ -69,7 +67,6 @@ export default defineComponent({
 			let docRef = await addDoc(collection(db, "orders"), order)
 			if(docRef){
 				closeConfirmationModal()
-				notyf.success("Orden recibida")
 			}
 		}
 

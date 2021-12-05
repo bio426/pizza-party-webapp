@@ -43,10 +43,10 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from "vue"
 import { useStore } from "vuex"
-import { Notyf } from "notyf"
 
 import { key } from "../store"
 import useComboModal from "../hooks/useComboModal"
+import useNotification from "../hooks/useNotification"
 import { IProduct } from "../interfaces/products"
 import { ICartItem } from "../interfaces/cart"
 
@@ -64,9 +64,9 @@ export default defineComponent({
 	},
 	setup(props, ctx) {
 		const store = useStore(key)
-		const notyf = new Notyf()
 
 		const { openComboModal } = useComboModal()
+		const { notyf } = useNotification()
 
 		let withCheese = ref(false)
 		const cheesePrice = 2
@@ -84,6 +84,7 @@ export default defineComponent({
 				name: props.product.name,
 				code: props.product.code,
 				price: props.product.price,
+				tag: props.product.tag,
 				quantity: 1,
 			}
 			if (withCheese.value) {
@@ -91,11 +92,7 @@ export default defineComponent({
 				item.price = item.price + cheesePrice
 			}
 			store.commit({ type: "addToCart", product: item })
-			notyf.success(
-				`x1 ${props.product.name} ${
-					withCheese.value ? "extra queso" : ""
-				} agregado al carrito`
-			)
+			notyf.success("agregado al carrito")
 		}
 
 		return {
@@ -190,6 +187,10 @@ export default defineComponent({
 		border-radius: 0.5rem;
 		font-size: 1rem;
 		font-weight: 600;
+
+		&:active {
+			background: darken($color: $green, $amount: 5%);
+		}
 	}
 
 	&__ico {

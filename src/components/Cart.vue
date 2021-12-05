@@ -1,74 +1,86 @@
 <template>
 	<div class="Cart">
-		<div class="Cart__main">
-			<div class="Cart__head">
-				<p class="Cart__address" v-if="userAddress">
-					Entregar en:
-					<span class="Cart__strong"> {{ userAddress.name }} </span>
-				</p>
-				<p class="Cart__address" v-else>
-					<span class="Cart__strong">
-						Selecciona una dirección de entrega
-					</span>
-				</p>
-				<button class="Cart__close" @click="toogleCart">
-					<img class="Cart__ico" src="../assets/icons/close.svg" />
-				</button>
+		<transition name="slide">
+			<div class="Cart__main" v-if="showMain">
+				<div class="Cart__head">
+					<p class="Cart__info" v-if="userAddress">
+						Entregar en:
+						<span class="Cart__address"> {{ userAddress.name }} </span>
+						<button class="Cart__changeAddress" @click="toogleMapsModal">
+							Cambiar
+						</button>
+					</p>
+					<p class="Cart__info" v-else>
+						<span class="Cart__address">
+							Selecciona una dirección de entrega
+						</span>
+						<button class="Cart__changeAddress" @click="toogleMapsModal">
+							Seleccionar
+						</button>
+					</p>
+					<button class="Cart__close" @click="toogleCart">
+						<img class="Cart__ico" src="../assets/icons/close.svg" />
+					</button>
+				</div>
+				<div class="Cart__container">
+					<h4 class="Cart__title">Tu carrito</h4>
+					<div class="Cart__items">
+						<CartItem
+							v-for="(item, index) in cart"
+							:key="index"
+							:item="item"
+							:index="index"
+						/>
+					</div>
+				</div>
+				<div class="Cart__fixed">
+					<div class="Cart__fixedPrices">
+						<div class="Cart__subPrice">
+							<span>Subtotal</span>
+							<span>S/{{ cartPrice.toFixed(2) }}</span>
+						</div>
+						<div class="Cart__subPrice">
+							<span>Delivery</span>
+							<span>S/{{ delivery.toFixed(2) }}</span>
+						</div>
+						<div class="Cart__endPrice">
+							<span>Total a pagar</span>
+							<span>S/{{ finalPrice.toFixed(2) }}</span>
+						</div>
+					</div>
+					<div class="Cart__fixedButtons">
+						<button
+							class="Cart__buttonContinue"
+							@click="toogleMapsModal"
+							v-if="!userAddress"
+						>
+							<span class="Cart__quantity">{{ cart.length }}</span>
+							Elegir dirección
+							<span class="Cart__price Cart__price--fixed"
+								>S/ {{ finalPrice.toFixed(2) }}</span
+							>
+						</button>
+						<button
+							class="Cart__buttonContinue"
+							@click="openConfirmationModal(finalPrice)"
+							v-else
+						>
+							<span class="Cart__quantity">{{ cart.length }}</span>
+							Confirmar pedido
+							<span>S/ {{ finalPrice.toFixed(2) }}</span>
+						</button>
+						<button class="Cart__buttonBack" @click="toogleCart">
+							Seguir comprando
+						</button>
+					</div>
+				</div>
 			</div>
-			<div class="Cart__container Cart__container--main">
-				<h4 class="Cart__title">Tu carrito</h4>
-				<div class="Cart__items">
-					<CartItem
-						v-for="(item, index) in cart"
-						:key="index"
-						:item="item"
-						:index="index"
-					/>
-				</div>
-				<div class="Cart__container Cart__container--prices">
-					<span>Subtotal</span>
-					<span>S/{{ cartPrice.toFixed(2) }}</span>
-				</div>
-				<div class="Cart__container Cart__container--prices">
-					<span>Delivery</span>
-					<span>S/{{ delivery.toFixed(2) }}</span>
-				</div>
-				<div class="Cart__container Cart__container--endprice">
-					<span class="Cart__price">Total a pagar</span>
-					<span class="Cart__price">S/{{ finalPrice.toFixed(2) }}</span>
-				</div>
-			</div>
-			<div class="Cart__fixed">
-				<button
-					class="Cart__button Cart__button--pay"
-					@click="toogleMapsModal"
-					v-if="!userAddress"
-				>
-					<span class="Cart__quantity">{{ cart.length }}</span>
-					Elegir dirección
-					<span class="Cart__price Cart__price--fixed"
-						>S/ {{ finalPrice.toFixed(2) }}</span
-					>
-				</button>
-				<button
-					class="Cart__button Cart__button--pay"
-					@click="openConfirmationModal(finalPrice)"
-					v-else
-				>
-					<span class="Cart__quantity">{{ cart.length }}</span>
-					Confirmar pedido
-					<span class="Cart__price Cart__price--fixed"
-						>S/ {{ finalPrice.toFixed(2) }}</span
-					>
-				</button>
-				<button class="Cart__button">Seguir comprando</button>
-			</div>
-		</div>
+		</transition>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue"
+import { defineComponent, ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -89,6 +101,10 @@ export default defineComponent({
 		const { toogleMapsModal } = useMapsModal()
 		const { openConfirmationModal } = useConfirmationModal()
 
+		let showMain = ref(false)
+
+		onMounted(() => (showMain.value = true))
+
 		let userAddress = computed(() => store.state.address)
 
 		let cartPrice = computed<number>(() => store.getters.cartPrice)
@@ -99,6 +115,7 @@ export default defineComponent({
 		let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
 
 		return {
+			showMain,
 			toogleCart,
 			toogleMapsModal,
 			cart: computed(() => store.state.cart),
@@ -138,6 +155,23 @@ export default defineComponent({
 		background: lightgray;
 	}
 
+	&__info {
+		display: block;
+		max-width: 60%;
+	}
+
+	&__address {
+		font-weight: 600;
+	}
+
+	&__changeAddress {
+		margin-left: 0.2rem;
+		padding: 0 0.5rem;
+		background: #fff;
+		border: 1px solid #000;
+		border-radius: 0.5rem;
+	}
+
 	&__close {
 		border: none;
 		background: none;
@@ -152,40 +186,64 @@ export default defineComponent({
 	&__items {
 		display: flex;
 		flex-direction: column;
-		height: 480px;
+		height: 55vh;
 		overflow-y: auto;
-		border-bottom: 1px solid #000;
 	}
 
 	&__container {
-		&--main {
-			padding: 1rem;
-		}
-
-		&--prices {
-			display: flex;
-			justify-content: space-between;
-			padding: 0.5rem 0;
-		}
-
-		&--endprice {
-			display: flex;
-			justify-content: space-between;
-			border-top: 1px solid #000;
-			padding: 0.5rem 0;
-		}
+		padding: 1rem;
 	}
 
-	&__address {
-		display: block;
-		max-width: 60%;
+	&__fixed {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		padding: 1rem;
+		border-top: 1px solid #000;
 	}
 
-	&__strong {
+	&__fixedPrices {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	&__subPrice {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	&__endPrice {
+		display: flex;
+		justify-content: space-between;
+		padding-top: 0.5rem;
+		border-top: 1px solid #000;
+		font-size: 1.2rem;
 		font-weight: 600;
 	}
 
-	&__button {
+	&__fixedButtons {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding-top: 1rem;
+	}
+
+	&__buttonContinue {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: 0.5rem 1rem;
+		background: $red;
+		color: #fff;
+		border: none;
+		border-radius: 1rem;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	&__buttonBack {
 		display: block;
 		width: 100%;
 		padding: 0.5rem 1rem;
@@ -195,33 +253,6 @@ export default defineComponent({
 		border-radius: 1rem;
 		font-size: 1rem;
 		font-weight: 600;
-
-		&--pay {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 1rem;
-			background: $red;
-			color: #fff;
-		}
-	}
-
-	&__price {
-		font-size: 1.2rem;
-		font-weight: 600;
-
-		&--fixed {
-			font-size: 1rem;
-			font-weight: 600;
-		}
-	}
-
-	&__fixed {
-		position: fixed;
-		bottom: 0;
-		width: 90%;
-		padding: 1rem;
-		border-top: 1px solid #000;
 	}
 
 	&__quantity {
@@ -243,29 +274,27 @@ export default defineComponent({
 		width: 1.5rem;
 		height: auto;
 	}
-}
 
-@media (min-width: 768px) {
-	.Cart {
+	@media (min-width: 768px) {
 		&__main {
 			width: 70%;
 		}
+	}
 
-		&__fixed {
-			width: 70%;
+	@media (min-width: 1024px) {
+		&__main {
+			width: 40%;
 		}
 	}
 }
 
-@media (min-width: 1024px) {
-	.Cart {
-		&__main {
-			width: 40%;
-		}
+.slide-enter-active,
+.slide-leave-active {
+	transition: transform 0.5s ease;
+}
 
-		&__fixed {
-			width: 40%;
-		}
-	}
+.slide-enter-from,
+.slide-leave-to {
+	transform: translateX(100%);
 }
 </style>

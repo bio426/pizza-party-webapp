@@ -1,25 +1,31 @@
 <template>
 	<div class="FloatCart">
 		<button class="FloatCart__button" @click="toogleCart">
-			<span class="FloatCart__counter">99</span>
+			<span class="FloatCart__counter">{{ cartLength }}</span>
 			Ver carrito
-			<span class="FloatCart__price">S/ 99.99</span>
+			<span class="FloatCart__price">S/ {{ cartPrice.toFixed(2) }}</span>
 		</button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, computed } from "vue"
+import { useStore } from "vuex"
+
+import { key } from "../store"
 
 import useCart from "../hooks/useCart"
 
 export default defineComponent({
 	name: "FloatCart",
 	setup() {
+		const store = useStore(key)
 		const { toogleCart } = useCart()
 
 		return {
 			toogleCart,
+			cartPrice: computed<number>(() => store.getters.cartPrice),
+			cartLength: computed(() => store.state.cart.length),
 		}
 	},
 })
