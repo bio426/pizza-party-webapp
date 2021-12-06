@@ -38,6 +38,7 @@
   &__close {
 		background: none;
 		border: none;
+		cursor: pointer;
 	}
 
   &__button {
@@ -48,8 +49,13 @@
 		color: #fff;
 		border: 1px solid black;
 		border-radius: 0.5rem;
+		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
+
+		&:active{
+			background: lighten($color: #000000, $amount: 10%);
+		}
 	}
 
 	@media (min-width: 768px) {

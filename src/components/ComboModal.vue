@@ -8,9 +8,14 @@
 				</button>
 			</div>
 			<div class="Combo__body">
-				<span class="Combo__step">
-					Elige el sabor de tus pizzas: 3 restantes
-				</span>
+				<span class="Combo__name"> {{ comboData.name }}</span>
+				<p class="Combo__description">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+					Exercitationem in odio autem laboriosam animi neque ducimus! Fugiat
+					quasi consectetur odit culpa sed dolor animi vel molestiae, itaque
+					tempora voluptatum error?
+				</p>
+				<hr class="Combo__spacer" />
 				<div class="Combo__slots">
 					<ComboSlot
 						v-for="(content, i) in pizzaSlots"
@@ -27,7 +32,8 @@
 						@click="clearSlot(i, 'drink')"
 					/>
 				</div>
-				<div class="Combo__products">
+				<span class="Combo__category">Pizzas</span>
+				<div class="Combo__selectables">
 					<ComboSelectable
 						v-for="(classic, i) in classics"
 						:key="i"
@@ -40,6 +46,18 @@
 						:product="premium"
 						@click="addToCombo(premium)"
 					/>
+				</div>
+				<!-- <span class="Combo__category">Premiums</span>
+				<div class="Combo__selectables">
+					<ComboSelectable
+						v-for="(premium, i) in premiums"
+						:key="i"
+						:product="premium"
+						@click="addToCombo(premium)"
+					/>
+				</div> -->
+				<span class="Combo__category">Bebidas</span>
+				<div class="Combo__selectables">
 					<ComboSelectable
 						v-for="(drink, i) in drinks"
 						:key="i"
@@ -58,10 +76,10 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue"
 import { useStore } from "vuex"
-import { Notyf } from "notyf"
 
 import { key } from "../store"
 import useComboModal from "../hooks/useComboModal"
+import useNotification from "../hooks/useNotification"
 import { ComboItem } from "../interfaces/combo"
 import { IProduct } from "../interfaces/products"
 import { ICartItem } from "../interfaces/cart"
@@ -78,6 +96,7 @@ export default defineComponent({
 	setup() {
 		const store = useStore(key)
 		const { closeComboModal, comboData } = useComboModal()
+		const { notyf } = useNotification()
 
 		let classics = ref<IProduct[]>([])
 		let premiums = ref<IProduct[]>([])
@@ -163,7 +182,25 @@ export default defineComponent({
 			}
 		}
 
+		function allSlotsSelected() {
+			for (let i = 0; i < pizzaSlots.value.length; i++) {
+				if (!pizzaSlots.value[i].selected) {
+					return false
+				}
+			}
+			for (let i = 0; i < drinkSlots.value.length; i++) {
+				if (!drinkSlots.value[i].selected) {
+					return false
+				}
+			}
+			return true
+		}
+
 		function sendToCart() {
+			if (!allSlotsSelected()) {
+				notyf.error("Faltan seleccionar elementos")
+				return
+			}
 			let item: ICartItem = {
 				id: comboData.id,
 				name: comboData.name,
@@ -194,6 +231,7 @@ export default defineComponent({
 
 			store.commit({ type: "addToCart", product: item })
 			closeComboModal()
+			notyf.success(`x1 Combo ${comboData.name} agregado`)
 		}
 
 		return {
@@ -206,6 +244,7 @@ export default defineComponent({
 			addToCombo,
 			clearSlot,
 			sendToCart,
+			comboData,
 		}
 	},
 })
@@ -217,31 +256,20 @@ export default defineComponent({
 .Combo {
 	@include modal;
 
-	&__head {
-		display: flex;
-	}
-
-	&__info {
-		width: 100%;
+	&__body {
+		margin-top: 1rem;
 	}
 
 	&__name {
-		display: block;
-		font-weight: 600;
-	}
-
-	&__price {
 		font-size: 1.2rem;
 	}
 
-	&__close {
-		display: block;
-		background: none;
-		border: none;
+	&__description {
+		margin: 0.5rem 0;
 	}
 
-	&__body {
-		margin-top: 1rem;
+	&__spacer {
+		margin: 1rem 0;
 	}
 
 	&__slots {
@@ -250,12 +278,20 @@ export default defineComponent({
 		gap: 1rem;
 	}
 
-	&__products {
+	&__category {
+		display: block;
+		margin: 0.5rem 1rem;
+		font-weight: 600;
+	}
+
+	&__selectables {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1rem;
-		margin-top: 2rem;
-		border: 1px solid red;
+	}
+
+	&__button {
+		margin-top: 1rem;
 	}
 
 	&__ico {

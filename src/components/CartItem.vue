@@ -47,9 +47,20 @@
 			</div>
 		</div>
 		<div class="Item__description" v-if="showDescription">
-			<p>
-				{{item.contains}}
-			</p>
+			<ul>
+				<li v-if="item.contains?.cheese">
+					<span v-if="item.contains.pizza"
+						>x{{ item.contains.pizza?.length }}</span
+					>
+					Extra queso
+				</li>
+				<li v-for="(pizza, i) in item.contains?.pizza" :key="i">
+					{{ pizza }}
+				</li>
+				<li v-for="(drink, i) in item.contains?.drink" :key="i">
+					{{ drink }}
+				</li>
+			</ul>
 		</div>
 	</div>
 </template>
@@ -110,7 +121,7 @@ export default defineComponent({
 	padding: 1rem 0;
 	border-top: 1px solid #000;
 
-	&:last-child{
+	&:last-child {
 		border-bottom: 1px solid #000;
 	}
 

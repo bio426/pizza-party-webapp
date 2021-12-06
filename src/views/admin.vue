@@ -7,10 +7,15 @@
 					<div class="admin__maps" ref="mapsDiv"></div>
 				</div>
 				<div class="admin__box">
-					{{ activeOrder }}
+					{{ activeOrder.clientAddres }} <br />
+					{{ activeOrder.clientPhone }}<br />
+					{{ activeOrder.createdAt }}<br />
 				</div>
 				<div class="admin__box">
-					{{ activeItems }}
+					<div v-for="(item, i) in activeItems" :key="i">
+						x{{ item.quantity }}--{{ item.name }}--
+						<hr>
+					</div>
 				</div>
 			</div>
 			<div class="admin__orders">
@@ -47,7 +52,7 @@ interface IOrderResponse {
 	clientAddress: string
 	clientPhone: number
 	clientCords: object
-	createdAt: number
+	createdAt: any
 	items: ICartItem[]
 }
 
@@ -99,7 +104,7 @@ export default defineComponent({
 			clientPhone: 0,
 			createdAt: 0,
 		})
-		let activeItems = ref([])
+		let activeItems = ref<any>([])
 
 		function selectOrder(order: any) {
 			map.panTo({

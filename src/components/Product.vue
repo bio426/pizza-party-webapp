@@ -1,7 +1,12 @@
 <template>
 	<div class="Product">
-		<img class="Product__image" src="../assets/images/product1.jpg" />
-		<div class="Product__main">
+		<img
+			class="Product__image"
+			src="../assets/images/product1.jpg"
+			:class="[loading ? 'Product__image--loading' : '']"
+		/>
+		<div class="Product__loading" v-if="loading">Cargando producto...</div>
+		<div class="Product__main" v-else>
 			<h4 class="Product__name">{{ product.name }}</h4>
 			<p class="Product__description">
 				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Debitis vitae
@@ -55,9 +60,19 @@ export default defineComponent({
 	props: {
 		product: {
 			type: Object as PropType<IProduct>,
-			required: true,
+			default: () => ({
+				id: "noId",
+				name: "noName",
+				code: "noCode",
+				price: 0,
+				tag: "noTag",
+			}),
 		},
 		extraCheese: {
+			type: Boolean,
+			default: false,
+		},
+		loading: {
 			type: Boolean,
 			default: false,
 		},
@@ -92,7 +107,10 @@ export default defineComponent({
 				item.price = item.price + cheesePrice
 			}
 			store.commit({ type: "addToCart", product: item })
-			notyf.success("agregado al carrito")
+			let alert = `x1 ${props.product.name} ${
+				withCheese.value ? "extra queso" : ""
+			} agregado`
+			notyf.success(alert)
 		}
 
 		return {
@@ -118,10 +136,26 @@ export default defineComponent({
 	&__image {
 		display: block;
 		width: 100%;
+		height: 12rem;
+		object-fit: cover;
+
+		&--loading {
+			filter: grayscale(100%) blur(5px);
+		}
 	}
 
 	&__main {
 		padding: 1rem;
+	}
+
+	&__loading {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 12rem;
+		color: gray;
+		font-size: 1rem;
+		font-weight: 600;
 	}
 
 	&__name {
@@ -185,6 +219,7 @@ export default defineComponent({
 		color: #fff;
 		border: none;
 		border-radius: 0.5rem;
+		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
 

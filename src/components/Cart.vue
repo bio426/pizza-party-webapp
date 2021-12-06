@@ -25,6 +25,9 @@
 				<div class="Cart__container">
 					<h4 class="Cart__title">Tu carrito</h4>
 					<div class="Cart__items">
+						<div class="Cart__noItems" v-if="cart.length == 0">
+							<img class="Cart__ico" src="../assets/icons/empty.svg">
+							Aun no hay elementos</div>
 						<CartItem
 							v-for="(item, index) in cart"
 							:key="index"
@@ -188,6 +191,17 @@ export default defineComponent({
 		flex-direction: column;
 		height: 55vh;
 		overflow-y: auto;
+	}
+
+	&__noItems{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: .5rem;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		font-weight: 600;
 	}
 
 	&__container {

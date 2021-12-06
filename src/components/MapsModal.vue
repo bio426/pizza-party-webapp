@@ -132,6 +132,7 @@ export default defineComponent({
 
 	&__view {
 		height: 20rem;
+		margin: 1rem 0;
 		border: 1px solid #000;
 
 		&::after {
@@ -153,7 +154,7 @@ export default defineComponent({
 
 	&__autocomplete {
 		width: 100%;
-		margin: 1rem 0;
+		margin-top: 1rem;
 		padding: 0.5rem;
 	}
 

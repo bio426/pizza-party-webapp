@@ -9,12 +9,15 @@
 		<Navigation :cart="isNavFixed" />
 		<div class="index__container">
 			<h4 class="index__category" id="combosSection">Combos</h4>
-			<div class="index__products index__products--combos">
+			<div class="index__products index__products--combos" v-if="productsLoaded">
 				<Product
 					v-for="(combo, index) in combos"
 					:key="index"
 					:product="combo"
 				/>
+			</div>
+			<div class="index__products index__products--combos" v-else>
+				<Product v-for="i in 4" :key="i" :loading="true" />
 			</div>
 			<h4 class="index__category" id="classicsSection">Pizzas clasicas</h4>
 			<div class="index__products">
@@ -35,7 +38,6 @@
 				/>
 			</div>
 			<h4 class="index__category" id="drinksSection">Bebidas</h4>
-			<h4 v-if="!productsLoaded">Cargando bebidas</h4>
 			<div class="index__products">
 				<Product
 					v-for="(drink, index) in drinks"
@@ -138,7 +140,7 @@ export default defineComponent({
 						break
 					case "drink":
 						drinks.value.push(product)
-						if (product.code.includes("-m")) {
+						if (product.code.includes("-s")) {
 							store.commit({ type: "addComboSelectable", product })
 						}
 						break
@@ -196,28 +198,20 @@ export default defineComponent({
 	&__spacer {
 		height: 5rem;
 	}
-}
 
-@media (min-width: 768px) {
-	.index {
+	@media (min-width: 768px) {
 		&__products {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
-}
 
-@media (min-width: 1024px) {
-	.index {
+	@media (min-width: 1024px) {
 		&__products {
 			grid-template-columns: repeat(3, 1fr);
 
 			&--combos {
 				grid-template-columns: repeat(2, 1fr);
 			}
-		}
-
-		&__spacer {
-			// display: none;
 		}
 	}
 }
