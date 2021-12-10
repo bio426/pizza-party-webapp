@@ -8,6 +8,7 @@
 				<a class="Header__link">Menu</a>
 				<a class="Header__link">Locales</a>
 				<a class="Header__link">Mi cuenta</a>
+				<router-link class="Header__link" to="/admin">Admin</router-link>
 			</div>
 			<div class="Header__container Header__container--right" v-if="isLarge">
 				<a href="tel:555-555-5555" class="Header__link Header__link--telf">
@@ -102,6 +103,8 @@ export default defineComponent({
 
 	&__link {
 		display: block;
+		color: #000;
+		text-decoration: none;
 		font-size: 1rem;
 		font-weight: 600;
 

@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from "vue"
+import { defineComponent, ref,computed, onMounted, onBeforeUnmount } from "vue"
 import { useStore } from "vuex"
 import {
 	getFirestore,
@@ -153,6 +153,36 @@ export default defineComponent({
 		}
 		getProducts()
 
+		let filterChicha = computed(()=>{
+			let items: any[] = []
+			drinks.value.forEach(drink=>{
+				if(drink.code.includes("chi")){
+					items.push(drink)
+				}
+			})
+			return items
+		})
+
+		let filterLimonada = computed(()=>{
+			let items: any[] = []
+			drinks.value.forEach(drink=>{
+				if(drink.code.includes("lim")){
+					items.push(drink)
+				}
+			})
+			return items
+		})
+
+		let filterMaracumango = computed(()=>{
+			let items: any[] = []
+			drinks.value.forEach(drink=>{
+				if(drink.code.includes("mar")){
+					items.push(drink)
+				}
+			})
+			return items
+		})
+
 		return {
 			video,
 			isNavFixed,
@@ -162,6 +192,9 @@ export default defineComponent({
 			drinks,
 			extras,
 			productsLoaded,
+			filterChicha,
+			filterLimonada,
+			filterMaracumango
 		}
 	},
 })
@@ -196,7 +229,7 @@ export default defineComponent({
 	}
 
 	&__spacer {
-		height: 5rem;
+		height: 2rem;
 	}
 
 	@media (min-width: 768px) {

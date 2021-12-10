@@ -1,66 +1,79 @@
 <template>
 	<div class="admin">
-		<div class="admin__spacer"></div>
+		<div class="admin__topSpacer"></div>
 		<div class="admin__container">
+			<AdminAlarm
+				:alerting="incomingOrders"
+				@attended="incomingOrders = false"
+			/>
 			<div class="admin__details">
 				<div class="admin__box">
 					<div class="admin__maps" ref="mapsDiv"></div>
 				</div>
+				<AdminActive :order="activeOrder" />
 				<div class="admin__box">
-					{{ activeOrder.clientAddres }} <br />
-					{{ activeOrder.clientPhone }}<br />
-					{{ activeOrder.createdAt }}<br />
-				</div>
-				<div class="admin__box">
-					<div v-for="(item, i) in activeItems" :key="i">
-						x{{ item.quantity }}--{{ item.name }}--
-						<hr>
+					<div v-for="(item, i) in activeOrder.items" :key="i">
+						x{{ item.quantity }}--{{ item.name }}
+						<ul v-if="item.contains">
+							<li class="admin__nested" v-if="item.contains.cheese">
+								Con extra queso
+							</li>
+							<li class="admin__nested" v-for="pizza in item.contains.pizza">
+								{{ pizza }}
+							</li>
+							<li class="admin__nested" v-for="drink in item.contains.drink">
+								{{ drink }}
+							</li>
+						</ul>
+						<hr />
 					</div>
 				</div>
 			</div>
 			<div class="admin__orders">
-				<div
-					class="admin__box"
+				<Order
 					v-for="(order, i) in orders"
 					:key="i"
-					@click="selectOrder(order)"
-				>
-					{{ order }}
-				</div>
+					:order="order"
+					@click="selectOrder(i)"
+				/>
 			</div>
 		</div>
+		<div class="admin__bottomSpacer"></div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted } from "vue"
+import { defineComponent, ref, reactive, onMounted, onBeforeUnmount } from "vue"
 import { Loader } from "@googlemaps/js-api-loader"
 import {
 	getFirestore,
 	collection,
 	query,
 	where,
-	getDocs,
+	onSnapshot,
+	orderBy,
 	Timestamp,
-	QuerySnapshot,
+	GeoPoint,
+	Unsubscribe,
 } from "firebase/firestore"
 
-import { ICartItem } from "../interfaces/cart"
+import { IOrderResponse } from "../interfaces/admin"
 
-interface IOrderResponse {
-	id: string
-	clientAddress: string
-	clientPhone: number
-	clientCords: object
-	createdAt: any
-	items: ICartItem[]
-}
+import AdminAlarm from "../components/AdminAlarm.vue"
+import AdminActive from "../components/AdminActive.vue"
+import Order from "../components/Order.vue"
 
 export default defineComponent({
 	name: "admin-view",
+	components: {
+		AdminAlarm,
+		AdminActive,
+		Order,
+	},
 	setup() {
 		const db = getFirestore()
 
+		// Load maps view
 		const loader = new Loader({
 			apiKey: "AIzaSyDm6e078Cvj-HLlRZWBI3B540JexD1CyJk",
 			version: "weekly",
@@ -80,42 +93,56 @@ export default defineComponent({
 			})
 		})
 
+		// Get Orders
 		let orders = ref<IOrderResponse[]>([])
-		async function getOrders() {
-			let today = new Date()
-			let yesterday = today.setDate(today.getDate() - 1)
-			let q = query(
-				collection(db, "orders"),
-				where("createdAt", ">=", Timestamp.fromMillis(yesterday))
-			)
-
-			let snap = (await getDocs(q)) as QuerySnapshot<IOrderResponse>
-			snap.forEach((doc) => {
-				orders.value.push({
-					...doc.data(),
-					id: doc.id,
-				})
+		let unsubscribe: Unsubscribe
+		let firstGet = true
+		let incomingOrders = ref(false)
+		let todayInit = new Date()
+		todayInit.setHours(0, 0, 0, 0)
+		let q = query(
+			collection(db, "orders"),
+			where("createdAt", ">=", Timestamp.fromDate(todayInit)),
+			orderBy("createdAt", "desc")
+		)
+		unsubscribe = onSnapshot(q, (querySnapshot) => {
+			orders.value = []
+			querySnapshot.forEach((doc) => {
+				let data = { ...doc.data(), id: doc.id } as IOrderResponse
+				orders.value.push(data)
 			})
-		}
-		getOrders()
-
-		let activeOrder = reactive({
-			clientAddres: "",
-			clientPhone: 0,
-			createdAt: 0,
+			if (firstGet) {
+				firstGet = false
+				return
+			}
+			incomingOrders.value = true
 		})
-		let activeItems = ref<any>([])
+		onBeforeUnmount(() => unsubscribe())
 
-		function selectOrder(order: any) {
+		// Handle order view
+		let timePlaceholder = Timestamp.fromDate(todayInit)
+		let cordsPlaceholder = new GeoPoint(-12.067664200000008, -77.0716884)
+		let activeOrder = reactive<IOrderResponse>({
+			id: "",
+			clientAddress: "",
+			clientCords: cordsPlaceholder,
+			clientPhone: 0,
+			createdAt: timePlaceholder,
+			items: [],
+		})
+
+		function selectOrder(index: number) {
+			let order = orders.value[index]
 			map.panTo({
 				lat: order.clientCords.latitude as number,
 				lng: order.clientCords.longitude as number,
 			})
-			activeOrder.clientAddres = order.clientAddres
+			activeOrder.id = order.id
+			activeOrder.clientAddress = order.clientAddress
+			activeOrder.clientCords = order.clientCords
 			activeOrder.clientPhone = order.clientPhone
 			activeOrder.createdAt = order.createdAt
-
-			activeItems.value = order.items
+			activeOrder.items = order.items
 		}
 
 		return {
@@ -123,7 +150,7 @@ export default defineComponent({
 			orders,
 			selectOrder,
 			activeOrder,
-			activeItems,
+			incomingOrders,
 		}
 	},
 })
@@ -138,6 +165,10 @@ export default defineComponent({
 	&__container {
 		width: 90%;
 		margin: 0 auto;
+	}
+
+	&__alert {
+		width: 100%;
 	}
 
 	&__box {
@@ -169,6 +200,10 @@ export default defineComponent({
 		}
 	}
 
+	&__nested {
+		margin-left: 1.5rem;
+	}
+
 	&__orders {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
@@ -176,8 +211,12 @@ export default defineComponent({
 		margin-top: 2rem;
 	}
 
-	&__spacer {
+	&__topSpacer {
 		height: 20vh;
+	}
+
+	&__bottomSpacer {
+		height: 3rem;
 	}
 }
 </style>

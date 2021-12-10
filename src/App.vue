@@ -1,6 +1,7 @@
 <template>
 	<Header @showSidebar="activeSidebar = true" />
 	<router-view />
+	<Footer />
 	<Sidebar v-if="activeSidebar" @hideSidebar="activeSidebar = false" />
 	<FloatCart v-if="!isLarge" />
 	<Cart v-if="showCart" />
@@ -20,6 +21,7 @@ import useMapsModal from "./hooks/useMapsModal"
 import useConfirmationModal from "./hooks/useConfirmationModal"
 
 import Header from "./components/Header.vue"
+import Footer from "./components/Footer.vue"
 import Sidebar from "./components/Sidebar.vue"
 import FloatCart from "./components/FloatCart.vue"
 import Cart from "./components/Cart.vue"
@@ -31,6 +33,7 @@ export default defineComponent({
 	name: "app",
 	components: {
 		Header,
+		Footer,
 		Sidebar,
 		FloatCart,
 		Cart,
