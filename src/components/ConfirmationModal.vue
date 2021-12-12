@@ -58,7 +58,7 @@ export default defineComponent({
 			}
 			let items = store.state.cart
 			let order = {
-				clientAddres: address.name,
+				clientAddress: address.name,
 				clientCords: new GeoPoint(address.cords.lat, address.cords.lng),
 				clientPhone: 999888777,
 				createdAt: Timestamp.now(),

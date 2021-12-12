@@ -9,49 +9,52 @@
 		<Navigation :cart="isNavFixed" />
 		<div class="index__container">
 			<h4 class="index__category" id="combosSection">Combos</h4>
-			<div class="index__products index__products--combos" v-if="productsLoaded">
+			<div
+				class="index__products index__products--combos"
+				v-if="!productsLoaded"
+			>
+				<Product v-for="i in 4" :key="i" :loading="true" />
+			</div>
+			<div class="index__products index__products--combos" v-else>
 				<Product
 					v-for="(combo, index) in combos"
 					:key="index"
 					:product="combo"
 				/>
 			</div>
-			<div class="index__products index__products--combos" v-else>
-				<Product v-for="i in 4" :key="i" :loading="true" />
-			</div>
-			<h4 class="index__category" id="classicsSection">Pizzas clasicas</h4>
-			<div class="index__products">
-				<Product
-					v-for="(classic, index) in classics"
-					:key="index"
-					:product="classic"
-					:extra-cheese="true"
-				/>
-			</div>
-			<h4 class="index__category" id="premiumsSection">Pizzas premiums</h4>
-			<div class="index__products">
-				<Product
-					v-for="(premium, index) in premiums"
-					:key="index"
-					:product="premium"
-					:extra-cheese="true"
-				/>
-			</div>
-			<h4 class="index__category" id="drinksSection">Bebidas</h4>
-			<div class="index__products">
-				<Product
-					v-for="(drink, index) in drinks"
-					:key="index"
-					:product="drink"
-				/>
-			</div>
-			<h4 class="index__category" id="extrasSection">Extras</h4>
-			<div class="index__products">
-				<Product
-					v-for="(extra, index) in extras"
-					:key="index"
-					:product="extra"
-				/>
+			<div v-if="productsLoaded">
+				<h4 class="index__category" id="classicsSection">Pizzas clasicas</h4>
+				<div class="index__products">
+					<Product
+						v-for="(classic, index) in classics"
+						:key="index"
+						:product="classic"
+						:extra-cheese="true"
+					/>
+				</div>
+				<h4 class="index__category" id="premiumsSection">Pizzas premiums</h4>
+				<div class="index__products">
+					<Product
+						v-for="(premium, index) in premiums"
+						:key="index"
+						:product="premium"
+						:extra-cheese="true"
+					/>
+				</div>
+				<h4 class="index__category" id="drinksSection">Bebidas</h4>
+				<div class="index__products">
+					<ProductDrink :products="filterChicha" />
+					<ProductDrink :products="filterLimonada" />
+					<ProductDrink :products="filterMaracumango" />
+				</div>
+				<h4 class="index__category" id="extrasSection">Extras</h4>
+				<div class="index__products">
+					<Product
+						v-for="(extra, index) in extras"
+						:key="index"
+						:product="extra"
+					/>
+				</div>
 			</div>
 		</div>
 		<div class="index__spacer"></div>
@@ -60,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref,computed, onMounted, onBeforeUnmount } from "vue"
+import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue"
 import { useStore } from "vuex"
 import {
 	getFirestore,
@@ -75,12 +78,14 @@ import { IProduct } from "../interfaces/products"
 
 import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
+import ProductDrink from "../components/ProductDrink.vue"
 
 export default defineComponent({
 	name: "index-view",
 	components: {
 		Navigation,
 		Product,
+		ProductDrink,
 	},
 	setup() {
 		const db = getFirestore()
@@ -153,30 +158,30 @@ export default defineComponent({
 		}
 		getProducts()
 
-		let filterChicha = computed(()=>{
+		let filterChicha = computed(() => {
 			let items: any[] = []
-			drinks.value.forEach(drink=>{
-				if(drink.code.includes("chi")){
+			drinks.value.forEach((drink) => {
+				if (drink.code.includes("chi")) {
 					items.push(drink)
 				}
 			})
 			return items
 		})
 
-		let filterLimonada = computed(()=>{
+		let filterLimonada = computed(() => {
 			let items: any[] = []
-			drinks.value.forEach(drink=>{
-				if(drink.code.includes("lim")){
+			drinks.value.forEach((drink) => {
+				if (drink.code.includes("lim")) {
 					items.push(drink)
 				}
 			})
 			return items
 		})
 
-		let filterMaracumango = computed(()=>{
-			let items: any[] = []
-			drinks.value.forEach(drink=>{
-				if(drink.code.includes("mar")){
+		let filterMaracumango = computed(() => {
+			let items: IProduct[] = []
+			drinks.value.forEach((drink) => {
+				if (drink.code.includes("mar")) {
 					items.push(drink)
 				}
 			})
@@ -194,7 +199,7 @@ export default defineComponent({
 			productsLoaded,
 			filterChicha,
 			filterLimonada,
-			filterMaracumango
+			filterMaracumango,
 		}
 	},
 })

@@ -2,7 +2,7 @@
 	<div class="Product">
 		<img
 			class="Product__image"
-			src="../assets/images/product1.jpg"
+			src="../assets/images/americana.webp"
 			:class="[loading ? 'Product__image--loading' : '']"
 		/>
 		<div class="Product__loading" v-if="loading">Cargando producto...</div>

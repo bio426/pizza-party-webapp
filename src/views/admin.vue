@@ -7,27 +7,9 @@
 				@attended="incomingOrders = false"
 			/>
 			<div class="admin__details">
-				<div class="admin__box">
-					<div class="admin__maps" ref="mapsDiv"></div>
-				</div>
+				<AdminMaps :cords="mapCords" />
 				<AdminActive :order="activeOrder" />
-				<div class="admin__box">
-					<div v-for="(item, i) in activeOrder.items" :key="i">
-						x{{ item.quantity }}--{{ item.name }}
-						<ul v-if="item.contains">
-							<li class="admin__nested" v-if="item.contains.cheese">
-								Con extra queso
-							</li>
-							<li class="admin__nested" v-for="pizza in item.contains.pizza">
-								{{ pizza }}
-							</li>
-							<li class="admin__nested" v-for="drink in item.contains.drink">
-								{{ drink }}
-							</li>
-						</ul>
-						<hr />
-					</div>
-				</div>
+				<AdminItems :items="activeOrder.items" />
 			</div>
 			<div class="admin__orders">
 				<Order
@@ -43,8 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, onMounted, onBeforeUnmount } from "vue"
-import { Loader } from "@googlemaps/js-api-loader"
+import { defineComponent, ref, reactive, onBeforeUnmount } from "vue"
 import {
 	getFirestore,
 	collection,
@@ -60,37 +41,26 @@ import {
 import { IOrderResponse } from "../interfaces/admin"
 
 import AdminAlarm from "../components/AdminAlarm.vue"
+import AdminMaps from "../components/AdminMaps.vue"
 import AdminActive from "../components/AdminActive.vue"
+import AdminItems from "../components/AdminItems.vue"
 import Order from "../components/Order.vue"
 
 export default defineComponent({
 	name: "admin-view",
 	components: {
 		AdminAlarm,
+		AdminMaps,
 		AdminActive,
+		AdminItems,
 		Order,
 	},
 	setup() {
 		const db = getFirestore()
 
-		// Load maps view
-		const loader = new Loader({
-			apiKey: "AIzaSyDm6e078Cvj-HLlRZWBI3B540JexD1CyJk",
-			version: "weekly",
-			libraries: ["places"],
-		})
-		let mapsDiv = ref<HTMLDivElement>()
-		let map: google.maps.Map
-		onMounted(async () => {
-			await loader.load()
-			map = new google.maps.Map(mapsDiv.value as HTMLDivElement, {
-				center: {
-					lat: -12.067664200000008,
-					lng: -77.0716884,
-				},
-				zoom: 18,
-				disableDefaultUI: true,
-			})
+		let mapCords = reactive<google.maps.LatLngLiteral>({
+			lat: -12.067664200000008,
+			lng: -77.0716884,
 		})
 
 		// Get Orders
@@ -133,10 +103,9 @@ export default defineComponent({
 
 		function selectOrder(index: number) {
 			let order = orders.value[index]
-			map.panTo({
-				lat: order.clientCords.latitude as number,
-				lng: order.clientCords.longitude as number,
-			})
+			mapCords.lat = order.clientCords.latitude
+			mapCords.lng = order.clientCords.longitude
+
 			activeOrder.id = order.id
 			activeOrder.clientAddress = order.clientAddress
 			activeOrder.clientCords = order.clientCords
@@ -146,7 +115,7 @@ export default defineComponent({
 		}
 
 		return {
-			mapsDiv,
+			mapCords,
 			orders,
 			selectOrder,
 			activeOrder,
@@ -167,41 +136,10 @@ export default defineComponent({
 		margin: 0 auto;
 	}
 
-	&__alert {
-		width: 100%;
-	}
-
-	&__box {
-		padding: 1rem;
-		background: #fff;
-		border-radius: 1rem;
-		box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
-	}
-
 	&__details {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 1rem;
-	}
-
-	&__maps {
-		height: 20rem;
-
-		&::after {
-			content: "";
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 1rem;
-			height: 1rem;
-			border: 2px solid red;
-			border-radius: 50%;
-		}
-	}
-
-	&__nested {
-		margin-left: 1.5rem;
 	}
 
 	&__orders {

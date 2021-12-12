@@ -21,7 +21,6 @@ export default defineComponent({
 	},
 	setup(props, ctx) {
 		let isActive = ref(false)
-
 		let sound = new Audio(
 			new URL("../assets/multimedia/sound.mp3", import.meta.url).href
 		)
