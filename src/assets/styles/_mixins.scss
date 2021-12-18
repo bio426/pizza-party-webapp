@@ -1,3 +1,5 @@
+@import "./variables";
+
 @mixin page {
   position: relative;
   width: 100%;
@@ -56,6 +58,22 @@
 		&:active{
 			background: lighten($color: #000000, $amount: 10%);
 		}
+	}
+
+	&__alert{
+		display: flex;
+		gap: .5rem;
+		padding: .5rem;
+		background: $green;
+		color: #fff;
+		border-radius: .5rem;
+		font-size: .9rem;
+	}
+
+	&__alertIco{
+		display: block;
+		width: 1rem;
+		height: auto;
 	}
 
 	@media (min-width: 768px) {

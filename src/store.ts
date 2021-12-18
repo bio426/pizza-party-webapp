@@ -57,6 +57,9 @@ export default createStore<State>({
 		removeFromCart(state, payload) {
 			state.cart.splice(payload.index, 1)
 		},
+		clearCart(state,payload){
+				state.cart = []
+		},
 		changeItemQuantity(state, payload) {
 			if (payload.operation == "+") {
 				state.cart[payload.index].quantity++

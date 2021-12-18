@@ -7,11 +7,24 @@
 					<img class="Confirmation__ico" src="../assets/icons/cart.svg" />
 				</button>
 			</div>
-			<p class="Confirmation__info">
-				Tu pedido sera entregado en {{ deliveryTime }} min
-			</p>
-			<p>Tu pedido sera entregado en {{ address?.name }}</p>
-			<p>Costo del pedido {{ confirmationPrice.toFixed(2) }}</p>
+			<div class="Confirmation__row">
+				<span class="Confirmation__info">Tiempo aproximado de entrega: </span>
+				<span class="Confirmation__info Confirmation__info--right"
+					>{{ deliveryTime }} min</span
+				>
+			</div>
+			<div class="Confirmation__row">
+				<span class="Confirmation__info">Direccion de entrega: </span>
+				<span class="Confirmation__info Confirmation__info--right"
+					>{{ address?.name }} min</span
+				>
+			</div>
+			<div class="Confirmation__row">
+				<span class="Confirmation__info">Costo del pedido: </span>
+				<span class="Confirmation__info Confirmation__info--right"
+					>{{ confirmationPrice.toFixed(2) }} min</span
+				>
+			</div>
 			<div class="Confirmation__buttons">
 				<button class="Confirmation__button" @click="confirmOrder">
 					Aceptar
@@ -36,7 +49,9 @@ import {
 } from "firebase/firestore"
 
 import { key } from "../store"
+import useCart from "../hooks/useCart"
 import useConfirmationModal from "../hooks/useConfirmationModal"
+import useNotification from "../hooks/useNotification"
 
 export default defineComponent({
 	name: "ConfirmationModal",
@@ -44,6 +59,8 @@ export default defineComponent({
 		const store = useStore(key)
 		const db = getFirestore()
 		const { closeConfirmationModal, confirmationPrice } = useConfirmationModal()
+		const { notyf } = useNotification()
+		const { toogleCart } = useCart()
 
 		let address = unref(computed(() => store.state.address))
 		let deliveryTime = computed(() => {
@@ -62,10 +79,13 @@ export default defineComponent({
 				clientCords: new GeoPoint(address.cords.lat, address.cords.lng),
 				clientPhone: 999888777,
 				createdAt: Timestamp.now(),
-				items
+				items,
 			}
 			let docRef = await addDoc(collection(db, "orders"), order)
-			if(docRef){
+			if (docRef) {
+				notyf.success("Orden recibida exitosamente")
+				store.commit({ type: "clearCart" })
+				toogleCart()
 				closeConfirmationModal()
 			}
 		}
@@ -86,6 +106,23 @@ export default defineComponent({
 
 .Confirmation {
 	@include modal;
+
+	&__row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin: 1rem 0;
+	}
+
+	&__info {
+		display: block;
+		text-align: right;
+
+		&--right {
+			text-align: left;
+			font-weight: 600;
+		}
+	}
 
 	&__buttons {
 		display: flex;

@@ -12,6 +12,20 @@
 				veritatis obcaecati unde omnis. Ratione maxime similique explicabo
 				quisquam repellendus!
 			</p>
+			<div class="Maps__alert">
+				<img class="Maps__alertIco" src="../assets/icons/info.svg" />
+				<p>
+					Asegurate de incluir el numero en tu dirección, y seleccionar las
+					opciones de la barra de busqueda.
+				</p>
+			</div>
+			<div class="Maps__alert">
+				<img class="Maps__alertIco" src="../assets/icons/info.svg" />
+				<p>
+					Puedes precizar tu direccion moviendo el mapa y situandola dentro de
+					el circulo rojo.
+				</p>
+			</div>
 			<input
 				class="Maps__autocomplete"
 				type="text"
@@ -33,12 +47,14 @@ import { Loader } from "@googlemaps/js-api-loader"
 
 import { key } from "../store"
 import useMapsModal from "../hooks/useMapsModal"
+import useNotification from "../hooks/useNotification"
 
 export default defineComponent({
 	name: "MapsModal",
 	setup(props, ctx) {
 		const store = useStore(key)
 		const { toogleMapsModal } = useMapsModal()
+		const { notyf } = useNotification()
 
 		const loader = new Loader({
 			apiKey: "AIzaSyDm6e078Cvj-HLlRZWBI3B540JexD1CyJk",
@@ -102,7 +118,12 @@ export default defineComponent({
 			})
 
 			let rawAddress = place.formatted_address || "Sin dirección"
-			let prettyAddress = rawAddress.split(",",2).join(",")
+			let prettyAddress = rawAddress.split(",", 2).join(",")
+			let toCompare = rawAddress.split(",", 1)
+			let containNumbers = toCompare[0].match(/\d+/g)
+			if (containNumbers == null) {
+				notyf.error("No se detecto numero en la direccion seleccionada")
+			}
 
 			store.commit({
 				type: "setUserAddress",
@@ -130,6 +151,10 @@ export default defineComponent({
 .Maps {
 	@include modal;
 
+	&__alert{
+		margin-top: .5rem;
+	}
+
 	&__view {
 		height: 20rem;
 		margin: 1rem 0;
@@ -149,7 +174,7 @@ export default defineComponent({
 	}
 
 	&__info {
-		margin-top: 1rem;
+		margin: 1rem 0;
 	}
 
 	&__autocomplete {

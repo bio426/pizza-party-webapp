@@ -47,15 +47,6 @@
 						@click="addToCombo(premium)"
 					/>
 				</div>
-				<!-- <span class="Combo__category">Premiums</span>
-				<div class="Combo__selectables">
-					<ComboSelectable
-						v-for="(premium, i) in premiums"
-						:key="i"
-						:product="premium"
-						@click="addToCombo(premium)"
-					/>
-				</div> -->
 				<span class="Combo__category">Bebidas</span>
 				<div class="Combo__selectables">
 					<ComboSelectable

@@ -66,7 +66,7 @@
 						</button>
 						<button
 							class="Cart__buttonContinue"
-							@click="openConfirmationModal(finalPrice)"
+							@click="finishOrder(finalPrice)"
 							v-else
 						>
 							<span class="Cart__quantity">{{ cart.length }}</span>
@@ -91,6 +91,7 @@ import { key } from "../store"
 import useCart from "../hooks/useCart"
 import useMapsModal from "../hooks/useMapsModal"
 import useConfirmationModal from "../hooks/useConfirmationModal"
+import useNotification from "../hooks/useNotification"
 
 import CartItem from "./CartItem.vue"
 
@@ -104,6 +105,7 @@ export default defineComponent({
 		const { toogleCart } = useCart()
 		const { toogleMapsModal } = useMapsModal()
 		const { openConfirmationModal } = useConfirmationModal()
+		const {notyf} = useNotification()
 
 		let showMain = ref(false)
 
@@ -118,6 +120,14 @@ export default defineComponent({
 		})
 		let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
 
+		function finishOrder(price:number){
+			if(store.state.cart.length < 1) {
+				notyf.error("No hay productos en el carrito")
+				return
+			}
+			openConfirmationModal(price)
+		}
+
 		return {
 			showMain,
 			toogleCart,
@@ -127,7 +137,7 @@ export default defineComponent({
 			cartPrice,
 			delivery,
 			finalPrice,
-			openConfirmationModal,
+			finishOrder,
 		}
 	},
 })

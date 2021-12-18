@@ -2,12 +2,12 @@
 	<button class="Slot">
 		<img
 			class="Slot__image"
-			src="../assets/images/logoFull.webp"
+			src="../assets/images/americana.webp"
 			:class="[!content.selected ? 'Slot__image--noSelected' : '']"
 		/>
 		<span class="Slot__content"
-			>Slot {{ type }}
-			{{ content.selected ? content.name : "no selected" }}</span
+			>{{ formatedType }}
+			{{ content.selected ? content.name : "por seleccionar" }}</span
 		>
 		<button class="Slot__button">
 			<img
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue"
+import { defineComponent, PropType, computed } from "vue"
 
 import { ComboItem } from "../interfaces/combo"
 
@@ -36,18 +36,47 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	setup(props, ctx) {
+		let formatedType = computed(() => {
+			if (props.content.selected) {
+				return ""
+			} else {
+				if (props.type == "drink") {
+					return "Bebida"
+				} else {
+					return "Pizza"
+				}
+			}
+		})
+
+		return {
+			formatedType,
+		}
+	},
 })
 </script>
 
 <style lang="scss">
+@import "../assets/styles/variables";
+
 .Slot {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	background: #fff;
+	border: 1px solid black;
+	outline: none;
+	cursor: pointer;
+	font-size: 1rem;
+	font-weight: 600;
+
+	&:hover {
+		background: lighten($color: red, $amount: 20);
+	}
 
 	&__image {
 		display: block;
-		width: 2rem;
+		width: 3rem;
 		height: auto;
 
 		&--noSelected {
@@ -61,6 +90,7 @@ export default defineComponent({
 		align-items: center;
 		min-width: 1rem;
 		height: auto;
+		margin-right: 1rem;
 		background: none;
 		border: none;
 	}

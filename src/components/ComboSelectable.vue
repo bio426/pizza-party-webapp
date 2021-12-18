@@ -1,6 +1,6 @@
 <template>
 	<button class="Selectable">
-		<img class="Selectable__image" src="../assets/images/logoFull.webp" />
+		<img class="Selectable__image" src="../assets/images/americana.webp" />
 		<span class="Selectable__name">{{ product.name }}</span>
 		<button class="Selectable__button">
 			<img class="Selectable__ico" src="../assets/icons/plus.svg" />
@@ -28,20 +28,28 @@ export default defineComponent({
 
 .Selectable {
 	display: flex;
+	// flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-	background: $green;
+	background: #fff;
+	border: 1px solid black;
+	outline: none;
+	cursor: pointer;
+
+	&:hover{
+		background: lighten($color: $green, $amount: 50%);
+	}
 
 	&__image {
 		display: block;
-		width: 2rem;
+		width: 3rem;
 		height: auto;
+		object-fit: cover;
 	}
 
 	&__name{
-		color: #fff;
+		color: #000;
 		font-size: 1rem;
-		font-weight: 600;
 	}
 
 	&__button {
@@ -50,6 +58,7 @@ export default defineComponent({
 		align-items: center;
 		min-width: 1rem;
 		height: auto;
+		margin-right: 1rem;
 		background: none;
 		border: none;
 	}
