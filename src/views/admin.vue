@@ -12,6 +12,7 @@
 				<AdminItems :items="activeOrder.items" />
 			</div>
 			<div class="admin__orders">
+				<div class="admin__noOrders" v-if="orders.length == 0">Sin ordenes para mostrar...</div>
 				<Order
 					v-for="(order, i) in orders"
 					:key="i"
@@ -147,6 +148,12 @@ export default defineComponent({
 		grid-template-columns: repeat(4, 1fr);
 		gap: 1rem;
 		margin-top: 2rem;
+	}
+
+	&__noOrders {
+		grid-column: 1 / span 4;
+		font-size: 1.5rem;
+		text-align: center;
 	}
 
 	&__topSpacer {

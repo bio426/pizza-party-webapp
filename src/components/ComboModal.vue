@@ -10,11 +10,12 @@
 			<div class="Combo__body">
 				<span class="Combo__name"> {{ comboData.name }}</span>
 				<p class="Combo__description">
-					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-					Exercitationem in odio autem laboriosam animi neque ducimus! Fugiat
-					quasi consectetur odit culpa sed dolor animi vel molestiae, itaque
-					tempora voluptatum error?
+					{{ comboData.description }}
 				</p>
+				<div class="Combo__alert">
+					<img class="Combo__alertIco" src="../assets/icons/info.svg" />
+					<p>Haz click para seleccionar o quitar elementos para tu combo.</p>
+				</div>
 				<hr class="Combo__spacer" />
 				<div class="Combo__slots">
 					<ComboSlot
@@ -65,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue"
+import { defineComponent, ref, onBeforeUnmount } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -118,6 +119,7 @@ export default defineComponent({
 				id: null,
 				name: null,
 				selected: false,
+				image: "",
 			})
 		}
 		for (let i = 0; i < drinkCount; i++) {
@@ -125,6 +127,7 @@ export default defineComponent({
 				id: null,
 				name: null,
 				selected: false,
+				image: "",
 			})
 		}
 
@@ -136,6 +139,7 @@ export default defineComponent({
 							id: product.id,
 							name: product.name,
 							selected: true,
+							image: product.image as string,
 						}
 						break
 					}
@@ -147,6 +151,7 @@ export default defineComponent({
 							id: product.id,
 							name: product.name,
 							selected: true,
+							image: product.image,
 						}
 						break
 					}
@@ -224,6 +229,18 @@ export default defineComponent({
 			closeComboModal()
 			notyf.success(`x1 Combo ${comboData.name} agregado`)
 		}
+
+		document.addEventListener("keydown", closeWithKey)
+
+		function closeWithKey(e: KeyboardEvent) {
+			if (e.key == "Escape") {
+				closeComboModal()
+			}
+		}
+
+		onBeforeUnmount(() => {
+			document.removeEventListener("keydown", closeWithKey)
+		})
 
 		return {
 			closeComboModal,

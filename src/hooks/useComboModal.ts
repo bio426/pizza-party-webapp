@@ -7,6 +7,7 @@ let comboData = reactive<IProduct>({
   id: "",
   name: "",
   code: "",
+	description: "",
   price: 0,
   tag: "",
 })

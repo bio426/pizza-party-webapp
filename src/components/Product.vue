@@ -2,19 +2,15 @@
 	<div class="Product">
 		<img
 			class="Product__image"
-			src="../assets/images/americana.webp"
+			:src="product.image || fallbackImage"
 			:class="[loading ? 'Product__image--loading' : '']"
 		/>
 		<div class="Product__loading" v-if="loading">Cargando producto...</div>
 		<div class="Product__main" v-else>
 			<h4 class="Product__name">{{ product.name }}</h4>
 			<p class="Product__description">
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Debitis vitae
-				tenetur numquam quam assumenda officiis ea, aliquam unde. Cumque
-				delectus voluptatem vel molestias dolorum incidunt nobis repellendus
-				architecto, a magnam.
+				{{ product.description || "Sin descripción" }}
 			</p>
-			<a class="Product__disclaimer">Terminos y condiciones</a>
 			<div class="Product__container">
 				<label class="Product__label" v-if="extraCheese">
 					<input
@@ -45,8 +41,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, PropType } from "vue"
+<script setup lang="ts">
+import { ref, computed, PropType } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -55,72 +51,64 @@ import useNotification from "../hooks/useNotification"
 import { IProduct } from "../interfaces/products"
 import { ICartItem } from "../interfaces/cart"
 
-export default defineComponent({
-	name: "Product",
-	props: {
-		product: {
-			type: Object as PropType<IProduct>,
-			default: () => ({
-				id: "noId",
-				name: "noName",
-				code: "noCode",
-				price: 0,
-				tag: "noTag",
-			}),
-		},
-		extraCheese: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
+const props = defineProps({
+	product: {
+		type: Object as PropType<IProduct>,
+		default: () => ({
+			id: "noId",
+			name: "noName",
+			code: "noCode",
+			price: 0,
+			tag: "noTag",
+		}),
 	},
-	setup(props, ctx) {
-		const store = useStore(key)
-
-		const { openComboModal } = useComboModal()
-		const { notyf } = useNotification()
-
-		let withCheese = ref(false)
-		const cheesePrice = 2
-		let endPrice = computed(() => {
-			if (withCheese.value) {
-				return props.product.price + cheesePrice
-			} else {
-				return props.product.price
-			}
-		})
-
-		function sendToCart() {
-			let item: ICartItem = {
-				id: props.product.id,
-				name: props.product.name,
-				code: props.product.code,
-				price: props.product.price,
-				tag: props.product.tag,
-				quantity: 1,
-			}
-			if (withCheese.value) {
-				item.contains = { cheese: true }
-				item.price = item.price + cheesePrice
-			}
-			store.commit({ type: "addToCart", product: item })
-			let alert = `x1 ${props.product.name} ${
-				withCheese.value ? "extra queso" : ""
-			} agregado`
-			notyf.success(alert)
-		}
-
-		return {
-			openComboModal,
-			withCheese,
-			endPrice,
-			sendToCart,
-		}
+	extraCheese: {
+		type: Boolean,
+		default: false,
+	},
+	loading: {
+		type: Boolean,
+		default: false,
 	},
 })
+
+const store = useStore(key)
+
+const { openComboModal } = useComboModal()
+const { notyf } = useNotification()
+
+let withCheese = ref(false)
+const cheesePrice = 2
+let endPrice = computed(() => {
+	if (withCheese.value) {
+		return props.product.price + cheesePrice
+	} else {
+		return props.product.price
+	}
+})
+
+function sendToCart() {
+	let item: ICartItem = {
+		id: props.product.id,
+		name: props.product.name,
+		code: props.product.code,
+		price: props.product.price,
+		tag: props.product.tag,
+		quantity: 1,
+	}
+	if (withCheese.value) {
+		item.contains = { cheese: true }
+		item.price = item.price + cheesePrice
+	}
+	store.commit({ type: "addToCart", product: item })
+	let alert = `x1 ${props.product.name} ${
+		withCheese.value ? "extra queso" : ""
+	} agregado`
+	notyf.success(alert)
+}
+
+let fallbackImage = new URL("../assets/images/americana.webp", import.meta.url)
+	.href
 </script>
 
 <style lang="scss">
@@ -136,7 +124,7 @@ export default defineComponent({
 	&__image {
 		display: block;
 		width: 100%;
-		height: 12rem;
+		height: auto;
 		object-fit: cover;
 
 		&--loading {
@@ -164,21 +152,16 @@ export default defineComponent({
 	}
 
 	&__description {
+		min-height: 2rem;
 		margin-top: 1rem;
 		font-size: 0.9rem;
-	}
-
-	&__disclaimer {
-		display: block;
-		margin: 0.5rem 0;
-		text-decoration: underline;
-		font-weight: 500;
 	}
 
 	&__container {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		margin-top: 1rem;
 	}
 
 	&__label {

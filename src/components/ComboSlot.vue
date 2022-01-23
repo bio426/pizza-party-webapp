@@ -1,9 +1,15 @@
 <template>
 	<button class="Slot">
 		<img
-			class="Slot__image"
+			class="Slot__image Slot__image--noSelected"
 			src="../assets/images/americana.webp"
+			v-if="!content.selected"
+		/>
+		<img
+			class="Slot__image"
+			:src="content.image"
 			:class="[!content.selected ? 'Slot__image--noSelected' : '']"
+			v-else
 		/>
 		<span class="Slot__content"
 			>{{ formatedType }}
@@ -12,7 +18,7 @@
 		<button class="Slot__button">
 			<img
 				class="Slot__ico"
-				src="../assets/icons/close.svg"
+				src="../assets/icons/cross.svg"
 				v-if="content.selected"
 			/>
 		</button>
@@ -70,17 +76,28 @@ export default defineComponent({
 	font-size: 1rem;
 	font-weight: 600;
 
-	&:hover {
-		background: lighten($color: red, $amount: 20);
+	&:active {
+		background: darken($color: #fff, $amount: 10);
 	}
 
 	&__image {
 		display: block;
 		width: 3rem;
 		height: auto;
+		max-height: 2rem;
 
 		&--noSelected {
 			filter: grayscale(100%);
+		}
+	}
+
+	&__content{
+		font-size: .9rem;
+		margin-left: .5rem;
+
+		@media (min-width: 768px) {
+			font-size: 1rem;
+			margin-left: none;
 		}
 	}
 

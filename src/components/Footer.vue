@@ -4,21 +4,40 @@
 			<div class="Footer__social">
 				<span class="Footer__text">Siguenos en:</span>
 				<div class="Footer__links">
-					<a class="Footer__link">
+					<a
+						class="Footer__link"
+						href="https://www.facebook.com/todalapizzaquepuedas"
+						target="_blank"
+					>
 						<img class="Footer__ico" src="../assets/icons/facebook.svg" />
 					</a>
-					<a class="Footer__link">
+					<a
+						class="Footer__link"
+						href="https://www.instagram.com/pizza.party.peru"
+						target="_blank"
+					>
 						<img class="Footer__ico" src="../assets/icons/instagram.svg" />
 					</a>
-					<a class="Footer__link">
+					<a
+						class="Footer__link"
+						href="https://goo.gl/maps/nL7YBBZ12Rb7mVaUA"
+						target="_blank"
+					>
 						<img class="Footer__ico" src="../assets/icons/maps.svg" />
 					</a>
 				</div>
 			</div>
-			<img class="Footer__logo" src="../assets/images/logoFull.webp" />
+			<router-link to="/">
+				<img class="Footer__logo" src="../assets/images/logoFull.webp" />
+			</router-link>
 			<div class="Footer__author">
 				Made by:
-				<a class="Footer__author" href="#">BildLa</a>
+				<a
+					class="Footer__author"
+					href="https://www.linkedin.com/in/bild-lopez-6128a0200/"
+					target="_blank"
+					>BildLa</a
+				>
 			</div>
 		</div>
 		<div class="Footer__spacer"></div>
@@ -65,6 +84,10 @@ export default defineComponent({
 		gap: 1rem;
 	}
 
+	&__link {
+		cursor: pointer;
+	}
+
 	&__author {
 		color: #fff;
 		font-weight: 600;
@@ -98,7 +121,7 @@ export default defineComponent({
 
 		&__logo {
 			margin: 0;
-      margin-right: 4rem;
+			margin-right: 4rem;
 		}
 	}
 

@@ -1,10 +1,14 @@
 <template>
 	<div class="index">
-		<video class="index__video" autoplay loop muted ref="video">
+		<video class="index__video" autoplay loop muted ref="videoElement">
 			<source
 				src="https://res.cloudinary.com/dvv00flyl/video/upload/v1619132299/pizza-opt/banner_vi8bgz.webm"
 				type="video/webm"
 			/>
+			<!-- <source
+				src="https://res.cloudinary.com/pizza-party/video/upload/v1642349763/imagenes%20de%20pizza/opt-video_pufnw6.webm"
+				type="video/webm"
+			/> -->
 		</video>
 		<Navigation :cart="isNavFixed" />
 		<div class="index__container">
@@ -62,8 +66,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue"
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from "vue"
 import { useStore } from "vuex"
 import {
 	getFirestore,
@@ -80,129 +84,88 @@ import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
 import ProductDrink from "../components/ProductDrink.vue"
 
-export default defineComponent({
-	name: "index-view",
-	components: {
-		Navigation,
-		Product,
-		ProductDrink,
+const db = getFirestore()
+const store = useStore(key)
+
+// Toogle position of navigation
+const { isLarge } = useLargeScreen()
+let isNavFixed = ref(false)
+let videoElement = ref()
+let observer = new IntersectionObserver(
+	(entries, observer) => {
+		entries.forEach((entry) => {
+			if (entry.intersectionRatio == 0 && isLarge.value) {
+				isNavFixed.value = true
+			} else {
+				isNavFixed.value = false
+			}
+		})
 	},
-	setup() {
-		const db = getFirestore()
-		const store = useStore(key)
-
-		// Toogle position of navigation
-		const { isLarge } = useLargeScreen()
-		let isNavFixed = ref(false)
-		let video = ref()
-		let observer = new IntersectionObserver(
-			(entries, observer) => {
-				entries.forEach((entry) => {
-					if (entry.intersectionRatio == 0 && isLarge.value) {
-						isNavFixed.value = true
-					} else {
-						isNavFixed.value = false
-					}
-				})
-			},
-			{ threshold: 0 }
-		)
-		onMounted(() => {
-			observer.observe(video.value)
-		})
-		onBeforeUnmount(() => {
-			observer.disconnect()
-		})
-
-		// Get products
-		let productsLoaded = ref(false)
-		let combos = ref<IProduct[]>([])
-		let classics = ref<IProduct[]>([])
-		let premiums = ref<IProduct[]>([])
-		let drinks = ref<IProduct[]>([])
-		let extras = ref<IProduct[]>([])
-		async function getProducts() {
-			let snap = (await getDocs(
-				collection(db, "products")
-			)) as QuerySnapshot<IProduct>
-			snap.forEach((doc) => {
-				let rawProduct = doc.data()
-				let product = {
-					...rawProduct,
-					id: doc.id,
-				}
-				switch (rawProduct.tag) {
-					case "combo":
-						combos.value.push(product)
-						break
-					case "classic":
-						classics.value.push(product)
-						store.commit({ type: "addComboSelectable", product })
-						break
-					case "premium":
-						premiums.value.push(product)
-						store.commit({ type: "addComboSelectable", product })
-						break
-					case "drink":
-						drinks.value.push(product)
-						if (product.code.includes("-s")) {
-							store.commit({ type: "addComboSelectable", product })
-						}
-						break
-					case "extra":
-						extras.value.push(product)
-						break
-				}
-			})
-			productsLoaded.value = true
-		}
-		getProducts()
-
-		let filterChicha = computed(() => {
-			let items: any[] = []
-			drinks.value.forEach((drink) => {
-				if (drink.code.includes("chi")) {
-					items.push(drink)
-				}
-			})
-			return items
-		})
-
-		let filterLimonada = computed(() => {
-			let items: any[] = []
-			drinks.value.forEach((drink) => {
-				if (drink.code.includes("lim")) {
-					items.push(drink)
-				}
-			})
-			return items
-		})
-
-		let filterMaracumango = computed(() => {
-			let items: IProduct[] = []
-			drinks.value.forEach((drink) => {
-				if (drink.code.includes("mar")) {
-					items.push(drink)
-				}
-			})
-			return items
-		})
-
-		return {
-			video,
-			isNavFixed,
-			combos,
-			classics,
-			premiums,
-			drinks,
-			extras,
-			productsLoaded,
-			filterChicha,
-			filterLimonada,
-			filterMaracumango,
-		}
-	},
+	{ threshold: 0 }
+)
+onMounted(() => {
+	observer.observe(videoElement.value)
 })
+onBeforeUnmount(() => {
+	observer.disconnect()
+})
+
+// Get products
+let productsLoaded = ref(false)
+let combos = ref<IProduct[]>([])
+let classics = ref<IProduct[]>([])
+let premiums = ref<IProduct[]>([])
+let filterChicha = ref<IProduct[]>([])
+let filterLimonada = ref<IProduct[]>([])
+let filterMaracumango = ref<IProduct[]>([])
+let extras = ref<IProduct[]>([])
+
+async function getProducts() {
+	let snap = (await getDocs(
+		collection(db, "products")
+	)) as QuerySnapshot<IProduct>
+	snap.forEach((doc) => {
+		let rawProduct = doc.data()
+		let product = {
+			...rawProduct,
+			id: doc.id,
+		}
+		switch (rawProduct.tag) {
+			case "combo":
+				combos.value.push(product)
+				break
+			case "classic":
+				classics.value.push(product)
+				if (store.state.comboSelectablesReady) break
+				store.commit({ type: "addComboSelectable", product })
+				break
+			case "premium":
+				premiums.value.push(product)
+				if (store.state.comboSelectablesReady) break
+				store.commit({ type: "addComboSelectable", product })
+				break
+			case "drink":
+				if (product.code.includes("chi")) {
+					filterChicha.value.push(product)
+				} else if (product.code.includes("lim")) {
+					filterLimonada.value.push(product)
+				} else if (product.code.includes("mar")) {
+					filterMaracumango.value.push(product)
+				}
+				if (store.state.comboSelectablesReady) break
+				if (product.code.includes("-s")) {
+					store.commit({ type: "addComboSelectable", product })
+				}
+				break
+			case "extra":
+				extras.value.push(product)
+				break
+		}
+	})
+	store.commit("closeComboSelectables")
+	productsLoaded.value = true
+}
+getProducts()
 </script>
 
 <style lang="scss">
@@ -248,7 +211,7 @@ export default defineComponent({
 			grid-template-columns: repeat(3, 1fr);
 
 			&--combos {
-				grid-template-columns: repeat(2, 1fr);
+				grid-template-columns: repeat(4, 1fr);
 			}
 		}
 	}

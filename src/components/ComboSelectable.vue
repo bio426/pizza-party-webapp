@@ -1,9 +1,9 @@
 <template>
 	<button class="Selectable">
-		<img class="Selectable__image" src="../assets/images/americana.webp" />
+		<img class="Selectable__image" :src="product.image" />
 		<span class="Selectable__name">{{ product.name }}</span>
 		<button class="Selectable__button">
-			<img class="Selectable__ico" src="../assets/icons/plus.svg" />
+			<img class="Selectable__ico" src="../assets/icons/plus-black.svg" />
 		</button>
 	</button>
 </template>
@@ -36,20 +36,25 @@ export default defineComponent({
 	outline: none;
 	cursor: pointer;
 
-	&:hover{
-		background: lighten($color: $green, $amount: 50%);
+	&:active {
+		background: darken($color: #fff, $amount: 10);
 	}
 
 	&__image {
 		display: block;
 		width: 3rem;
 		height: auto;
+		max-height: 2rem;
 		object-fit: cover;
 	}
 
-	&__name{
+	&__name {
 		color: #000;
-		font-size: 1rem;
+		font-size: .9rem;
+
+		@media (min-width: 768px) {
+			font-size: 1rem;
+		}
 	}
 
 	&__button {
@@ -65,8 +70,12 @@ export default defineComponent({
 
 	&__ico {
 		display: block;
-		width: 1rem;
+		width: .8rem;
 		height: auto;
+
+		@media (min-width: 768px) {
+			width: 1rem;
+		}
 	}
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div class="Items">
-		<div class="Items__title">Productos de la pedido</div>
+		<div class="Items__title">Productos del pedido</div>
 		<div class="Items__noItems" v-if="items.length == 0">
 			<img class="Items__ico" src="../assets/icons/empty.svg" />
 			No hay pedido seleccionado

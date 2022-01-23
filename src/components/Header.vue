@@ -5,9 +5,7 @@
 				<img class="Header__logo" src="../assets/images/logoLetras.webp" />
 			</router-link>
 			<div class="Header__container Header__container--links" v-if="isLarge">
-				<a class="Header__link">Menu</a>
-				<a class="Header__link">Locales</a>
-				<a class="Header__link">Mi cuenta</a>
+				<a class="Header__link" href="/#combosSection">Menu</a>
 				<router-link class="Header__link" to="/admin">Admin</router-link>
 			</div>
 			<div class="Header__container Header__container--right" v-if="isLarge">
@@ -16,8 +14,8 @@
 						class="Header__ico Header__ico--small"
 						src="../assets/icons/phone-solid.svg"
 					/>
-					Llamanos <br />
-					+51 555-5555
+					Llamános <br />
+					973-942-055
 				</a>
 				<button class="Header__button Header__button--cart" @click="toogleCart">
 					<img

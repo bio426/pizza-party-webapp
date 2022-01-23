@@ -166,6 +166,7 @@ export default defineComponent({
 	&__button {
 		background: none;
 		border: none;
+		cursor: pointer;
 
 		&--quantity {
 			padding: 0.2rem;

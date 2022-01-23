@@ -15,22 +15,38 @@
 			</div>
 			<div class="Confirmation__row">
 				<span class="Confirmation__info">Direccion de entrega: </span>
-				<span class="Confirmation__info Confirmation__info--right"
-					>{{ address?.name }} min</span
-				>
+				<span class="Confirmation__info Confirmation__info--right">{{
+					address?.name
+				}}</span>
 			</div>
 			<div class="Confirmation__row">
 				<span class="Confirmation__info">Costo del pedido: </span>
 				<span class="Confirmation__info Confirmation__info--right"
-					>{{ confirmationPrice.toFixed(2) }} min</span
+					>S/ {{ confirmationPrice.toFixed(2) }}</span
 				>
 			</div>
+			<div class="Confirmation__row">
+				<span class="Confirmation__info">Numero de teléfono: </span>
+				<input
+					class="Confirmation__phone"
+					type="text"
+					placeholder="ej. 994 012 627"
+					v-model="phone"
+				/>
+			</div>
 			<div class="Confirmation__buttons">
-				<button class="Confirmation__button" @click="confirmOrder">
-					Aceptar
+				<button
+					class="Confirmation__button"
+					@click="confirmOrder"
+					:disabled="sendingOrder"
+				>
+					{{ sendingOrder ? "Enviando..." : "Confirmar orden" }}
 				</button>
-				<button @click="closeConfirmationModal" class="Confirmation__button">
-					Rechazar
+				<button
+					@click="closeConfirmationModal"
+					class="Confirmation__button Confirmation__button--red"
+				>
+					Cancelar
 				</button>
 			</div>
 		</div>
@@ -38,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, unref } from "vue"
+import { defineComponent, computed, unref, ref } from "vue"
 import { useStore } from "vuex"
 import {
 	getFirestore,
@@ -68,21 +84,31 @@ export default defineComponent({
 			return Math.round(address.travelTime / 60)
 		})
 
+		let sendingOrder = ref(false)
+		let phone = ref("")
+
 		async function confirmOrder() {
-			if (!address) {
-				console.error("No se selecciono direccion")
+			if (!address) return 0
+			let validPhone =
+				/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,5}$/.test(
+					phone.value.trim()
+				)
+			if (!validPhone) {
+				notyf.error("Número de teléfono no valido")
 				return 0
 			}
 			let items = store.state.cart
 			let order = {
 				clientAddress: address.name,
 				clientCords: new GeoPoint(address.cords.lat, address.cords.lng),
-				clientPhone: 999888777,
+				clientPhone: phone.value.trim(),
 				createdAt: Timestamp.now(),
 				items,
 			}
+			sendingOrder.value = true
 			let docRef = await addDoc(collection(db, "orders"), order)
 			if (docRef) {
+				sendingOrder.value = false
 				notyf.success("Orden recibida exitosamente")
 				store.commit({ type: "clearCart" })
 				toogleCart()
@@ -95,7 +121,9 @@ export default defineComponent({
 			deliveryTime,
 			address: computed(() => store.state.address),
 			confirmationPrice,
+			phone,
 			confirmOrder,
+			sendingOrder,
 		}
 	},
 })
@@ -124,9 +152,17 @@ export default defineComponent({
 		}
 	}
 
+	&__phone {
+		padding: 0.2rem;
+	}
+
 	&__buttons {
 		display: flex;
 		gap: 1rem;
+	}
+
+	&__button:disabled {
+		background: gray;
 	}
 
 	&__ico {

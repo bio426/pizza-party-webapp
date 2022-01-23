@@ -1,27 +1,24 @@
 <template>
-	<div class="Product">
-		<img class="Product__image" src="../assets/images/americana.webp" />
-		<div class="Product__main">
-			<h4 class="Product__name">{{ showName }}</h4>
-			<p class="Product__description">
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores nihil
-				repellat, dolorum sequi non vel commodi tenetur modi. Aliquam temporibus
-				eveniet sunt et ducimus commodi magni cum alias! Ullam, inventore.
+	<div class="ProductD">
+		<img class="ProductD__image" :src="products[0].image" />
+		<div class="ProductD__main">
+			<h4 class="ProductD__name">{{ showName }}</h4>
+			<p class="ProductD__description">
+				{{products[0].description}}
 			</p>
-			<a class="Product__disclaimer">Terminos y condiciones</a>
-			<div class="Product__container">
-				<select class="Product__select" v-model="selected">
+			<div class="ProductD__container">
+				<select class="ProductD__select" v-model="selected">
 					<option disabled value="">Selecciona un tamaño</option>
 					<option v-for="(drink, i) in products" :key="i" :value="i">
 						{{ drink.name }}
 					</option>
 				</select>
-				<span class="Product__price">S/ {{ activePrice.toFixed(2) }}</span>
+				<span class="ProductD__price">S/ {{ activePrice.toFixed(2) }}</span>
 			</div>
-			<button class="Product__button" @click="sendToCart">
-				<img class="Product__ico" src="../assets/icons/cart.svg" />
+			<button class="ProductD__button" @click="sendToCart">
+				<img class="ProductD__ico" src="../assets/icons/cart.svg" />
 				Añadir
-				<img class="Product__ico" src="../assets/icons/plus.svg" />
+				<img class="ProductD__ico" src="../assets/icons/plus.svg" />
 			</button>
 		</div>
 	</div>
@@ -89,7 +86,7 @@ export default defineComponent({
 <style lang="scss">
 @import "../assets/styles/variables";
 
-.Product {
+.ProductD {
 	width: 100%;
 	background: #fff;
 	border-radius: 1rem;
@@ -99,7 +96,7 @@ export default defineComponent({
 	&__image {
 		display: block;
 		width: 100%;
-		height: 12rem;
+		height: auto;
 		object-fit: cover;
 
 		&--loading {
@@ -142,6 +139,7 @@ export default defineComponent({
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		margin-top: 1rem;
 	}
 
 	&__select {

@@ -41,15 +41,15 @@
 					<div class="Cart__fixedPrices">
 						<div class="Cart__subPrice">
 							<span>Subtotal</span>
-							<span>S/{{ cartPrice.toFixed(2) }}</span>
+							<span>S/ {{ cartPrice.toFixed(2) }}</span>
 						</div>
 						<div class="Cart__subPrice">
 							<span>Delivery</span>
-							<span>S/{{ delivery.toFixed(2) }}</span>
+							<span>S/ {{ delivery.toFixed(2) }}</span>
 						</div>
 						<div class="Cart__endPrice">
 							<span>Total a pagar</span>
-							<span>S/{{ finalPrice.toFixed(2) }}</span>
+							<span>S/ {{ finalPrice.toFixed(2) }}</span>
 						</div>
 					</div>
 					<div class="Cart__fixedButtons">
@@ -105,7 +105,7 @@ export default defineComponent({
 		const { toogleCart } = useCart()
 		const { toogleMapsModal } = useMapsModal()
 		const { openConfirmationModal } = useConfirmationModal()
-		const {notyf} = useNotification()
+		const { notyf } = useNotification()
 
 		let showMain = ref(false)
 
@@ -120,8 +120,8 @@ export default defineComponent({
 		})
 		let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
 
-		function finishOrder(price:number){
-			if(store.state.cart.length < 1) {
+		function finishOrder(price: number) {
+			if (store.state.cart.length < 1) {
 				notyf.error("No hay productos en el carrito")
 				return
 			}
@@ -160,6 +160,13 @@ export default defineComponent({
 		width: 90%;
 		height: 100%;
 		background: #fff;
+
+		@media (min-width: 768px) {
+			width: 70%;
+		}
+		@media (min-width: 1024px) {
+			width: 40%;
+		}
 	}
 
 	&__head {
@@ -184,11 +191,13 @@ export default defineComponent({
 		background: #fff;
 		border: 1px solid #000;
 		border-radius: 0.5rem;
+		cursor: pointer;
 	}
 
 	&__close {
 		border: none;
 		background: none;
+		cursor: pointer;
 	}
 
 	&__title {
@@ -264,6 +273,7 @@ export default defineComponent({
 		color: #fff;
 		border: none;
 		border-radius: 1rem;
+		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
 	}
@@ -276,6 +286,7 @@ export default defineComponent({
 		color: $red;
 		border: 2px solid $red;
 		border-radius: 1rem;
+		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
 	}
@@ -298,18 +309,6 @@ export default defineComponent({
 		display: block;
 		width: 1.5rem;
 		height: auto;
-	}
-
-	@media (min-width: 768px) {
-		&__main {
-			width: 70%;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		&__main {
-			width: 40%;
-		}
 	}
 }
 

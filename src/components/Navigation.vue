@@ -52,7 +52,7 @@
 				class="Navigation__container Navigation__container--cart"
 				v-if="cart"
 			>
-				<button class="Navigation__cart" @click="toogleCart">
+				<button class="Navigation__cart" ref="cartButton" @click="toogleCart">
 					<img class="Navigation__ico" src="../assets/icons/cart.svg" />
 					S/ {{ cartPrice.toFixed(2) }}
 				</button>
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue"
+import { defineComponent, ref, computed, watch } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -82,10 +82,30 @@ export default defineComponent({
 
 		let activeLink = ref(1)
 
+		let cartButton = ref<HTMLButtonElement>()
+		function onCartAdd() {
+			cartButton.value?.classList.add("animate__animated", "animate__headShake")
+			cartButton.value?.addEventListener("animationend", (e) => {
+				e.stopPropagation()
+				cartButton.value?.classList.remove(
+					"animate__animated",
+					"animate__headShake"
+				)
+			})
+		}
+
+		watch(
+			() => store.getters.cartPrice,
+			(now, prev) => {
+				onCartAdd()
+			}
+		)
+
 		return {
 			toogleCart,
 			cartPrice: computed<number>(() => store.getters.cartPrice),
 			activeLink,
+			cartButton,
 		}
 	},
 })
@@ -102,6 +122,16 @@ export default defineComponent({
 	box-shadow: 0 0.2rem 0.2rem rgba($color: #000000, $alpha: 0.5);
 	z-index: 5;
 
+	@media (min-width: 1024px) {
+		width: 70%;
+		margin: 1rem auto;
+		border-radius: 0.5rem;
+
+		&--fixed {
+			width: 100%;
+		}
+	}
+
 	&__container {
 		display: flex;
 		overflow-x: auto;
@@ -109,6 +139,11 @@ export default defineComponent({
 		&--cart {
 			justify-content: center;
 			align-items: center;
+			overflow-x: visible;
+		}
+
+		@media (min-width: 768px) {
+			justify-content: center;
 		}
 	}
 
@@ -139,6 +174,7 @@ export default defineComponent({
 		border-radius: 0.5rem;
 		font-size: 1rem;
 		font-weight: 600;
+		cursor: pointer;
 	}
 
 	&__ico {
@@ -148,23 +184,49 @@ export default defineComponent({
 	}
 }
 
-@media (min-width: 768px) {
-	.Navigation {
-		&__container {
-			justify-content: center;
-		}
+.animate__animated {
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+@keyframes headShake {
+	0% {
+		-webkit-transform: translateX(0);
+		transform: translateX(0);
+	}
+
+	6.5% {
+		-webkit-transform: translateX(-6px) rotateY(-9deg);
+		transform: translateX(-6px) rotateY(-9deg);
+	}
+
+	18.5% {
+		-webkit-transform: translateX(5px) rotateY(7deg);
+		transform: translateX(5px) rotateY(7deg);
+	}
+
+	31.5% {
+		-webkit-transform: translateX(-3px) rotateY(-5deg);
+		transform: translateX(-3px) rotateY(-5deg);
+	}
+
+	43.5% {
+		-webkit-transform: translateX(2px) rotateY(3deg);
+		transform: translateX(2px) rotateY(3deg);
+	}
+
+	50% {
+		-webkit-transform: translateX(0);
+		transform: translateX(0);
 	}
 }
-
-@media (min-width: 1024px) {
-	.Navigation {
-		width: 70%;
-		margin: 1rem auto;
-		border-radius: 0.5rem;
-
-		&--fixed {
-			width: 100%;
-		}
-	}
+.animate__headShake {
+	-webkit-animation-timing-function: ease-in-out;
+	animation-timing-function: ease-in-out;
+	-webkit-animation-name: headShake;
+	animation-name: headShake;
 }
 </style>

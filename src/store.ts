@@ -15,7 +15,8 @@ interface State {
 		name: string
 		travelTime: number
 	}
-	comboSelectables: IProduct[]
+	comboSelectables: IProduct[],
+	comboSelectablesReady: boolean
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -25,6 +26,7 @@ export default createStore<State>({
 		cart: [],
 		address: null,
 		comboSelectables: [],
+		comboSelectablesReady: false
 	},
 	getters: {
 		cartPrice(state) {
@@ -78,6 +80,9 @@ export default createStore<State>({
 		addComboSelectable(state, payload) {
 			state.comboSelectables.push(payload.product)
 		},
+		closeComboSelectables(state,payload){
+			state.comboSelectablesReady = true
+		}
 	},
 	actions: {},
 	plugins: [],
