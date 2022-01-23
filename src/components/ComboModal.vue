@@ -167,6 +167,7 @@ export default defineComponent({
 					id: null,
 					name: null,
 					selected: false,
+					image: "",
 				}
 			} else if (group == "pizza") {
 				if (!pizzaSlots.value[index].selected) return 0
@@ -174,6 +175,7 @@ export default defineComponent({
 					id: null,
 					name: null,
 					selected: false,
+					image: "",
 				}
 			}
 		}

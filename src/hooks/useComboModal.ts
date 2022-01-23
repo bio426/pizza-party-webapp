@@ -10,6 +10,7 @@ let comboData = reactive<IProduct>({
 	description: "",
   price: 0,
   tag: "",
+	image: ""
 })
 
 export default function () {
