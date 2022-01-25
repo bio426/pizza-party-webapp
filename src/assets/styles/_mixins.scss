@@ -61,6 +61,10 @@
 
 		&--red{
 			background: $red;
+
+			&:active{
+				background: darken($color: $red, $amount: 10%);
+			}
 		}
 	}
 

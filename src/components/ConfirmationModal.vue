@@ -38,9 +38,9 @@
 				<button
 					class="Confirmation__button"
 					@click="confirmOrder"
-					:disabled="sendingOrder"
+					:disabled="sendingOrder || kitchenCharge < 0"
 				>
-					{{ sendingOrder ? "Enviando..." : "Confirmar orden" }}
+					{{ sendingOrder ? "Cargando..." : "Confirmar orden" }}
 				</button>
 				<button
 					@click="closeConfirmationModal"
@@ -62,6 +62,8 @@ import {
 	addDoc,
 	Timestamp,
 	GeoPoint,
+	doc,
+	getDoc,
 } from "firebase/firestore"
 
 import { key } from "../store"
@@ -79,9 +81,31 @@ export default defineComponent({
 		const { toogleCart } = useCart()
 
 		let address = unref(computed(() => store.state.address))
+
+		// Calcular tiempo de entrega
+		let kitchenCharge = ref(-1)
+		async function getKitchenCharge() {
+			let snap = await getDoc(doc(db, "admin", "status"))
+			let rawData = { ...snap.data() } as { kitchenCharge: number }
+			kitchenCharge.value = rawData.kitchenCharge
+		}
+		getKitchenCharge()
+
 		let deliveryTime = computed(() => {
 			if (!address) return 0
-			return Math.round(address.travelTime / 60)
+
+			let cookingTime
+			if (kitchenCharge.value == 1) {
+				cookingTime = 10
+			} else if (kitchenCharge.value == 2) {
+				cookingTime = 15
+			} else if (kitchenCharge.value == 3) {
+				cookingTime = 20
+			} else {
+				cookingTime = 0
+			}
+
+			return Math.round(address.travelTime / 60) + cookingTime
 		})
 
 		let sendingOrder = ref(false)
@@ -124,6 +148,7 @@ export default defineComponent({
 			phone,
 			confirmOrder,
 			sendingOrder,
+			kitchenCharge,
 		}
 	},
 })

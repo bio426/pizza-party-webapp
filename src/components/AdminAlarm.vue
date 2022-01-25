@@ -52,7 +52,7 @@ export default defineComponent({
 .Alarm {
 	display: block;
 	width: 100%;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 	padding: 1rem;
 	background: #fff;
 	color: $red;
@@ -64,6 +64,7 @@ export default defineComponent({
 
 	&--animated {
 		animation: changeColor 2s infinite;
+		box-shadow: 0 0 10px rgba($color: $red, $alpha: 0.3);
 	}
 }
 

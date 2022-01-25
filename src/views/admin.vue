@@ -1,18 +1,35 @@
 <template>
 	<div class="admin">
 		<div class="admin__topSpacer"></div>
-		<div class="admin__container">
+		<div class="admin__auth" v-if="!authenticated">
+			<h4>introduce tus credenciales</h4>
+			<label>
+				Usuario
+				<input class="admin__input" type="text" v-model="username" />
+			</label>
+			<label>
+				Contraseña
+				<input class="admin__input" type="text" v-model="password" />
+			</label>
+			<button class="admin__btn" @click="login">Ingresar</button>
+			<p>{{ loginError }}</p>
+		</div>
+		<div class="admin__container" v-else>
 			<AdminAlarm
 				:alerting="incomingOrders"
 				@attended="incomingOrders = false"
 			/>
+			<AdminStatus />
 			<div class="admin__details">
 				<AdminMaps :cords="mapCords" />
 				<AdminActive :order="activeOrder" />
 				<AdminItems :items="activeOrder.items" />
 			</div>
+			<h2 class="admin__subtitle">Ordenes Pendientes</h2>
 			<div class="admin__orders">
-				<div class="admin__noOrders" v-if="orders.length == 0">Sin ordenes para mostrar...</div>
+				<div class="admin__noOrders" v-if="orders.length == 0">
+					Sin ordenes para mostrar...
+				</div>
 				<Order
 					v-for="(order, i) in orders"
 					:key="i"
@@ -32,6 +49,7 @@ import {
 	collection,
 	query,
 	where,
+	getDocs,
 	onSnapshot,
 	orderBy,
 	Timestamp,
@@ -42,6 +60,7 @@ import {
 import { IOrderResponse } from "../interfaces/admin"
 
 import AdminAlarm from "../components/AdminAlarm.vue"
+import AdminStatus from "../components/AdminStatus.vue"
 import AdminMaps from "../components/AdminMaps.vue"
 import AdminActive from "../components/AdminActive.vue"
 import AdminItems from "../components/AdminItems.vue"
@@ -51,6 +70,7 @@ export default defineComponent({
 	name: "admin-view",
 	components: {
 		AdminAlarm,
+		AdminStatus,
 		AdminMaps,
 		AdminActive,
 		AdminItems,
@@ -58,6 +78,30 @@ export default defineComponent({
 	},
 	setup() {
 		const db = getFirestore()
+
+		// login
+		let authenticated = ref(false)
+		let username = ref("")
+		let password = ref("")
+		let loginError = ref("")
+		async function login() {
+			let usersRef = collection(db, "admin")
+			let q = query(
+				usersRef,
+				where("username", "==", username.value),
+				where("password", "==", password.value)
+			)
+			let snap = await getDocs(q)
+			if (snap.empty) {
+				// usuario inexistente
+				loginError.value = "Usuario inexistente"
+			} else {
+				// logear
+				authenticated.value = true
+			}
+			username.value = ""
+			password.value = ""
+		}
 
 		let mapCords = reactive<google.maps.LatLngLiteral>({
 			lat: -12.067664200000008,
@@ -117,6 +161,11 @@ export default defineComponent({
 
 		return {
 			mapCords,
+			authenticated,
+			username,
+			password,
+			loginError,
+			login,
 			orders,
 			selectOrder,
 			activeOrder,
@@ -131,6 +180,24 @@ export default defineComponent({
 
 .admin {
 	@include page;
+
+	&__auth {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		width: 90%;
+		margin: 0 auto;
+	}
+
+	&__input {
+		font-size: 1.2rem;
+	}
+
+	&__btn {
+		padding: 0.2rem;
+		font-size: 1.2rem;
+	}
 
 	&__container {
 		width: 90%;
@@ -147,7 +214,13 @@ export default defineComponent({
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
 		gap: 1rem;
-		margin-top: 2rem;
+		margin-top: 1rem;
+	}
+
+	&__subtitle {
+		display: block;
+		margin-top: 1rem;
+		font-size: 1.5rem;
 	}
 
 	&__noOrders {
