@@ -5,10 +5,6 @@
 				src="https://res.cloudinary.com/dvv00flyl/video/upload/v1619132299/pizza-opt/banner_vi8bgz.webm"
 				type="video/webm"
 			/>
-			<!-- <source
-				src="https://res.cloudinary.com/pizza-party/video/upload/v1642349763/imagenes%20de%20pizza/opt-video_pufnw6.webm"
-				type="video/webm"
-			/> -->
 		</video>
 		<Navigation :cart="isNavFixed" />
 		<div class="index__container">
@@ -21,9 +17,10 @@
 			</div>
 			<div class="index__products index__products--combos" v-else>
 				<Product
-					v-for="(combo, index) in combos"
-					:key="index"
+					v-for="combo in combos"
+					:key="combo.id"
 					:product="combo"
+					@build-combo="chooseCombo(combo)"
 				/>
 			</div>
 			<div v-if="productsLoaded">
@@ -62,30 +59,28 @@
 			</div>
 		</div>
 		<div class="index__spacer"></div>
-		<router-view />
+		<ComboSelector
+			v-if="showComboSelector"
+			:combo="baseCombo"
+			:options="comboOptions"
+			@close-selector="showComboSelector = false"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue"
-import { useStore } from "vuex"
-import {
-	getFirestore,
-	collection,
-	getDocs,
-	QuerySnapshot,
-} from "firebase/firestore"
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue"
 
-import { key } from "../store"
 import useLargeScreen from "../hooks/useLargeScreen"
 import { IProduct } from "../interfaces/products"
+
+import ProductsService from "../services/ProductsService"
 
 import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
 import ProductDrink from "../components/ProductDrink.vue"
 
-const db = getFirestore()
-const store = useStore(key)
+import ComboSelector from "../components/Modal/ComboSelector.vue"
 
 // Toogle position of navigation
 const { isLarge } = useLargeScreen()
@@ -103,12 +98,8 @@ let observer = new IntersectionObserver(
 	},
 	{ threshold: 0 }
 )
-onMounted(() => {
-	observer.observe(videoElement.value)
-})
-onBeforeUnmount(() => {
-	observer.disconnect()
-})
+onMounted(() => observer.observe(videoElement.value))
+onBeforeUnmount(() => observer.disconnect())
 
 // Get products
 let productsLoaded = ref(false)
@@ -119,53 +110,53 @@ let filterChicha = ref<IProduct[]>([])
 let filterLimonada = ref<IProduct[]>([])
 let filterMaracumango = ref<IProduct[]>([])
 let extras = ref<IProduct[]>([])
+let comboOptions = ref<IProduct[]>([])
 
 async function getProducts() {
-	let snap = (await getDocs(
-		collection(db, "products")
-	)) as QuerySnapshot<IProduct>
-	snap.forEach((doc) => {
-		let rawProduct = doc.data()
-		let product = {
-			...rawProduct,
-			id: doc.id,
-		}
-		switch (rawProduct.tag) {
-			case "combo":
-				combos.value.push(product)
-				break
-			case "classic":
-				classics.value.push(product)
-				if (store.state.comboSelectablesReady) break
-				store.commit({ type: "addComboSelectable", product })
-				break
-			case "premium":
-				premiums.value.push(product)
-				if (store.state.comboSelectablesReady) break
-				store.commit({ type: "addComboSelectable", product })
-				break
-			case "drink":
-				if (product.code.includes("chi")) {
-					filterChicha.value.push(product)
-				} else if (product.code.includes("lim")) {
-					filterLimonada.value.push(product)
-				} else if (product.code.includes("mar")) {
-					filterMaracumango.value.push(product)
-				}
-				if (store.state.comboSelectablesReady) break
-				if (product.code.includes("-s")) {
-					store.commit({ type: "addComboSelectable", product })
-				}
-				break
-			case "extra":
-				extras.value.push(product)
-				break
-		}
-	})
-	store.commit("closeComboSelectables")
+	let products = await ProductsService.getProducts()
+	combos.value = products.filter((product) => product.tag == "combo")
+	classics.value = products.filter((product) => product.tag == "classic")
+	premiums.value = products.filter((product) => product.tag == "premium")
+	extras.value = products.filter((product) => product.tag == "extra")
+	filterChicha.value = products.filter((product) =>
+		product.code.includes("chi")
+	)
+	filterLimonada.value = products.filter((product) =>
+		product.code.includes("lim")
+	)
+	filterMaracumango.value = products.filter((product) =>
+		product.code.includes("mar")
+	)
+	let smallDrinks = products.filter((product) => product.code.includes("-s"))
+	comboOptions.value = [...classics.value, ...premiums.value, ...smallDrinks]
 	productsLoaded.value = true
 }
 getProducts()
+
+// Handle comboSelector
+let showComboSelector = ref(false)
+let baseCombo: IProduct = reactive({
+	code: "",
+	description: "",
+	id: "",
+	image: "",
+	name: "",
+	tag: "",
+	price: 0,
+	includes: {},
+})
+
+function chooseCombo(combo: IProduct) {
+	baseCombo.code = combo.code
+	baseCombo.description = combo.description
+	baseCombo.id = combo.id
+	baseCombo.image = combo.image
+	baseCombo.name = combo.name
+	baseCombo.tag = combo.tag
+	baseCombo.price = combo.price
+	baseCombo.includes = combo.includes
+	showComboSelector.value = true
+}
 </script>
 
 <style lang="scss">

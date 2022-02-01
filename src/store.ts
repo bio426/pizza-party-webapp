@@ -1,8 +1,7 @@
-import { createStore, Store } from "vuex"
+import { createStore, Store, useStore as baseUseStore } from "vuex"
 import { InjectionKey } from "vue"
 
 import { ICartItem } from "./interfaces/cart"
-import { IProduct } from "./interfaces/products"
 
 interface State {
 	cart: ICartItem[]
@@ -15,18 +14,12 @@ interface State {
 		name: string
 		travelTime: number
 	}
-	comboSelectables: IProduct[],
-	comboSelectablesReady: boolean
 }
-
-export const key: InjectionKey<Store<State>> = Symbol()
 
 export default createStore<State>({
 	state: {
 		cart: [],
 		address: null,
-		comboSelectables: [],
-		comboSelectablesReady: false
 	},
 	getters: {
 		cartPrice(state) {
@@ -59,8 +52,8 @@ export default createStore<State>({
 		removeFromCart(state, payload) {
 			state.cart.splice(payload.index, 1)
 		},
-		clearCart(state,payload){
-				state.cart = []
+		clearCart(state, payload) {
+			state.cart = []
 		},
 		changeItemQuantity(state, payload) {
 			if (payload.operation == "+") {
@@ -77,13 +70,13 @@ export default createStore<State>({
 				travelTime: payload.travelTime,
 			}
 		},
-		addComboSelectable(state, payload) {
-			state.comboSelectables.push(payload.product)
-		},
-		closeComboSelectables(state,payload){
-			state.comboSelectablesReady = true
-		}
 	},
 	actions: {},
 	plugins: [],
 })
+
+export const key: InjectionKey<Store<State>> = Symbol()
+
+export function useStore() {
+	return baseUseStore(key)
+}

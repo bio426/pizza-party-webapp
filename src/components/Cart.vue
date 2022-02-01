@@ -55,7 +55,7 @@
 					<div class="Cart__fixedButtons">
 						<button
 							class="Cart__buttonContinue"
-							@click="toogleMapsModal"
+							@click="showAddressSelector = true"
 							v-if="!userAddress"
 						>
 							<span class="Cart__quantity">{{ cart.length }}</span>
@@ -80,11 +80,15 @@
 				</div>
 			</div>
 		</transition>
+		<AddressSelector
+			v-if="showAddressSelector"
+			@close-selector="showAddressSelector = false"
+		/>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue"
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
@@ -94,53 +98,37 @@ import useConfirmationModal from "../hooks/useConfirmationModal"
 import useNotification from "../hooks/useNotification"
 
 import CartItem from "./CartItem.vue"
+import AddressSelector from "./Modal/AddressSelector.vue"
 
-export default defineComponent({
-	name: "Cart",
-	components: {
-		CartItem,
-	},
-	setup() {
-		const store = useStore(key)
-		const { toogleCart } = useCart()
-		const { toogleMapsModal } = useMapsModal()
-		const { openConfirmationModal } = useConfirmationModal()
-		const { notyf } = useNotification()
+const store = useStore(key)
+const { toogleCart } = useCart()
+const { toogleMapsModal } = useMapsModal()
+const { openConfirmationModal } = useConfirmationModal()
+const { notyf } = useNotification()
+const cart = computed(() => store.state.cart)
 
-		let showMain = ref(false)
+let showMain = ref(false)
 
-		onMounted(() => (showMain.value = true))
+onMounted(() => (showMain.value = true))
 
-		let userAddress = computed(() => store.state.address)
+let userAddress = computed(() => store.state.address)
 
-		let cartPrice = computed<number>(() => store.getters.cartPrice)
-		let delivery = computed(() => {
-			if (!userAddress.value) return 0
-			return Math.round(userAddress.value.distance / 1000) * 1.5
-		})
-		let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
-
-		function finishOrder(price: number) {
-			if (store.state.cart.length < 1) {
-				notyf.error("No hay productos en el carrito")
-				return
-			}
-			openConfirmationModal(price)
-		}
-
-		return {
-			showMain,
-			toogleCart,
-			toogleMapsModal,
-			cart: computed(() => store.state.cart),
-			userAddress,
-			cartPrice,
-			delivery,
-			finalPrice,
-			finishOrder,
-		}
-	},
+let cartPrice = computed<number>(() => store.getters.cartPrice)
+let delivery = computed(() => {
+	if (!userAddress.value) return 0
+	return Math.round(userAddress.value.distance / 1000) * 1.5
 })
+let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
+
+function finishOrder(price: number) {
+	if (store.state.cart.length < 1) {
+		notyf.error("No hay productos en el carrito")
+		return
+	}
+	openConfirmationModal(price)
+}
+
+let showAddressSelector = ref(false)
 </script>
 
 <style lang="scss">

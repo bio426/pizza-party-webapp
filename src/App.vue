@@ -5,18 +5,17 @@
 	<Sidebar v-if="activeSidebar" @hideSidebar="activeSidebar = false" />
 	<FloatCart v-if="!isLarge" />
 	<Cart v-if="showCart" />
-	<ComboModal v-if="showComboModal" />
 	<MapsModal v-if="showMapsModal" />
 	<ConfirmationModal v-if="showConfirmationModal" />
+	<div id="modals"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from "vue"
+<script setup lang="ts">
+import { ref, watch } from "vue"
 import { useRoute } from "vue-router"
 
 import useLargeScreen from "./hooks/useLargeScreen"
 import useCart from "./hooks/useCart"
-import useComboModal from "./hooks/useComboModal"
 import useMapsModal from "./hooks/useMapsModal"
 import useConfirmationModal from "./hooks/useConfirmationModal"
 
@@ -25,50 +24,24 @@ import Footer from "./components/Footer.vue"
 import Sidebar from "./components/Sidebar.vue"
 import FloatCart from "./components/FloatCart.vue"
 import Cart from "./components/Cart.vue"
-import ComboModal from "./components/ComboModal.vue"
 import MapsModal from "./components/MapsModal.vue"
 import ConfirmationModal from "./components/ConfirmationModal.vue"
 
-export default defineComponent({
-	name: "app",
-	components: {
-		Header,
-		Footer,
-		Sidebar,
-		FloatCart,
-		Cart,
-		ComboModal,
-		MapsModal,
-		ConfirmationModal,
-	},
-	setup() {
-		const route = useRoute()
+const route = useRoute()
 
-		let activeSidebar = ref(false)
-		const { showComboModal } = useComboModal()
-		const { showCart } = useCart()
-		const { showMapsModal } = useMapsModal()
-		const { showConfirmationModal } = useConfirmationModal()
+let activeSidebar = ref(false)
+const { showCart } = useCart()
+const { showMapsModal } = useMapsModal()
+const { showConfirmationModal } = useConfirmationModal()
 
-		watch(
-			() => route.path,
-			(to, from) => {
-				activeSidebar.value = false
-			}
-		)
+watch(
+	() => route.path,
+	(to, from) => {
+		activeSidebar.value = false
+	}
+)
 
-		const { isLarge } = useLargeScreen()
-
-		return {
-			activeSidebar,
-			showComboModal,
-			showCart,
-			showMapsModal,
-			isLarge,
-			showConfirmationModal,
-		}
-	},
-})
+const { isLarge } = useLargeScreen()
 </script>
 
 <style lang="scss">

@@ -1,15 +1,15 @@
 @import "./variables";
 
 @mixin page {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  background-image: url("../assets/images/fondoPizza.webp");
-  background-repeat: repeat;
+	position: relative;
+	width: 100%;
+	min-height: 100vh;
+	background-image: url("../assets/images/fondoPizza.webp");
+	background-repeat: repeat;
 }
 
 @mixin modal {
-  position: fixed;
+	position: fixed;
 	top: 0;
 	display: flex;
 	justify-content: center;
@@ -19,13 +19,13 @@
 	background: rgba($color: #000000, $alpha: 0.5);
 	z-index: 10;
 
-  &__main {
+	&__main {
 		width: 90%;
 		padding: 1rem;
 		background: #fff;
 	}
 
-  &__head {
+	&__head {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -33,17 +33,17 @@
 		border-bottom: 1px solid #000;
 	}
 
-  &__title {
+	&__title {
 		font-size: 1.5rem;
 	}
 
-  &__close {
+	&__close {
 		background: none;
 		border: none;
 		cursor: pointer;
 	}
 
-  &__button {
+	&__button {
 		display: block;
 		width: 100%;
 		padding: 0.5rem;
@@ -55,43 +55,43 @@
 		font-size: 1rem;
 		font-weight: 600;
 
-		&:active{
+		&:active {
 			background: darken($color: $green, $amount: 10%);
 		}
 
-		&--red{
+		&--red {
 			background: $red;
 
-			&:active{
+			&:active {
 				background: darken($color: $red, $amount: 10%);
 			}
 		}
 	}
 
-	&__alert{
+	&__alert {
 		display: flex;
-		gap: .5rem;
-		padding: .5rem;
+		gap: 0.5rem;
+		padding: 0.5rem;
 		background: $green;
 		color: #fff;
-		border-radius: .5rem;
-		font-size: .9rem;
+		border-radius: 0.5rem;
+		font-size: 0.9rem;
 	}
 
-	&__alertIco{
+	&__alertIco {
 		display: block;
 		width: 1rem;
 		height: auto;
 	}
 
 	@media (min-width: 768px) {
-		&__main{
+		&__main {
 			width: 70%;
 		}
 	}
 
 	@media (min-width: 1024px) {
-		&__main{
+		&__main {
 			width: 50%;
 		}
 	}

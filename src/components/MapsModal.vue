@@ -57,7 +57,7 @@ export default defineComponent({
 		const { notyf } = useNotification()
 
 		const loader = new Loader({
-			apiKey: "AIzaSyDm6e078Cvj-HLlRZWBI3B540JexD1CyJk",
+			apiKey: "AIzaSyC49SJiI66iSMc6RMho5xAZ1bGBUvysAs0",
 			version: "weekly",
 			libraries: ["places"],
 		})
@@ -107,6 +107,7 @@ export default defineComponent({
 		}
 
 		async function getMapCenter() {
+			/*
 			let center = map.getCenter()
 			let place = autocomplete.getPlace()
 			if (!center) return 0
@@ -124,13 +125,18 @@ export default defineComponent({
 			if (containNumbers == null) {
 				notyf.error("No se detecto numero en la direccion seleccionada")
 			}
+			*/
 
 			store.commit({
 				type: "setUserAddress",
-				cords: { lat: center.lat(), lng: center.lng() },
-				name: prettyAddress,
-				distance: result.routes[0].legs[0].distance?.value || 0,
-				travelTime: result.routes[0].legs[0].duration?.value || 0,
+				cords: { lat: -12.067664200000008, lng: -77.0716884 },
+				name: "Address Name",
+				distance: 2040,
+				travelTime: 600
+				// cords: { lat: center.lat(), lng: center.lng() },
+				// name: prettyAddress,
+				// distance: result.routes[0].legs[0].distance?.value || 0,
+				// travelTime: result.routes[0].legs[0].duration?.value || 0,
 			})
 			toogleMapsModal()
 		}

@@ -32,7 +32,7 @@
 				Añadir
 				<img class="Product__ico" src="../assets/icons/plus.svg" />
 			</button>
-			<button class="Product__button" @click="openComboModal(product)" v-else>
+			<button class="Product__button" @click="$emit('buildCombo')" v-else>
 				<img class="Product__ico" src="../assets/icons/cart.svg" />
 				Escoger pizzas
 				<img class="Product__ico" src="../assets/icons/plus.svg" />
@@ -46,7 +46,6 @@ import { ref, computed, PropType } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
-import useComboModal from "../hooks/useComboModal"
 import useNotification from "../hooks/useNotification"
 import { IProduct } from "../interfaces/products"
 import { ICartItem } from "../interfaces/cart"
@@ -72,9 +71,10 @@ const props = defineProps({
 	},
 })
 
+defineEmits(["buildCombo"])
+
 const store = useStore(key)
 
-const { openComboModal } = useComboModal()
 const { notyf } = useNotification()
 
 let withCheese = ref(false)

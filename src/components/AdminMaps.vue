@@ -18,7 +18,7 @@ export default defineComponent({
 	},
 	setup(props, ctx) {
 		const loader = new Loader({
-			apiKey: "AIzaSyDm6e078Cvj-HLlRZWBI3B540JexD1CyJk",
+			apiKey: "AIzaSyDxgoTxRbW1eeqSg4_j8uuclTyHVZl0xRs",
 			version: "weekly",
 			libraries: ["places"],
 		})
