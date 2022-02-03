@@ -45,8 +45,8 @@ import { defineComponent, computed } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
-import useLargeScreen from "../hooks/useLargeScreen"
-import useCart from "../hooks/useCart"
+import useLargeScreen from "../composables/useLargeScreen"
+import useCart from "../composables/useCart"
 
 export default defineComponent({
 	name: "Header",

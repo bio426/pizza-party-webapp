@@ -30,8 +30,8 @@ const db = getFirestore()
 
 // getting kitchenCharge
 const unsubscribe = onSnapshot(doc(db, "admin", "status"), (doc) => {
-	let rawData = { ...doc.data() } as { kitchenCharge: number }
-	realCharge.value = rawData.kitchenCharge
+	let rawData = { ...doc.data() } as { kitchenLoad: number }
+	realCharge.value = rawData.kitchenLoad
 })
 onBeforeUnmount(() => unsubscribe())
 
@@ -39,7 +39,7 @@ onBeforeUnmount(() => unsubscribe())
 const updateKitchenCharge = () => {
 	realCharge.value = -1
 	updateDoc(doc(db, "admin", "status"), {
-		kitchenCharge: localCharge.value,
+		kitchenLoad: localCharge.value,
 	})
 }
 

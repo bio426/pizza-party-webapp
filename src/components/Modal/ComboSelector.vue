@@ -65,7 +65,7 @@ import ComboItem from "./ComboItem.vue"
 
 import { useStore } from "../../store"
 import { IProduct, IComboItem, ICartItem } from "../../interfaces"
-import useNotification from "../../hooks/useNotification"
+import useNotyf from "../../composables/useNotyf"
 
 const props = defineProps({
 	combo: {
@@ -79,11 +79,9 @@ const props = defineProps({
 })
 const emits = defineEmits(["closeSelector"])
 const store = useStore()
-const { notyf } = useNotification()
+const { notyf } = useNotyf()
 
 // Initializing blank item slots
-let pizzaItems = ref<IComboItem[]>([])
-let drinkItems = ref<IComboItem[]>([])
 let pizzaCount = props.combo.includes?.pizza || 0
 let drinkCount = props.combo.includes?.drink || 0
 let blankItem = {
@@ -92,12 +90,12 @@ let blankItem = {
 	image: "",
 	selected: false,
 }
-for (let i = 0; i < pizzaCount; i++) {
-	pizzaItems.value.push(blankItem)
-}
-for (let i = 0; i < drinkCount; i++) {
-	drinkItems.value.push(blankItem)
-}
+let pizzaItems = ref<IComboItem[]>(
+	Array.apply(null, Array(pizzaCount)).map(() => blankItem)
+)
+let drinkItems = ref<IComboItem[]>(
+	Array.apply(null, Array(drinkCount)).map(() => blankItem)
+)
 
 function selectProduct(product: IProduct) {
 	if (product.tag == "classic" || product.tag == "premium") {

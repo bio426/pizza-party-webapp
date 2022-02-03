@@ -5,21 +5,26 @@ import { ICartItem } from "./interfaces/cart"
 
 interface State {
 	cart: ICartItem[]
-	address: null | {
+	address: {
 		cords: {
 			lat: number
 			lng: number
 		}
-		distance: number
 		name: string
-		travelTime: number
+		deliveryTime: number
+		distance: number
 	}
 }
 
 export default createStore<State>({
 	state: {
 		cart: [],
-		address: null,
+		address: {
+			cords: { lat: 0, lng: 0 },
+			name: "",
+			deliveryTime: 0,
+			distance: 0,
+		},
 	},
 	getters: {
 		cartPrice(state) {
@@ -28,6 +33,9 @@ export default createStore<State>({
 				price += item.price * item.quantity
 			})
 			return price
+		},
+		deliveryTimeInMin(state) {
+			return Math.round(state.address.deliveryTime / 60)
 		},
 	},
 	mutations: {
@@ -67,7 +75,7 @@ export default createStore<State>({
 				name: payload.name,
 				cords: payload.cords,
 				distance: payload.distance,
-				travelTime: payload.travelTime,
+				deliveryTime: payload.travelTime,
 			}
 		},
 	},

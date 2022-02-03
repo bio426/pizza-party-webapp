@@ -15,11 +15,11 @@ export interface ProductIncludes {
 	bread?: number
 }
 
-export interface IComboItem{
-  id: string
-  name: string
-  image: string
-  selected: boolean,
+export interface IComboItem {
+	id: string
+	name: string
+	image: string
+	selected: boolean
 }
 
 export interface ICartItem {
@@ -35,5 +35,15 @@ export interface ICartItem {
 interface ItemContains {
 	cheese?: boolean
 	pizza?: string[]
-  drink?: string[]
+	drink?: string[]
+}
+
+export interface IOrder {
+	clientAddress: string
+	clientCords: {
+		lat: number
+		lng: number
+	}
+	clientPhone: string
+	items: ICartItem[]
 }

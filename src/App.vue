@@ -5,8 +5,6 @@
 	<Sidebar v-if="activeSidebar" @hideSidebar="activeSidebar = false" />
 	<FloatCart v-if="!isLarge" />
 	<Cart v-if="showCart" />
-	<MapsModal v-if="showMapsModal" />
-	<ConfirmationModal v-if="showConfirmationModal" />
 	<div id="modals"></div>
 </template>
 
@@ -14,25 +12,19 @@
 import { ref, watch } from "vue"
 import { useRoute } from "vue-router"
 
-import useLargeScreen from "./hooks/useLargeScreen"
-import useCart from "./hooks/useCart"
-import useMapsModal from "./hooks/useMapsModal"
-import useConfirmationModal from "./hooks/useConfirmationModal"
+import useLargeScreen from "./composables/useLargeScreen"
+import useCart from "./composables/useCart"
 
 import Header from "./components/Header.vue"
 import Footer from "./components/Footer.vue"
 import Sidebar from "./components/Sidebar.vue"
 import FloatCart from "./components/FloatCart.vue"
 import Cart from "./components/Cart.vue"
-import MapsModal from "./components/MapsModal.vue"
-import ConfirmationModal from "./components/ConfirmationModal.vue"
 
 const route = useRoute()
 
 let activeSidebar = ref(false)
 const { showCart } = useCart()
-const { showMapsModal } = useMapsModal()
-const { showConfirmationModal } = useConfirmationModal()
 
 watch(
 	() => route.path,

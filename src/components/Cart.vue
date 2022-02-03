@@ -3,10 +3,13 @@
 		<transition name="slide">
 			<div class="Cart__main" v-if="showMain">
 				<div class="Cart__head">
-					<p class="Cart__info" v-if="userAddress">
+					<p class="Cart__info" v-if="userAddress.name != ''">
 						Entregar en:
 						<span class="Cart__address"> {{ userAddress.name }} </span>
-						<button class="Cart__changeAddress" @click="toogleMapsModal">
+						<button
+							class="Cart__changeAddress"
+							@click="showAddressSelector = true"
+						>
 							Cambiar
 						</button>
 					</p>
@@ -14,7 +17,10 @@
 						<span class="Cart__address">
 							Selecciona una dirección de entrega
 						</span>
-						<button class="Cart__changeAddress" @click="toogleMapsModal">
+						<button
+							class="Cart__changeAddress"
+							@click="showAddressSelector = true"
+						>
 							Seleccionar
 						</button>
 					</p>
@@ -56,7 +62,7 @@
 						<button
 							class="Cart__buttonContinue"
 							@click="showAddressSelector = true"
-							v-if="!userAddress"
+							v-if="userAddress.name == ''"
 						>
 							<span class="Cart__quantity">{{ cart.length }}</span>
 							Elegir dirección
@@ -64,11 +70,7 @@
 								>S/ {{ finalPrice.toFixed(2) }}</span
 							>
 						</button>
-						<button
-							class="Cart__buttonContinue"
-							@click="finishOrder(finalPrice)"
-							v-else
-						>
+						<button class="Cart__buttonContinue" @click="finishOrder" v-else>
 							<span class="Cart__quantity">{{ cart.length }}</span>
 							Confirmar pedido
 							<span>S/ {{ finalPrice.toFixed(2) }}</span>
@@ -84,27 +86,28 @@
 			v-if="showAddressSelector"
 			@close-selector="showAddressSelector = false"
 		/>
+		<Confirmation
+			:price="finalPrice"
+			v-if="showConfirmation"
+			@close-confirmation="showConfirmation = false"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
-import { useStore } from "vuex"
 
-import { key } from "../store"
-import useCart from "../hooks/useCart"
-import useMapsModal from "../hooks/useMapsModal"
-import useConfirmationModal from "../hooks/useConfirmationModal"
-import useNotification from "../hooks/useNotification"
+import { useStore } from "../store"
+import useCart from "../composables/useCart"
+import useNotyf from "../composables/useNotyf"
 
 import CartItem from "./CartItem.vue"
 import AddressSelector from "./Modal/AddressSelector.vue"
+import Confirmation from "./Modal/Confirmation.vue"
 
-const store = useStore(key)
+const store = useStore()
 const { toogleCart } = useCart()
-const { toogleMapsModal } = useMapsModal()
-const { openConfirmationModal } = useConfirmationModal()
-const { notyf } = useNotification()
+const { notyf } = useNotyf()
 const cart = computed(() => store.state.cart)
 
 let showMain = ref(false)
@@ -114,21 +117,21 @@ onMounted(() => (showMain.value = true))
 let userAddress = computed(() => store.state.address)
 
 let cartPrice = computed<number>(() => store.getters.cartPrice)
-let delivery = computed(() => {
-	if (!userAddress.value) return 0
-	return Math.round(userAddress.value.distance / 1000) * 1.5
-})
+let delivery = computed(
+	() => Math.round(userAddress.value.distance / 1000) * 1.5
+)
 let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
 
-function finishOrder(price: number) {
+function finishOrder() {
 	if (store.state.cart.length < 1) {
 		notyf.error("No hay productos en el carrito")
-		return
+		return 0
 	}
-	openConfirmationModal(price)
+	showConfirmation.value = true
 }
 
 let showAddressSelector = ref(false)
+let showConfirmation = ref(false)
 </script>
 
 <style lang="scss">

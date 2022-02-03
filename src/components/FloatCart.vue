@@ -14,7 +14,7 @@ import { useStore } from "vuex"
 
 import { key } from "../store"
 
-import useCart from "../hooks/useCart"
+import useCart from "../composables/useCart"
 
 export default defineComponent({
 	name: "FloatCart",

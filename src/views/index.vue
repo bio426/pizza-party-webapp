@@ -8,53 +8,50 @@
 		</video>
 		<Navigation :cart="isNavFixed" />
 		<div class="index__container">
-			<h4 class="index__category" id="combosSection">Combos</h4>
-			<div
-				class="index__products index__products--combos"
-				v-if="!productsLoaded"
-			>
-				<Product v-for="i in 4" :key="i" :loading="true" />
+			<div v-if="!productsLoaded">
+				<h4 class="index__category" id="combosSection">Combos</h4>
+				<div
+					class="index__products index__products--combos"
+					v-if="!productsLoaded"
+				>
+					<Product v-for="i in 4" :key="i" />
+				</div>
 			</div>
-			<div class="index__products index__products--combos" v-else>
-				<Product
-					v-for="combo in combos"
-					:key="combo.id"
-					:product="combo"
-					@build-combo="chooseCombo(combo)"
-				/>
-			</div>
-			<div v-if="productsLoaded">
+			<div v-else>
+				<h4 class="index__category" id="classicsSection">Combos</h4>
+				<div class="index__products index__products--combos">
+					<Product
+						v-for="combo in combos"
+						:key="combo.id"
+						:product="combo"
+						@build-combo="chooseCombo(combo)"
+					/>
+				</div>
 				<h4 class="index__category" id="classicsSection">Pizzas clasicas</h4>
 				<div class="index__products">
 					<Product
-						v-for="(classic, index) in classics"
-						:key="index"
+						v-for="classic in classics"
+						:key="classic.id"
 						:product="classic"
-						:extra-cheese="true"
 					/>
 				</div>
 				<h4 class="index__category" id="premiumsSection">Pizzas premiums</h4>
 				<div class="index__products">
 					<Product
-						v-for="(premium, index) in premiums"
-						:key="index"
+						v-for="premium in premiums"
+						:key="premium.id"
 						:product="premium"
-						:extra-cheese="true"
 					/>
 				</div>
 				<h4 class="index__category" id="drinksSection">Bebidas</h4>
 				<div class="index__products">
-					<ProductDrink :products="filterChicha" />
-					<ProductDrink :products="filterLimonada" />
-					<ProductDrink :products="filterMaracumango" />
+					<ProductSelect :products="filterChicha" />
+					<ProductSelect :products="filterLimonada" />
+					<ProductSelect :products="filterMaracumango" />
 				</div>
 				<h4 class="index__category" id="extrasSection">Extras</h4>
 				<div class="index__products">
-					<Product
-						v-for="(extra, index) in extras"
-						:key="index"
-						:product="extra"
-					/>
+					<Product v-for="extra in extras" :key="extra.id" :product="extra" />
 				</div>
 			</div>
 		</div>
@@ -71,15 +68,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onBeforeUnmount } from "vue"
 
-import useLargeScreen from "../hooks/useLargeScreen"
-import { IProduct } from "../interfaces/products"
+import useLargeScreen from "../composables/useLargeScreen"
+import { IProduct } from "../interfaces"
 
-import ProductsService from "../services/ProductsService"
+import FirestoreService from "../services/FirestoreService"
 
 import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
-import ProductDrink from "../components/ProductDrink.vue"
-
+import ProductSelect from "../components/ProductSelect.vue"
 import ComboSelector from "../components/Modal/ComboSelector.vue"
 
 // Toogle position of navigation
@@ -112,8 +108,7 @@ let filterMaracumango = ref<IProduct[]>([])
 let extras = ref<IProduct[]>([])
 let comboOptions = ref<IProduct[]>([])
 
-async function getProducts() {
-	let products = await ProductsService.getProducts()
+FirestoreService.getProducts().then((products) => {
 	combos.value = products.filter((product) => product.tag == "combo")
 	classics.value = products.filter((product) => product.tag == "classic")
 	premiums.value = products.filter((product) => product.tag == "premium")
@@ -130,8 +125,7 @@ async function getProducts() {
 	let smallDrinks = products.filter((product) => product.code.includes("-s"))
 	comboOptions.value = [...classics.value, ...premiums.value, ...smallDrinks]
 	productsLoaded.value = true
-}
-getProducts()
+})
 
 // Handle comboSelector
 let showComboSelector = ref(false)

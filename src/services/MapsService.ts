@@ -39,20 +39,17 @@ class MapsService {
 		})
 	}
 
-	async calculateTravel(destination: google.maps.LatLng) {
+	async getTravelInfo(destination: google.maps.LatLng) {
 		if (!this.directionsInstance) throw new Error("Directions not initialized")
 		let res = await this.directionsInstance.route({
 			origin: this.baseCords,
 			destination,
 			travelMode: google.maps.TravelMode.DRIVING,
 		})
-		let distance = res.routes[0].legs[0].distance?.value || 0
 		let travelTime = res.routes[0].legs[0].duration?.value || 0
+		let distance = res.routes[0].legs[0].distance?.value || 0
 
-		return {
-			distance,
-			travelTime,
-		}
+		return { travelTime, distance }
 	}
 }
 

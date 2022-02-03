@@ -42,11 +42,13 @@ import { ref, onMounted } from "vue"
 
 import BaseModal from "./BaseModal.vue"
 
-import MapsService from "../../services/MapsService"
 import { useStore } from "../../store"
+import useNotyf from "../../composables/useNotyf"
+import MapsService from "../../services/MapsService"
 
 const emits = defineEmits(["closeSelector"])
 const store = useStore()
+const { notyf } = useNotyf()
 
 let mapView = ref<HTMLDivElement>()
 let mapInstance: google.maps.Map
@@ -73,25 +75,29 @@ function getAddress() {
 	return raw.split(",", 2).join("")
 }
 
-function validateAddress() {
+function addresHasNumbers() {
 	let place = autocompleteInstance.getPlace()
 	let raw = place.formatted_address || "Sin dirección"
 	let toCompare = raw.split(",", 1)
+	let validator = /\d+/g
 	let containNumbers = toCompare[0].match(/\d+/g)
 	return containNumbers != null
 }
 
 async function selectAddress() {
-	if (!validateAddress()) return 0
+	if (!addresHasNumbers()) {
+		notyf.error("No se detecto numero en la direccion seleccionada")
+		return 0
+	}
 	let mapCenter = mapInstance.getCenter()
 	if (!mapCenter) return 0
-	const { distance, travelTime } = await MapsService.calculateTravel(mapCenter)
+	const { travelTime, distance } = await MapsService.getTravelInfo(mapCenter)
 	store.commit({
 		type: "setUserAddress",
 		cords: { lat: mapCenter.lat(), lng: mapCenter.lng() },
 		name: getAddress(),
-		distance,
 		travelTime,
+		distance,
 	})
 	emits("closeSelector")
 }

@@ -66,7 +66,7 @@ import { defineComponent, ref, computed, watch } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
-import useCart from "../hooks/useCart"
+import useCart from "../composables/useCart"
 
 export default defineComponent({
 	name: "Navigation",

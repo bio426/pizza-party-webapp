@@ -17,23 +17,23 @@ export default defineComponent({
 		},
 	},
 	setup(props, ctx) {
-		const loader = new Loader({
-			apiKey: "AIzaSyDxgoTxRbW1eeqSg4_j8uuclTyHVZl0xRs",
-			version: "weekly",
-			libraries: ["places"],
-		})
+		// const loader = new Loader({
+		// 	apiKey: "AIzaSyDxgoTxRbW1eeqSg4_j8uuclTyHVZl0xRs",
+		// 	version: "weekly",
+		// 	libraries: ["places"],
+		// })
 		let mapsDiv = ref<HTMLDivElement>()
 		let map: google.maps.Map
 		onMounted(async () => {
-			await loader.load()
-			map = new google.maps.Map(mapsDiv.value as HTMLDivElement, {
-				center: {
-					lat: -12.067664200000008,
-					lng: -77.0716884,
-				},
-				zoom: 18,
-				disableDefaultUI: true,
-			})
+			// await loader.load()
+			// map = new google.maps.Map(mapsDiv.value as HTMLDivElement, {
+			// 	center: {
+			// 		lat: -12.067664200000008,
+			// 		lng: -77.0716884,
+			// 	},
+			// 	zoom: 18,
+			// 	disableDefaultUI: true,
+			// })
 		})
 
 		watch(

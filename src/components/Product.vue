@@ -1,93 +1,97 @@
 <template>
-	<div class="Product">
+	<div class="FProduct">
 		<img
-			class="Product__image"
-			:src="product.image || fallbackImage"
-			:class="[loading ? 'Product__image--loading' : '']"
+			class="FProduct__image"
+			:class="{ 'FProduct__image--gray': !producExist }"
+			:src="product.image"
+			alt="imagen de producto"
 		/>
-		<div class="Product__loading" v-if="loading">Cargando producto...</div>
-		<div class="Product__main" v-else>
-			<h4 class="Product__name">{{ product.name }}</h4>
-			<p class="Product__description">
-				{{ product.description || "Sin descripción" }}
-			</p>
-			<div class="Product__container">
-				<label class="Product__label" v-if="extraCheese">
-					<input
-						class="Product__checkbox"
-						type="checkbox"
-						v-model="withCheese"
-					/>
-					<!-- <span class="Product__check"></span> -->
-					Extra queso
-				</label>
-				<span class="Product__price">S/ {{ endPrice.toFixed(2) }}</span>
+		<div class="FProduct__main">
+			<div class="FProduct__loading" v-if="!producExist">
+				Cargando producto...
 			</div>
-			<button
-				class="Product__button"
-				@click="sendToCart"
-				v-if="!product.includes"
-			>
-				<img class="Product__ico" src="../assets/icons/cart.svg" />
-				Añadir
-				<img class="Product__ico" src="../assets/icons/plus.svg" />
-			</button>
-			<button class="Product__button" @click="$emit('buildCombo')" v-else>
-				<img class="Product__ico" src="../assets/icons/cart.svg" />
-				Escoger pizzas
-				<img class="Product__ico" src="../assets/icons/plus.svg" />
-			</button>
+			<div v-else>
+				<span class="FProduct__name">{{ product.name }}</span>
+				<p class="FProduct__description">
+					{{ product.description }}
+				</p>
+				<div
+					class="FProduct__row"
+					:class="{ 'FProduct__row--reverse': !haveSelect }"
+				>
+					<select
+						class="FProduct__select"
+						v-if="haveSelect"
+						v-model="extraCheese"
+					>
+						<option class="FProduct__option" value="" disabled>
+							Selecciona un tamaño
+						</option>
+						<option class="FProduct__option" :value="false">
+							{{ product.name }}
+						</option>
+						<option class="FProduct__option" :value="true">
+							{{ product.name }} con extraqueso
+						</option>
+					</select>
+					<span class="FProduct__price">S/ {{ productPrice.toFixed(2) }}</span>
+				</div>
+				<button
+					class="FProduct__button"
+					@click="$emit('buildCombo')"
+					v-if="isCombo"
+				>
+					<img class="FProduct__ico" src="../assets/icons/cart.svg" />
+					<span>Escoger pizzas</span>
+					<img class="FProduct__ico" src="../assets/icons/plus.svg" />
+				</button>
+				<button class="FProduct__button" @click="selectProduct" v-else>
+					<img class="FProduct__ico" src="../assets/icons/cart.svg" />
+					<span>Añadir</span>
+					<img class="FProduct__ico" src="../assets/icons/plus.svg" />
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType } from "vue"
-import { useStore } from "vuex"
+import { computed, PropType, ref } from "vue"
 
-import { key } from "../store"
-import useNotification from "../hooks/useNotification"
-import { IProduct } from "../interfaces/products"
-import { ICartItem } from "../interfaces/cart"
+import { useStore } from "../store"
+import useNotyf from "../composables/useNotyf"
+import { ICartItem, IProduct } from "../interfaces"
 
 const props = defineProps({
 	product: {
 		type: Object as PropType<IProduct>,
-		default: () => ({
-			id: "noId",
-			name: "noName",
-			code: "noCode",
-			price: 0,
-			tag: "noTag",
-		}),
-	},
-	extraCheese: {
-		type: Boolean,
-		default: false,
-	},
-	loading: {
-		type: Boolean,
-		default: false,
+		default: () =>
+			({
+				id: "",
+				description: "",
+				name: "",
+				code: "",
+				price: 0,
+				image: new URL("../assets/images/americana.webp", import.meta.url).href,
+				tag: "",
+			} as IProduct),
 	},
 })
+const emits = defineEmits(["buildCombo"])
+const store = useStore()
+const { notyf } = useNotyf()
 
-defineEmits(["buildCombo"])
+let producExist = props.product.id! != ""
+let isCombo = props.product.tag == "combo"
+let optionalCheese = ["classic", "premium"]
+let haveSelect = optionalCheese.includes(props.product.tag)
 
-const store = useStore(key)
+let extraCheese = ref(false)
+let productPrice = computed(() =>
+	extraCheese.value ? props.product.price + 2 : props.product.price
+)
 
-const { notyf } = useNotification()
-
-let withCheese = ref(false)
-const cheesePrice = 2
-let endPrice = computed(() => {
-	if (withCheese.value) {
-		return props.product.price + cheesePrice
-	} else {
-		return props.product.price
-	}
-})
-
-function sendToCart() {
+function selectProduct() {
 	let item: ICartItem = {
 		id: props.product.id,
 		name: props.product.name,
@@ -96,25 +100,20 @@ function sendToCart() {
 		tag: props.product.tag,
 		quantity: 1,
 	}
-	if (withCheese.value) {
+	if (extraCheese.value) {
 		item.contains = { cheese: true }
-		item.price = item.price + cheesePrice
+		item.price = productPrice.value
 	}
 	store.commit({ type: "addToCart", product: item })
-	let alert = `x1 ${props.product.name} ${
-		withCheese.value ? "extra queso" : ""
+	let toastMsg = `x1 ${props.product.name} ${
+		extraCheese.value ? "con extra queso" : ""
 	} agregado`
-	notyf.success(alert)
+	notyf.success(toastMsg)
 }
-
-let fallbackImage = new URL("../assets/images/americana.webp", import.meta.url)
-	.href
 </script>
 
 <style lang="scss">
-@import "../assets/styles/variables";
-
-.Product {
+.FProduct {
 	width: 100%;
 	background: #fff;
 	border-radius: 1rem;
@@ -127,62 +126,56 @@ let fallbackImage = new URL("../assets/images/americana.webp", import.meta.url)
 		height: auto;
 		object-fit: cover;
 
-		&--loading {
+		&--gray {
 			filter: grayscale(100%) blur(5px);
 		}
-	}
-
-	&__main {
-		padding: 1rem;
 	}
 
 	&__loading {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 12rem;
+		height: 10rem;
 		color: gray;
-		font-size: 1rem;
+		font-size: 1.5rem;
 		font-weight: 600;
 	}
 
+	&__main {
+		padding: 1rem;
+	}
+
 	&__name {
+		display: block;
+		margin-bottom: 1rem;
 		font-size: 1.2rem;
 		font-weight: 600;
 	}
 
 	&__description {
 		min-height: 2rem;
-		margin-top: 1rem;
+		margin-bottom: 1rem;
 		font-size: 0.9rem;
 	}
 
-	&__container {
+	&__row {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-top: 1rem;
-	}
 
-	&__label {
-		position: relative;
-		margin: 0.5rem 0;
-		font-size: 1rem;
-	}
-
-	&__checkbox {
-		&:checked {
-			~ .Product__check {
-				background: blue;
-			}
+		&--reverse {
+			flex-direction: row-reverse;
 		}
 	}
 
-	&__check {
-		position: absolute;
-		width: 1rem;
-		height: 1rem;
-		background: red;
+	&__select {
+		display: block;
+		width: 50%;
+		padding: 0.5rem;
+	}
+
+	&__option {
+		padding: 1rem;
 	}
 
 	&__price {
@@ -205,10 +198,6 @@ let fallbackImage = new URL("../assets/images/americana.webp", import.meta.url)
 		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
-
-		&:active {
-			background: darken($color: $green, $amount: 5%);
-		}
 	}
 
 	&__ico {
