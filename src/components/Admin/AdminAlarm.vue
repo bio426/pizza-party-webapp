@@ -22,7 +22,7 @@ export default defineComponent({
 	setup(props, ctx) {
 		let isActive = ref(false)
 		let sound = new Audio(
-			new URL("../assets/multimedia/sound.mp3", import.meta.url).href
+			new URL("../../assets/multimedia/sound.mp3", import.meta.url).href
 		)
 		sound.loop = true
 		sound.volume = 0.5
@@ -47,7 +47,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../assets/styles/variables";
 
 .Alarm {
 	display: block;

@@ -60,6 +60,7 @@ let selectedProduct = computed(() => props.products[activeOption.value])
 function selectProduct() {
 	let item: ICartItem = {
 		id: selectedProduct.value.id,
+		image: mainProduct.image,
 		name: selectedProduct.value.name,
 		code: selectedProduct.value.code,
 		price: selectedProduct.value.price,

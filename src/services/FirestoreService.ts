@@ -10,9 +10,15 @@ import {
 	QuerySnapshot,
 	Timestamp,
 	Firestore,
+	onSnapshot,
+	DocumentSnapshot,
+	updateDoc,
+	query,
+	where,
+	orderBy,
 } from "firebase/firestore"
 
-import { IProduct, IOrder } from "../interfaces"
+import { IProduct, IOrder, IAdminStatus } from "../interfaces"
 
 class FirestoreService {
 	private appConfig: FirebaseOptions = {
@@ -45,21 +51,46 @@ class FirestoreService {
 		return products
 	}
 
-	async getKitchenInfo() {
-		let snap = await getDoc(doc(this.db, "admin", "status"))
-		let raw = { ...snap.data() } as { kitchenLoad: number }
-		return raw
-	}
-
 	async sendOrder(order: IOrder) {
 		let res = await addDoc(collection(this.db, "orders"), {
 			clientAddress: order.clientAddress,
 			clientPhone: order.clientPhone,
 			clientCords: new GeoPoint(order.clientCords.lat, order.clientCords.lng),
 			createdAt: Timestamp.now(),
+			payment: order.payment,
 			items: order.items,
 		})
 		return res
+	}
+
+	async getKitchenInfo() {
+		let snap = await getDoc(doc(this.db, "admin", "status"))
+		let raw = { ...snap.data() } as IAdminStatus
+		return raw
+	}
+
+	async updateKitchenLoad(load: number) {
+		let resolved = await updateDoc(doc(this.db, "admin", "status"), {
+			kitchenLoad: load,
+		})
+		return resolved
+	}
+
+	subscribeKitchenLoad(onSnap: (doc: DocumentSnapshot) => void) {
+		let unsubscribe = onSnapshot(doc(this.db, "admin", "status"), onSnap)
+		return unsubscribe
+	}
+
+	subscribeOrders(onSnap: (doc: QuerySnapshot) => void) {
+		let todayInit = new Date()
+		todayInit.setHours(0, 0, 0, 0)
+		let q = query(
+			collection(this.db, "orders"),
+			where("createdAt", ">=", Timestamp.fromDate(todayInit)),
+			orderBy("createdAt", "desc")
+		)
+		let unsubscribe = onSnapshot(q, onSnap)
+		return unsubscribe
 	}
 }
 

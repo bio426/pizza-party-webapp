@@ -1,7 +1,8 @@
 <template>
 	<div class="Item">
 		<div class="Item__main">
-			<img class="Item__image" src="../assets/images/americana.webp" />
+			<!-- <img class="Item__image" src="../assets/images/americana.webp" /> -->
+			<img class="Item__image" :src="item.image" />
 			<div class="Item__container Item__container--info">
 				<span class="Item__name"> {{ item.quantity }} x {{ item.name }} </span>
 				<span class="Item__price">S/ {{ item.price.toFixed(2) }}</span>
@@ -70,7 +71,7 @@ import { defineComponent, ref, PropType } from "vue"
 import { useStore } from "vuex"
 
 import { key } from "../store"
-import { ICartItem } from "../interfaces/cart"
+import { ICartItem } from "../interfaces"
 
 export default defineComponent({
 	name: "CartItem",

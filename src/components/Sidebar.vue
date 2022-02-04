@@ -11,19 +11,24 @@
 					<img class="Sidebar__logo" src="../assets/images/logoFull.webp" />
 					<div class="Sidebar__container">
 						<router-link class="Sidebar__link" to="/">Menu</router-link>
-						<router-link class="Sidebar__link" to="/">Locales</router-link>
-						<router-link class="Sidebar__link" to="/user"
-							>Mi cuenta</router-link
-						>
 					</div>
 					<div class="Sidebar__container Sidebar__container--social">
-						<a class="Sidebar__link Sidebar__link--social">
+						<a
+							class="Sidebar__link Sidebar__link--social"
+							href="https://www.facebook.com/todalapizzaquepuedas"
+						>
 							<img class="Sidebar__ico" src="../assets/icons/facebook.svg" />
 						</a>
-						<a class="Sidebar__link Sidebar__link--social">
+						<a
+							class="Sidebar__link Sidebar__link--social"
+							href="https://www.instagram.com/pizza.party.peru"
+						>
 							<img class="Sidebar__ico" src="../assets/icons/instagram.svg" />
 						</a>
-						<a class="Sidebar__link Sidebar__link--social">
+						<a
+							class="Sidebar__link Sidebar__link--social"
+							href="https://goo.gl/maps/nL7YBBZ12Rb7mVaUA"
+						>
 							<img class="Sidebar__ico" src="../assets/icons/maps.svg" />
 						</a>
 					</div>

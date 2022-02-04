@@ -2,7 +2,7 @@
 	<div class="Items">
 		<div class="Items__title">Productos del pedido</div>
 		<div class="Items__noItems" v-if="items.length == 0">
-			<img class="Items__ico" src="../assets/icons/empty.svg" />
+			<img class="Items__ico" src="../../assets/icons/empty.svg" />
 			No hay pedido seleccionado
 		</div>
 		<div class="Items__container">
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue"
 
-import { ICartItem } from "../interfaces/cart"
+import { ICartItem } from "../../interfaces/cart"
 
 export default defineComponent({
 	name: "AdminItems",

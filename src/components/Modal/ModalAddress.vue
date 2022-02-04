@@ -65,21 +65,21 @@ onMounted(() => {
 function onAutocompleteChange() {
 	let res = autocompleteInstance.getPlace()
 	let center = res.geometry?.location
-	if (!center) return console.error("Error im autotomplete")
+	if (!center) return console.error("Error im autocomplete")
 	mapInstance.panTo({ lat: center?.lat(), lng: center?.lng() })
 }
 
 function getAddress() {
-	let place = autocompleteInstance.getPlace()
-	let raw = place.formatted_address || "Sin dirección"
-	return raw.split(",", 2).join("")
+	if(!autocompleteInput.value) return "Undefined"
+	let raw = autocompleteInput.value.value
+	let name = raw.split(",",1)[0]
+	return name
 }
 
 function addresHasNumbers() {
-	let place = autocompleteInstance.getPlace()
-	let raw = place.formatted_address || "Sin dirección"
+	if (!autocompleteInput.value) return false
+	let raw = autocompleteInput.value.value || "undefined,undefined"
 	let toCompare = raw.split(",", 1)
-	let validator = /\d+/g
 	let containNumbers = toCompare[0].match(/\d+/g)
 	return containNumbers != null
 }

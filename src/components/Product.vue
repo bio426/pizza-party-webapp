@@ -94,6 +94,7 @@ let productPrice = computed(() =>
 function selectProduct() {
 	let item: ICartItem = {
 		id: props.product.id,
+		image: props.product.image,
 		name: props.product.name,
 		code: props.product.code,
 		price: props.product.price,

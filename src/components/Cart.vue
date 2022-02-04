@@ -8,7 +8,7 @@
 						<span class="Cart__address"> {{ userAddress.name }} </span>
 						<button
 							class="Cart__changeAddress"
-							@click="showAddressSelector = true"
+							@click="showModalAddress = true"
 						>
 							Cambiar
 						</button>
@@ -19,7 +19,7 @@
 						</span>
 						<button
 							class="Cart__changeAddress"
-							@click="showAddressSelector = true"
+							@click="showModalAddress = true"
 						>
 							Seleccionar
 						</button>
@@ -61,7 +61,7 @@
 					<div class="Cart__fixedButtons">
 						<button
 							class="Cart__buttonContinue"
-							@click="showAddressSelector = true"
+							@click="showModalAddress = true"
 							v-if="userAddress.name == ''"
 						>
 							<span class="Cart__quantity">{{ cart.length }}</span>
@@ -82,14 +82,14 @@
 				</div>
 			</div>
 		</transition>
-		<AddressSelector
-			v-if="showAddressSelector"
-			@close-selector="showAddressSelector = false"
+		<ModalAddress
+			v-if="showModalAddress"
+			@close-selector="showModalAddress = false"
 		/>
-		<Confirmation
+		<ModalConfirmation
 			:price="finalPrice"
-			v-if="showConfirmation"
-			@close-confirmation="showConfirmation = false"
+			v-if="showModalConfirmation"
+			@close-confirmation="showModalConfirmation = false"
 		/>
 	</div>
 </template>
@@ -102,8 +102,8 @@ import useCart from "../composables/useCart"
 import useNotyf from "../composables/useNotyf"
 
 import CartItem from "./CartItem.vue"
-import AddressSelector from "./Modal/AddressSelector.vue"
-import Confirmation from "./Modal/Confirmation.vue"
+import ModalAddress from "./Modal/ModalAddress.vue"
+import ModalConfirmation from "./Modal/ModalConfirmation.vue"
 
 const store = useStore()
 const { toogleCart } = useCart()
@@ -117,9 +117,7 @@ onMounted(() => (showMain.value = true))
 let userAddress = computed(() => store.state.address)
 
 let cartPrice = computed<number>(() => store.getters.cartPrice)
-let delivery = computed(
-	() => Math.round(userAddress.value.distance / 1000) * 1.5
-)
+let delivery = computed(() => store.getters.deliveryPrice)
 let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
 
 function finishOrder() {
@@ -127,11 +125,11 @@ function finishOrder() {
 		notyf.error("No hay productos en el carrito")
 		return 0
 	}
-	showConfirmation.value = true
+	showModalConfirmation.value = true
 }
 
-let showAddressSelector = ref(false)
-let showConfirmation = ref(false)
+let showModalAddress = ref(false)
+let showModalConfirmation = ref(false)
 </script>
 
 <style lang="scss">

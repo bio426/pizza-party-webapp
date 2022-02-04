@@ -18,7 +18,7 @@
 				</div>
 			</div>
 			<div v-else>
-				<h4 class="index__category" id="classicsSection">Combos</h4>
+				<h4 class="index__category" id="combosSection">Combos</h4>
 				<div class="index__products index__products--combos">
 					<Product
 						v-for="combo in combos"
@@ -56,11 +56,11 @@
 			</div>
 		</div>
 		<div class="index__spacer"></div>
-		<ComboSelector
-			v-if="showComboSelector"
+		<ModalCombo
+			v-if="showModalCombo"
 			:combo="baseCombo"
 			:options="comboOptions"
-			@close-selector="showComboSelector = false"
+			@close-selector="showModalCombo = false"
 		/>
 	</div>
 </template>
@@ -76,7 +76,7 @@ import FirestoreService from "../services/FirestoreService"
 import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
 import ProductSelect from "../components/ProductSelect.vue"
-import ComboSelector from "../components/Modal/ComboSelector.vue"
+import ModalCombo from "../components/Modal/ModalCombo.vue"
 
 // Toogle position of navigation
 const { isLarge } = useLargeScreen()
@@ -127,8 +127,8 @@ FirestoreService.getProducts().then((products) => {
 	productsLoaded.value = true
 })
 
-// Handle comboSelector
-let showComboSelector = ref(false)
+// Handle ModalCombo
+let showModalCombo = ref(false)
 let baseCombo: IProduct = reactive({
 	code: "",
 	description: "",
@@ -149,7 +149,7 @@ function chooseCombo(combo: IProduct) {
 	baseCombo.tag = combo.tag
 	baseCombo.price = combo.price
 	baseCombo.includes = combo.includes
-	showComboSelector.value = true
+	showModalCombo.value = true
 }
 </script>
 

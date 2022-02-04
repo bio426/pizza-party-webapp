@@ -29,7 +29,7 @@
 				<a href="tel:555-555-5555" class="Header__button">
 					<img class="Header__ico" src="../assets/icons/phone.svg" />
 				</a>
-				<router-link class="Header__button" to="/login">
+				<router-link class="Header__button" to="/">
 					<img class="Header__ico" src="../assets/icons/user.svg" />
 				</router-link>
 				<button class="Header__button" @click="$emit('showSidebar')">

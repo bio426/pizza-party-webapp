@@ -1,7 +1,7 @@
 import { createStore, Store, useStore as baseUseStore } from "vuex"
 import { InjectionKey } from "vue"
 
-import { ICartItem } from "./interfaces/cart"
+import { ICartItem } from "./interfaces"
 
 interface State {
 	cart: ICartItem[]
@@ -36,6 +36,9 @@ export default createStore<State>({
 		},
 		deliveryTimeInMin(state) {
 			return Math.round(state.address.deliveryTime / 60)
+		},
+		deliveryPrice(state) {
+			return Math.round(state.address.distance / 1000) * 1.5
 		},
 	},
 	mutations: {

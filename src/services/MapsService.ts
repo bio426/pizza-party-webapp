@@ -13,7 +13,7 @@ class MapsService {
 
 	constructor() {
 		this.loaderInstance = new Loader({
-			apiKey: "AIzaSyC49SJiI66iSMc6RMho5xAZ1bGBUvysAs0",
+			apiKey: "AIzaSyDxgoTxRbW1eeqSg4_j8uuclTyHVZl0xRs",
 			version: "weekly",
 			libraries: ["places"],
 		})

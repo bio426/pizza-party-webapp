@@ -11,44 +11,85 @@
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p>Haz click para seleccionar o quitar elementos para tu combo.</p>
+				<p>Haz click para selecSitemonar o quitar elementos para tu combo.</p>
 			</div>
 			<hr class="CSelector__spacer" />
-			<div class="CSelector__items">
-				<ComboItem
-					type="pizza"
-					v-for="(pizza, i) in pizzaItems"
-					:content="pizza"
-					:key="i"
-					@click="clearItem(i, 'pizza')"
-				/>
-				<ComboItem
-					type="drink"
-					v-for="(drink, i) in drinkItems"
-					:content="drink"
-					:key="i"
-					@click="clearItem(i, 'drink')"
-				/>
+			<div class="CSelector__wrapper CSelector__wrapper--items">
+				<div class="CSelector__items">
+					<div
+						class="SItem"
+						v-for="(pizza, i) in pizzaItems"
+						:key="pizza.id"
+						@click="clearItem(i, 'pizza')"
+					>
+						<img
+							class="SItem__image SItem__image--gray"
+							src="../../assets/images/americana.webp"
+							v-if="!pizza.selected"
+						/>
+						<img class="SItem__image" :src="pizza.image" v-else />
+						<span class="SItem__name">{{
+							pizza.selected ? pizza.name : "Pizza por seleccionar"
+						}}</span>
+						<img
+							class="SItem__ico"
+							src="../../assets/icons/cross.svg"
+							v-if="pizza.selected"
+						/>
+					</div>
+					<div
+						class="SItem"
+						v-for="(drink, i) in drinkItems"
+						:key="drink.id"
+						@click="clearItem(i, 'drink')"
+					>
+						<img
+							class="SItem__image SItem__image--gray"
+							src="../../assets/images/americana.webp"
+							v-if="!drink.selected"
+						/>
+						<img class="SItem__image" :src="drink.image" v-else />
+						<span class="SItem__name">{{
+							drink.selected ? drink.name : "Bebida por seleccionar"
+						}}</span>
+						<img
+							class="SItem__ico"
+							src="../../assets/icons/cross.svg"
+							v-if="drink.selected"
+						/>
+					</div>
+				</div>
 			</div>
 			<hr class="CSelector__spacer" />
-			<span class="CSelector__category">Pizzas</span>
-			<div class="CSelector__options">
-				<ComboOption
-					v-for="pizza in pizzaOptions"
-					:product="pizza"
-					:key="pizza.id"
-					@click="selectProduct(pizza)"
-				/>
+			<div class="CSelector__wrapper">
+				<span class="CSelector__category">Pizzas</span>
+				<div class="CSelector__options">
+					<div
+						class="SOption"
+						v-for="pizza in pizzaOptions"
+						:key="pizza.id"
+						@click="selectProduct(pizza)"
+					>
+						<img class="SOption__image" :src="pizza.image" />
+						<span class="SOption__name">{{ pizza.name }}</span>
+						<img class="SOption__ico" src="../../assets/icons/plus-black.svg" />
+					</div>
+				</div>
+				<span class="CSelector__category">Bebidas</span>
+				<div class="CSelector__options">
+					<div
+						class="SOption"
+						v-for="drink in drinkOptions"
+						:key="drink.id"
+						@click="selectProduct(drink)"
+					>
+						<img class="SOption__image" :src="drink.image" />
+						<span class="SOption__name">{{ drink.name }}</span>
+						<img class="SOption__ico" src="../../assets/icons/plus-black.svg" />
+					</div>
+				</div>
 			</div>
-			<span class="CSelector__category">Bebidas</span>
-			<div class="CSelector__options">
-				<ComboOption
-					v-for="drink in drinkOptions"
-					:product="drink"
-					:key="drink.id"
-					@click="selectProduct(drink)"
-				/>
-			</div>
+
 			<button class="CSelector__button" @click="addCombo">
 				Agregar al carrito
 			</button>
@@ -57,11 +98,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, PropType } from "vue"
+import { ref, PropType, computed } from "vue"
 
 import BaseModal from "./BaseModal.vue"
-import ComboOption from "./ComboOption.vue"
-import ComboItem from "./ComboItem.vue"
 
 import { useStore } from "../../store"
 import { IProduct, IComboItem, ICartItem } from "../../interfaces"
@@ -143,11 +182,12 @@ function isComboFull() {
 
 function addCombo() {
 	if (!isComboFull()) {
-		notyf.error("Faltan items por seleccionar")
+		notyf.error("Faltan items por selecSitemonar")
 		return 0
 	}
 	let cartItem: ICartItem = {
 		id: props.combo.id,
+		image: props.combo.image,
 		name: props.combo.name,
 		code: props.combo.code,
 		price: props.combo.price,
@@ -216,11 +256,31 @@ const drinkOptions = ref<IProduct[]>(
 		margin: 1rem 0;
 	}
 
+	&__wrapper {
+		max-height: 20rem;
+		margin-bottom: 1rem;
+		overflow-y: scroll;
+
+		&--items{
+			max-height: 10rem;
+		}
+
+		@media (min-width: 768px) {
+			max-height: none;
+			margin-bottom: 0;
+			overflow-y: auto;
+		}
+	}
+
 	&__items {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: 1fr;
 		gap: 1rem;
 		margin-bottom: 1rem;
+
+		@media (min-width: 768px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	&__category {
@@ -231,9 +291,13 @@ const drinkOptions = ref<IProduct[]>(
 
 	&__options {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: 1fr;
 		gap: 1rem;
 		margin-bottom: 1rem;
+
+		@media (min-width: 768px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	&__button {
@@ -242,7 +306,7 @@ const drinkOptions = ref<IProduct[]>(
 		padding: 0.5rem;
 		background: $green;
 		color: #fff;
-		border: 1px solid $green;
+		border: 1px soptionlid $green;
 		border-radius: 0.5rem;
 		cursor: pointer;
 		font-size: 1rem;
@@ -252,6 +316,96 @@ const drinkOptions = ref<IProduct[]>(
 	&__ico {
 		display: block;
 		width: 1rem;
+	}
+}
+
+.SItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #fff;
+	border: 1px solid black;
+	cursor: pointer;
+
+	&__image {
+		display: block;
+		width: 3rem;
+		height: auto;
+		max-height: 2rem;
+		object-fit: cover;
+
+		&--gray {
+			filter: grayscale(100%);
+		}
+	}
+
+	&__name {
+		display: block;
+		flex: 1;
+		color: #000;
+		font-size: 0.9rem;
+		font-weight: 600;
+		text-align: center;
+
+		@media (min-width: 768px) {
+			font-size: 1rem;
+		}
+	}
+
+	&__ico {
+		display: block;
+		width: 0.8rem;
+		height: auto;
+		margin-right: 0.5rem;
+
+		@media (min-width: 768px) {
+			width: 1rem;
+			margin-right: 1rem;
+		}
+	}
+}
+
+.SOption {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #fff;
+	border: 1px solid black;
+	cursor: pointer;
+
+	&:active {
+		background: darken($color: #fff, $amount: 10%);
+	}
+
+	&__image {
+		display: block;
+		width: 3rem;
+		height: auto;
+		max-height: 2rem;
+		object-fit: cover;
+	}
+
+	&__name {
+		display: block;
+		color: #000;
+		font-size: 0.9rem;
+		text-align: center;
+
+		@media (min-width: 768px) {
+			font-size: 1rem;
+		}
+	}
+
+	&__ico {
+		display: block;
+		width: 0.8rem;
+		height: auto;
+		margin-right: 0.5rem;
+
+		@media (min-width: 768px) {
+			width: 1rem;
+			margin-right: 1rem;
+		}
 	}
 }
 </style>
