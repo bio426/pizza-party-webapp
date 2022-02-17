@@ -1,5 +1,5 @@
 <template>
-	<BaseModal title="Confirmar pedido" @close-modal="$emit('closeConfirmation')">
+	<ModalBase title="Confirmar pedido" @close-modal="$emit('closeConfirmation')">
 		<div class="CConfirmation">
 			<div class="CConfirmation__alert">
 				<img
@@ -70,13 +70,13 @@
 				Confirmar pedido
 			</button>
 		</div>
-	</BaseModal>
+	</ModalBase>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
 
-import BaseModal from "./BaseModal.vue"
+import ModalBase from "./ModalBase.vue"
 
 import { useStore } from "../../store"
 import useNotyf from "../../composables/useNotyf"
@@ -94,13 +94,22 @@ const { notyf } = useNotyf()
 
 let address = store.state.address
 let deliveryTime = store.getters.deliveryTimeInMin
+let pizzaCount = store.getters.pizzaCount
 
 // obtener tiempo de entrega
 let totalTime = ref(0)
 FirestoreService.getKitchenInfo().then((info) => {
-	let cookingTime = info.kitchenLoad * 7
+	let cookingTime = info.kitchenLoad * 10 - 10
 	totalTime.value = cookingTime + deliveryTime
 })
+
+function calculateDeliveryTime() {
+	let timePerPizzas
+	let timePerKitchen
+	let timePerTravel
+
+	// return timePerPizzas + timePerKitchen + timePerTravel
+}
 
 let phone = ref("")
 function phoneIsValid() {
@@ -130,29 +139,18 @@ async function sendOrder() {
 	}
 	isSending.value = true
 	let items = store.state.cart
-	let paymentInfo = {
-		type: payType.value,
-	} as {
-		type: string
-		payWith?: number
-	}
-	if (payType.value == "contado") {
-		paymentInfo.payWith = paysWith.value
-	}
-
-	let order = {
-		clientAddress: store.state.address.name,
-		clientPhone: phone.value.trim(),
-		clientCords: {
+	let res = await FirestoreService.sendOrder({
+		address: {
+			name: store.state.address.name,
 			lat: store.state.address.cords.lat,
 			lng: store.state.address.cords.lng,
 		},
-		deliveryPrice: store.getters.deliveryPrice,
-		payment: paymentInfo,
-		test: "asdasd",
+		price: { delivery: 10, items: 15 },
+		user: { name: "Bild", phone: "111222333", id: "firstUUid" },
+		createdAt: new Date(),
+		completed: false,
 		items,
-	}
-	let res = await FirestoreService.sendOrder(order)
+	})
 	if (res) {
 		isSending.value = false
 		emits("closeConfirmation")

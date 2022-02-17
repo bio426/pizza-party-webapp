@@ -40,36 +40,34 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue"
-import { useStore } from "vuex"
+<script setup lang="ts">
+import { computed } from "vue"
 
-import { key } from "../store"
+import { useStore } from "../store"
 import useLargeScreen from "../composables/useLargeScreen"
 import useCart from "../composables/useCart"
 
-export default defineComponent({
-	name: "Header",
-	setup() {
-		const store = useStore(key)
-		const { isLarge } = useLargeScreen()
-		const { toogleCart } = useCart()
-
-		return {
-			isLarge,
-			toogleCart,
-			cartPrice: computed<number>(() => store.getters.cartPrice),
-		}
-	},
-})
+const store = useStore()
+const { isLarge } = useLargeScreen()
+const { toogleCart } = useCart()
+const cartPrice = computed<number>(() => store.getters.cartPrice)
 </script>
 
 <style lang="scss">
-@import "../assets/styles/variables";
-
 .Header {
 	background: #fff;
 	border-bottom: 1px solid #000;
+
+	@media (min-width: 1024px) {
+		// position: absolute;
+		// top: 5rem;
+		// left: 50%;
+		// transform: translateX(-50%);
+		// width: 80%;
+		// border: none;
+		// border-radius: 1rem;
+		// z-index: 10;
+	}
 
 	&__container {
 		&--main {
@@ -145,19 +143,6 @@ export default defineComponent({
 		&--small {
 			width: 1.5rem;
 		}
-	}
-}
-
-@media (min-width: 1024px) {
-	.Header {
-		position: absolute;
-		top: 5rem;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 80%;
-		border: none;
-		border-radius: 1rem;
-		z-index: 10;
 	}
 }
 </style>

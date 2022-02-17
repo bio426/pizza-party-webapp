@@ -1,5 +1,5 @@
 <template>
-	<BaseModal
+	<ModalBase
 		title="Selecciona tu dirección gaa"
 		@close-modal="$emit('closeSelector')"
 	>
@@ -34,13 +34,13 @@
 				Seleccionar dirección
 			</button>
 		</div>
-	</BaseModal>
+	</ModalBase>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 
-import BaseModal from "./BaseModal.vue"
+import ModalBase from "./ModalBase.vue"
 
 import { useStore } from "../../store"
 import useNotyf from "../../composables/useNotyf"

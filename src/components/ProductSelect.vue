@@ -6,7 +6,7 @@
 			alt="imagen de producto"
 		/>
 		<div class="MProduct__main">
-			<span class="MProduct__name">{{ mainProduct.name }}</span>
+			<span class="MProduct__name">{{ formattedName }}</span>
 			<p class="MProduct__description">
 				{{ mainProduct.description }}
 			</p>
@@ -53,6 +53,18 @@ const store = useStore()
 const { notyf } = useNotyf()
 
 let mainProduct = props.products[0]
+
+// Remove quantities from name
+let formattedName = computed(() => {
+	let hasNumbers = /\d/.test(mainProduct.name)
+	if (hasNumbers) {
+		let parts = mainProduct.name.split(" ")
+		let clear = parts.filter((str) => !/\d/.test(str))
+		return clear.join(" ")
+	} else {
+		return mainProduct.name
+	}
+})
 
 let activeOption = ref(0)
 let selectedProduct = computed(() => props.products[activeOption.value])

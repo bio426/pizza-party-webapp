@@ -116,12 +116,15 @@ FirestoreService.getProducts().then((products) => {
 	filterChicha.value = products.filter((product) =>
 		product.code.includes("chi")
 	)
+	filterChicha.value.sort((a, b) => a.price - b.price)
 	filterLimonada.value = products.filter((product) =>
 		product.code.includes("lim")
 	)
+	filterLimonada.value.sort((a, b) => a.price - b.price)
 	filterMaracumango.value = products.filter((product) =>
 		product.code.includes("mar")
 	)
+	filterMaracumango.value.sort((a, b) => a.price - b.price)
 	let smallDrinks = products.filter((product) => product.code.includes("-s"))
 	comboOptions.value = [...classics.value, ...premiums.value, ...smallDrinks]
 	productsLoaded.value = true

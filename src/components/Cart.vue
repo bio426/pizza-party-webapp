@@ -33,7 +33,7 @@
 					<div class="Cart__items">
 						<div class="Cart__noItems" v-if="cart.length == 0">
 							<img class="Cart__ico" src="../assets/icons/empty.svg" />
-							Aun no hay elementos
+							Aun no hay items agregados
 						</div>
 						<CartItem
 							v-for="(item, index) in cart"
@@ -65,7 +65,7 @@
 							v-if="userAddress.name == ''"
 						>
 							<span class="Cart__quantity">{{ cart.length }}</span>
-							Elegir dirección
+							Seleccionar dirección
 							<span class="Cart__price Cart__price--fixed"
 								>S/ {{ finalPrice.toFixed(2) }}</span
 							>

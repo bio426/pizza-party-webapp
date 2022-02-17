@@ -38,7 +38,21 @@ export default createStore<State>({
 			return Math.round(state.address.deliveryTime / 60)
 		},
 		deliveryPrice(state) {
-			return Math.round(state.address.distance / 1000) * 1.5
+			let kilometers = Math.round(state.address.distance / 1000)
+			let costPerKilometer = kilometers < 3 ? 2 : 1.5
+			return kilometers * costPerKilometer
+		},
+		pizzaCount(state) {
+			let count = 0
+			state.cart.map((product) => {
+				if (product.tag == "classic" || product.tag == "premium") {
+					count++
+				}
+				if (product.tag == "combo" && product.contains) {
+					count += product.contains.pizza?.length || 0
+				}
+			})
+			return count
 		},
 	},
 	mutations: {

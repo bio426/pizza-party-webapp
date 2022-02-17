@@ -1,5 +1,3 @@
-import { Timestamp, GeoPoint } from "firebase/firestore"
-
 export interface IProduct {
 	id: string
 	name: string
@@ -20,6 +18,7 @@ export interface ProductIncludes {
 export interface IComboItem {
 	id: string
 	name: string
+	code: string
 	image: string
 	selected: boolean
 }
@@ -37,34 +36,28 @@ export interface ICartItem {
 
 interface ItemContains {
 	cheese?: boolean
-	pizza?: string[]
-	drink?: string[]
+	pizza?: { name: string; code: string }[]
+	drink?: { name: string; code: string }[]
 }
 
 export interface IOrder {
-	clientAddress: string
-	clientCords: {
+	id?: string
+	user: {
+		name: string
+		phone: string
+		id?: string
+	}
+	address: {
+		name: string
 		lat: number
 		lng: number
 	}
-	clientPhone: string
-	payment: {
-		type: string
-		payWith?: number
+	price: {
+		items: number
+		delivery: number
 	}
-	items: ICartItem[]
-}
-
-export interface IOrderResponse {
-	id: string
-	clientAddress: string
-	clientPhone: number
-	clientCords: GeoPoint
-	createdAt: Timestamp
-	payment: {
-		type: string
-		payWith?: number
-	}
+	createdAt: Date
+	completed: boolean
 	items: ICartItem[]
 }
 

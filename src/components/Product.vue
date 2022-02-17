@@ -87,8 +87,9 @@ let optionalCheese = ["classic", "premium"]
 let haveSelect = optionalCheese.includes(props.product.tag)
 
 let extraCheese = ref(false)
+const cheesePrice = 2.5
 let productPrice = computed(() =>
-	extraCheese.value ? props.product.price + 2 : props.product.price
+	extraCheese.value ? props.product.price + cheesePrice : props.product.price
 )
 
 function selectProduct() {

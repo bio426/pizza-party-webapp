@@ -8,46 +8,38 @@
 	</button>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from "vue"
+<script setup lang="ts">
+import { ref, watch } from "vue"
 
-export default defineComponent({
-	name: "AdminAlarm",
-	props: {
-		alerting: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props, ctx) {
-		let isActive = ref(false)
-		let sound = new Audio(
-			new URL("../../assets/multimedia/sound.mp3", import.meta.url).href
-		)
-		sound.loop = true
-		sound.volume = 0.5
-
-		watch(
-			() => props.alerting,
-			(actual, previous) => {
-				if (props.alerting) {
-					sound.play()
-				} else {
-					sound.pause()
-					sound.currentTime = 0
-				}
-			}
-		)
-
-		return {
-			isActive,
-		}
+const props = defineProps({
+	alerting: {
+		type: Boolean,
+		default: false,
 	},
 })
+const emits = defineEmits(["attended"])
+
+let isActive = ref(false)
+let sound = new Audio(
+	new URL("../../assets/multimedia/sound.mp3", import.meta.url).href
+)
+sound.loop = true
+sound.volume = 0.5
+
+watch(
+	() => props.alerting,
+	(actual, previous) => {
+		if (props.alerting) {
+			sound.play()
+		} else {
+			sound.pause()
+			sound.currentTime = 0
+		}
+	}
+)
 </script>
 
 <style lang="scss">
-
 .Alarm {
 	display: block;
 	width: 100%;

@@ -1,5 +1,5 @@
 <template>
-	<BaseModal title="Arma tu combo" @close-modal="$emit('closeSelector')">
+	<ModalBase title="Arma tu combo" @close-modal="$emit('closeSelector')">
 		<div class="CSelector">
 			<span class="CSelector__name">{{ combo.name }}</span>
 			<p class="CSelector__description">
@@ -94,13 +94,13 @@
 				Agregar al carrito
 			</button>
 		</div>
-	</BaseModal>
+	</ModalBase>
 </template>
 
 <script setup lang="ts">
 import { ref, PropType, computed } from "vue"
 
-import BaseModal from "./BaseModal.vue"
+import ModalBase from "./ModalBase.vue"
 
 import { useStore } from "../../store"
 import { IProduct, IComboItem, ICartItem } from "../../interfaces"
@@ -126,6 +126,7 @@ let drinkCount = props.combo.includes?.drink || 0
 let blankItem = {
 	id: "",
 	name: "",
+	code: "",
 	image: "",
 	selected: false,
 }
@@ -143,6 +144,7 @@ function selectProduct(product: IProduct) {
 				pizzaItems.value[i] = {
 					id: product.id,
 					name: product.name,
+					code: product.code,
 					image: product.image,
 					selected: true,
 				}
@@ -156,6 +158,7 @@ function selectProduct(product: IProduct) {
 				drinkItems.value[i] = {
 					id: product.id,
 					name: product.name,
+					code: product.code,
 					image: product.image,
 					selected: true,
 				}
@@ -194,18 +197,18 @@ function addCombo() {
 		tag: props.combo.tag,
 		quantity: 1,
 	}
-	let pizzas: string[] = []
+	let pizzas: { name: string; code: string }[] = []
 	pizzaItems.value.forEach((item) => {
 		if (item.selected) {
 			if (!item.name) return 0
-			pizzas.push(item.name)
+			pizzas.push({ name: item.name, code: item.code })
 		}
 	})
-	let drinks: string[] = []
+	let drinks: { name: string; code: string }[] = []
 	drinkItems.value.forEach((item) => {
 		if (item.selected) {
 			if (!item.name) return 0
-			drinks.push(item.name)
+			drinks.push({ name: item.name, code: item.code })
 		}
 	})
 	cartItem.contains = {
@@ -257,17 +260,16 @@ const drinkOptions = ref<IProduct[]>(
 	}
 
 	&__wrapper {
-		max-height: 20rem;
+		max-height: 30vh;
 		margin-bottom: 1rem;
 		overflow-y: scroll;
 
-		&--items{
+		&--items {
 			max-height: 10rem;
 		}
 
 		@media (min-width: 768px) {
-			max-height: none;
-			margin-bottom: 0;
+			max-height: 40vh;
 			overflow-y: auto;
 		}
 	}
@@ -306,8 +308,9 @@ const drinkOptions = ref<IProduct[]>(
 		padding: 0.5rem;
 		background: $green;
 		color: #fff;
-		border: 1px soptionlid $green;
+		border: 1px solid $green;
 		border-radius: 0.5rem;
+		outline: none;
 		cursor: pointer;
 		font-size: 1rem;
 		font-weight: 600;
@@ -367,6 +370,7 @@ const drinkOptions = ref<IProduct[]>(
 
 .SOption {
 	display: flex;
+	// flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
 	background: #fff;

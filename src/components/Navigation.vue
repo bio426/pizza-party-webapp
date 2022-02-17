@@ -7,7 +7,7 @@
 				:class="[activeLink == 1 ? 'Navigation__link--active' : '']"
 				@click="activeLink = 1"
 			>
-				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
+				<img class="Navigation__ico" src="../assets/icons/combos.svg" />
 				Combos</a
 			>
 			<a
@@ -27,7 +27,7 @@
 			>
 				<img
 					class="Navigation__ico"
-					src="../assets/icons/pizza.svg"
+					src="../assets/icons/special.svg"
 				/>Premium</a
 			>
 			<a
@@ -36,7 +36,7 @@
 				:class="[activeLink == 4 ? 'Navigation__link--active' : '']"
 				@click="activeLink = 4"
 			>
-				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
+				<img class="Navigation__ico" src="../assets/icons/drinks.svg" />
 				Bebidas</a
 			>
 			<a
@@ -45,7 +45,7 @@
 				:class="[activeLink == 5 ? 'Navigation__link--active' : '']"
 				@click="activeLink = 5"
 			>
-				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
+				<img class="Navigation__ico" src="../assets/icons/extras.svg" />
 				Extras</a
 			>
 			<div

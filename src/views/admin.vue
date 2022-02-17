@@ -2,29 +2,17 @@
 	<div class="admin">
 		<div class="admin__spacer"></div>
 		<div class="admin__container">
-			<div class="admin__flex">
-				<AdminAlarm
-					:alerting="incomingOrders"
-					@attended="incomingOrders = false"
-				/>
-				<AdminStatus />
-			</div>
-			<div class="admin__details">
-				<AdminMaps :cords="mapCords" />
-				<AdminActive :order="activeOrder" />
-				<AdminItems :items="activeOrder.items" />
-			</div>
-			<h2 class="admin__subtitle">Ordenes Pendientes</h2>
-			<div class="admin__orders">
-				<div class="admin__noOrders" v-if="orders.length == 0">
-					Sin ordenes para mostrar...
+			<div class="admin__grid">
+				<div class="admin__box">
+					<AdminOrders :orders="orders" @watch-order="viewDetails" />
 				</div>
-				<Order
-					v-for="(order, i) in orders"
-					:key="i"
-					:order="order"
-					@click="selectOrder(i)"
-				/>
+				<div class="admin__box">
+					<AdminAlarm
+						:alerting="orderIncoming"
+						@attended="orderIncoming = false"
+					/>
+					<AdminDetails :order="selectedOrder" />
+				</div>
 			</div>
 		</div>
 		<div class="admin__spacer"></div>
@@ -33,89 +21,48 @@
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeUnmount } from "vue"
-import {
-	getFirestore,
-	collection,
-	query,
-	where,
-	getDocs,
-	onSnapshot,
-	orderBy,
-	Timestamp,
-	GeoPoint,
-	Unsubscribe,
-} from "firebase/firestore"
 
-import { IOrderResponse } from "../interfaces"
+import { IOrder } from "../interfaces"
 
+import AdminOrders from "../components/Admin/AdminOrders.vue"
 import AdminAlarm from "../components/Admin/AdminAlarm.vue"
-import AdminStatus from "../components/Admin/AdminStatus.vue"
-import AdminMaps from "../components/Admin/AdminMaps.vue"
-import AdminActive from "../components/Admin/AdminActive.vue"
-import AdminItems from "../components/Admin/AdminItems.vue"
-import Order from "../components/Order.vue"
-
-const db = getFirestore()
-
-let mapCords = reactive<google.maps.LatLngLiteral>({
-	lat: -12.067664200000008,
-	lng: -77.0716884,
-})
+import AdminDetails from "../components/Admin/AdminDetails.vue"
+import FirestoreService from "../services/FirestoreService"
 
 // Get Orders
-let orders = ref<IOrderResponse[]>([])
-let unsubscribe: Unsubscribe
+let orders = ref<IOrder[]>([])
 let firstGet = true
-let incomingOrders = ref(false)
-let todayInit = new Date()
-todayInit.setHours(0, 0, 0, 0)
-let q = query(
-	collection(db, "orders"),
-	where("createdAt", ">=", Timestamp.fromDate(todayInit)),
-	orderBy("createdAt", "desc")
-)
-unsubscribe = onSnapshot(q, (querySnapshot) => {
-	orders.value = []
-	querySnapshot.forEach((doc) => {
-		let data = { ...doc.data(), id: doc.id } as IOrderResponse
-		orders.value.push(data)
-	})
+let orderIncoming = ref(false)
+let unsubscribe = FirestoreService.subscribeOrders((updatedOrders) => {
+	orders.value = updatedOrders
 	if (firstGet) {
 		firstGet = false
 		return
 	}
-	incomingOrders.value = true
+	orderIncoming.value = true
 })
 onBeforeUnmount(() => unsubscribe())
 
-// Handle order view
-let timePlaceholder = Timestamp.fromDate(todayInit)
-let cordsPlaceholder = new GeoPoint(-12.067664200000008, -77.0716884)
-let activeOrder = reactive<IOrderResponse>({
+function viewDetails(index: number) {
+	let toSelect = orders.value[index]
+	selectedOrder.id = toSelect.id
+	selectedOrder.user = { ...toSelect.user }
+	selectedOrder.address = { ...toSelect.address }
+	selectedOrder.price = { ...toSelect.price }
+	selectedOrder.completed = toSelect.completed
+	selectedOrder.createdAt = toSelect.createdAt
+	selectedOrder.items = toSelect.items
+}
+
+let selectedOrder = reactive<IOrder>({
 	id: "",
-	clientAddress: "",
-	clientCords: cordsPlaceholder,
-	clientPhone: 0,
-	createdAt: timePlaceholder,
-	payment: {
-		type: ""
-	},
+	user: { name: "", phone: "" },
+	address: { name: "", lat: 0, lng: 0 },
+	price: { items: 0, delivery: 0 },
+	completed: false,
+	createdAt: new Date(),
 	items: [],
 })
-
-function selectOrder(index: number) {
-	let order = orders.value[index]
-	mapCords.lat = order.clientCords.latitude
-	mapCords.lng = order.clientCords.longitude
-
-	activeOrder.id = order.id
-	activeOrder.clientAddress = order.clientAddress
-	activeOrder.clientCords = order.clientCords
-	activeOrder.clientPhone = order.clientPhone
-	activeOrder.createdAt = order.createdAt
-	activeOrder.payment = order.payment
-	activeOrder.items = order.items
-}
 </script>
 
 <style lang="scss">
@@ -129,38 +76,31 @@ function selectOrder(index: number) {
 		margin: 0 auto;
 	}
 
-	&__flex {
-		display: flex;
-		gap: 1rem;
+	&__grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
 	}
 
-	&__details {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 1rem;
-	}
-
-	&__orders {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 1rem;
-		margin-top: 1rem;
+	&__box {
+		padding: 1rem;
+		background: #fff;
+		border-radius: 1rem;
+		box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
 	}
 
 	&__subtitle {
 		display: block;
-		margin-top: 1rem;
 		font-size: 1.5rem;
 	}
 
-	&__noOrders {
-		grid-column: 1 / span 4;
-		font-size: 1.5rem;
-		text-align: center;
+	&__orderInfo {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 	}
 
 	&__spacer {
-		height: 20vh;
+		height: 5vh;
 	}
 }
 </style>

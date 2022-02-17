@@ -43,6 +43,7 @@ defineEmits(["closeModal"])
 
 	&__main {
 		width: 90%;
+		max-height: 90vh;
 		padding: 1rem;
 		background: #fff;
 

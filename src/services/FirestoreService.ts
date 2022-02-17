@@ -18,7 +18,7 @@ import {
 	orderBy,
 } from "firebase/firestore"
 
-import { IProduct, IOrder, IAdminStatus } from "../interfaces"
+import { IProduct, IAdminStatus, IOrder, ICartItem } from "../interfaces"
 
 class FirestoreService {
 	private appConfig: FirebaseOptions = {
@@ -53,11 +53,18 @@ class FirestoreService {
 
 	async sendOrder(order: IOrder) {
 		let res = await addDoc(collection(this.db, "orders"), {
-			clientAddress: order.clientAddress,
-			clientPhone: order.clientPhone,
-			clientCords: new GeoPoint(order.clientCords.lat, order.clientCords.lng),
-			createdAt: Timestamp.now(),
-			payment: order.payment,
+			user: {
+				...order.user,
+			},
+			address: {
+				name: order.address.name,
+				cords: new GeoPoint(order.address.lat, order.address.lng),
+			},
+			price: {
+				...order.price,
+			},
+			createdAt: Timestamp.fromDate(order.createdAt),
+			completed: order.completed,
 			items: order.items,
 		})
 		return res
@@ -76,12 +83,13 @@ class FirestoreService {
 		return resolved
 	}
 
+	// cambiar implementacion
 	subscribeKitchenLoad(onSnap: (doc: DocumentSnapshot) => void) {
 		let unsubscribe = onSnapshot(doc(this.db, "admin", "status"), onSnap)
 		return unsubscribe
 	}
 
-	subscribeOrders(onSnap: (doc: QuerySnapshot) => void) {
+	subscribeOrders(onSnap: (orders: IOrder[]) => void) {
 		let todayInit = new Date()
 		todayInit.setHours(0, 0, 0, 0)
 		let q = query(
@@ -89,7 +97,30 @@ class FirestoreService {
 			where("createdAt", ">=", Timestamp.fromDate(todayInit)),
 			orderBy("createdAt", "desc")
 		)
-		let unsubscribe = onSnapshot(q, onSnap)
+		// let unsubscribe = onSnapshot(q, onSnap)
+		let unsubscribe = onSnapshot(q, (snap) => {
+			let orders: IOrder[] = []
+			snap.forEach((doc) => {
+				let raw = { ...doc.data() }
+				let cords = raw.address.cords as GeoPoint
+				let createdAt = raw.createdAt as Timestamp
+				let processed: IOrder = {
+					id: doc.id,
+					user: { ...raw.user },
+					address: {
+						name: raw.address.name,
+						lat: cords.latitude,
+						lng: cords.longitude,
+					},
+					price: { ...raw.price },
+					completed: raw.completed,
+					createdAt: createdAt.toDate(),
+					items: raw.items,
+				}
+				orders.push(processed)
+			})
+			onSnap(orders)
+		})
 		return unsubscribe
 	}
 }
