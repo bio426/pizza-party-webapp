@@ -1,38 +1,42 @@
 <template>
-	<div class="Cart">
+	<div class="fixed top-0 w-full h-screen bg-modal z-20">
 		<transition name="slide">
-			<div class="Cart__main" v-if="showMain">
-				<div class="Cart__head">
-					<p class="Cart__info" v-if="userAddress.name != ''">
+			<div
+				class="absolute right-0 w-9/10 md:w-7/10 lg:w-2/5 h-full bg-white"
+				v-if="showMain"
+			>
+				<div class="flex justify-between p-4 bg-gray-300">
+					<p class="block w-3/5" v-if="userAddress.name != ''">
 						Entregar en:
-						<span class="Cart__address"> {{ userAddress.name }} </span>
+						<span class="font-bold"> {{ userAddress.name }} </span>
 						<button
-							class="Cart__changeAddress"
+							class="ml-1 px-2 bg-white border border-black rounded-lg"
 							@click="showModalAddress = true"
 						>
 							Cambiar
 						</button>
 					</p>
-					<p class="Cart__info" v-else>
-						<span class="Cart__address">
-							Selecciona una dirección de entrega
-						</span>
+					<p class="block w-3/5" v-else>
+						<span class="font-bold"> Selecciona una dirección de entrega </span>
 						<button
-							class="Cart__changeAddress"
+							class="ml-1 px-2 bg-white border border-black rounded-lg"
 							@click="showModalAddress = true"
 						>
 							Seleccionar
 						</button>
 					</p>
-					<button class="Cart__close" @click="toogleCart">
-						<img class="Cart__ico" src="../assets/icons/close.svg" />
+					<button @click="toogleCart">
+						<img class="block w-6" src="../assets/icons/close.svg" />
 					</button>
 				</div>
-				<div class="Cart__container">
-					<h4 class="Cart__title">Tu carrito</h4>
-					<div class="Cart__items">
-						<div class="Cart__noItems" v-if="cart.length == 0">
-							<img class="Cart__ico" src="../assets/icons/empty.svg" />
+				<div class="p-4">
+					<h4 class="mb-4 text-center text-2xl">Tu carrito</h4>
+					<div class="flex flex-col h-[50vh] overflow-y-auto">
+						<div
+							class="flex justify-center items-center gap-2 w-full h-full text-center font-bold"
+							v-if="cart.length == 0"
+						>
+							<img class="block w-6" src="../assets/icons/empty.svg" />
 							Aun no hay items agregados
 						</div>
 						<CartItem
@@ -43,42 +47,53 @@
 						/>
 					</div>
 				</div>
-				<div class="Cart__fixed">
-					<div class="Cart__fixedPrices">
-						<div class="Cart__subPrice">
+				<div class="absolute bottom-0 w-full p-4 border-t border-black">
+					<div class="flex flex-col gap-2 mb-2">
+						<div class="flex justify-between">
 							<span>Subtotal</span>
 							<span>S/ {{ cartPrice.toFixed(2) }}</span>
 						</div>
-						<div class="Cart__subPrice">
+						<div class="flex justify-between">
 							<span>Delivery</span>
 							<span>S/ {{ delivery.toFixed(2) }}</span>
 						</div>
-						<div class="Cart__endPrice">
+						<div
+							class="flex justify-betweenflex justify-between pt-2 border-t border-black text-xl font-bold"
+						>
 							<span>Total a pagar</span>
 							<span>S/ {{ finalPrice.toFixed(2) }}</span>
 						</div>
 					</div>
-					<div class="Cart__fixedButtons">
-						<button
-							class="Cart__buttonContinue"
-							@click="showModalAddress = true"
-							v-if="userAddress.name == ''"
+					<button
+						class="flex justify-between items-center w-full mb-4 py-2 px-4 bg-red-500 text-white rounded-lg font-bold"
+						@click="showModalAddress = true"
+						v-if="userAddress.name == ''"
+					>
+						<span
+							class="flex justify-center items-center w-6 h-6 mr-8 bg-white text-red-500 rounded-full font-bold"
+							>{{ cart.length }}</span
 						>
-							<span class="Cart__quantity">{{ cart.length }}</span>
-							Seleccionar dirección
-							<span class="Cart__price Cart__price--fixed"
-								>S/ {{ finalPrice.toFixed(2) }}</span
-							>
-						</button>
-						<button class="Cart__buttonContinue" @click="finishOrder" v-else>
-							<span class="Cart__quantity">{{ cart.length }}</span>
-							Confirmar pedido
-							<span>S/ {{ finalPrice.toFixed(2) }}</span>
-						</button>
-						<button class="Cart__buttonBack" @click="toogleCart">
-							Seguir comprando
-						</button>
-					</div>
+						Seleccionar dirección
+						<span>S/ {{ finalPrice.toFixed(2) }}</span>
+					</button>
+					<button
+						class="flex justify-between items-center w-full mb-4 py-2 px-4 bg-red-500 text-white rounded-lg font-bold"
+						@click="finishOrder"
+						v-else
+					>
+						<span
+							class="flex justify-center items-center w-6 h-6 mr-8 bg-white text-red-500 rounded-full font-bold"
+							>{{ cart.length }}</span
+						>
+						Confirmar pedido
+						<span>S/ {{ finalPrice.toFixed(2) }}</span>
+					</button>
+					<button
+						class="block w-full py-2 px-4 bg-transparent text-red-500 border-2 border-red-500 rounded-lg font-bold"
+						@click="toogleCart"
+					>
+						Seguir comprando
+					</button>
 				</div>
 			</div>
 		</transition>
@@ -132,175 +147,7 @@ let showModalAddress = ref(false)
 let showModalConfirmation = ref(false)
 </script>
 
-<style lang="scss">
-@import "../assets/styles/variables";
-
-.Cart {
-	position: fixed;
-	top: 0;
-	width: 100%;
-	height: 100vh;
-	background: rgba($color: #000000, $alpha: 0.5);
-	z-index: 10;
-
-	&__main {
-		position: absolute;
-		right: 0;
-		width: 90%;
-		height: 100%;
-		background: #fff;
-
-		@media (min-width: 768px) {
-			width: 70%;
-		}
-		@media (min-width: 1024px) {
-			width: 40%;
-		}
-	}
-
-	&__head {
-		display: flex;
-		justify-content: space-between;
-		padding: 1rem;
-		background: lightgray;
-	}
-
-	&__info {
-		display: block;
-		max-width: 60%;
-	}
-
-	&__address {
-		font-weight: 600;
-	}
-
-	&__changeAddress {
-		margin-left: 0.2rem;
-		padding: 0 0.5rem;
-		background: #fff;
-		border: 1px solid #000;
-		border-radius: 0.5rem;
-		cursor: pointer;
-	}
-
-	&__close {
-		border: none;
-		background: none;
-		cursor: pointer;
-	}
-
-	&__title {
-		padding-bottom: 1rem;
-		text-align: center;
-		font-size: 1.5rem;
-	}
-
-	&__items {
-		display: flex;
-		flex-direction: column;
-		height: 55vh;
-		overflow-y: auto;
-	}
-
-	&__noItems {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 0.5rem;
-		width: 100%;
-		height: 100%;
-		text-align: center;
-		font-weight: 600;
-	}
-
-	&__container {
-		padding: 1rem;
-	}
-
-	&__fixed {
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		padding: 1rem;
-		border-top: 1px solid #000;
-	}
-
-	&__fixedPrices {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	&__subPrice {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	&__endPrice {
-		display: flex;
-		justify-content: space-between;
-		padding-top: 0.5rem;
-		border-top: 1px solid #000;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	&__fixedButtons {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		padding-top: 1rem;
-	}
-
-	&__buttonContinue {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		padding: 0.5rem 1rem;
-		background: $red;
-		color: #fff;
-		border: none;
-		border-radius: 1rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	&__buttonBack {
-		display: block;
-		width: 100%;
-		padding: 0.5rem 1rem;
-		background: none;
-		color: $red;
-		border: 2px solid $red;
-		border-radius: 1rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	&__quantity {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 1.5rem;
-		height: 1.5rem;
-		margin-right: 2rem;
-		background: #fff;
-		color: $red;
-		border-radius: 50%;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	&__ico {
-		display: block;
-		width: 1.5rem;
-		height: auto;
-	}
-}
-
+<style>
 .slide-enter-active,
 .slide-leave-active {
 	transition: transform 0.5s ease;

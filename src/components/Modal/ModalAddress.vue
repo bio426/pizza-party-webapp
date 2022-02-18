@@ -1,36 +1,42 @@
 <template>
 	<ModalBase
-		title="Selecciona tu dirección gaa"
+		title="Selecciona tu dirección"
 		@close-modal="$emit('closeSelector')"
 	>
-		<div class="ASelector">
-			<p class="ASelector__info">
+		<div>
+			<p class="mb-4">
 				Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid cumque
 				nobis iure rerum quis accusamus, beatae est placeat aperiam odio id
 				ratione cum culpa nulla perspiciatis iusto. Eveniet, cupiditate facilis!
 			</p>
-			<div class="ASelector__alert">
+			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
 				<img
-					class="ASelector__ico"
+					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p>
+				<p class="text-white">
 					Asegurate de incluir el numero en tu dirección, y seleccionar las
 					opciones de la barra de busqueda.
 				</p>
 			</div>
-			<label class="ASelector__label">
+			<label class="block mb-4">
 				Busca tu dirección
 				<input
-					class="ASelector__autocomplete"
+					class="block w-full mt-2 p-2 border border-gray-400"
 					type="text"
 					placeholder="ej. Av. Mariano Cornejo 1902"
 					ref="autocompleteInput"
 				/>
 			</label>
-			<div class="ASelector__map" ref="mapView"></div>
-			<button class="ASelector__button" @click="selectAddress">
+			<div
+				class="relative h-80 mb-4 border border-gray-400 map-marker"
+				ref="mapView"
+			></div>
+			<button
+				class="block w-full p-2 bg-green-500 active:bg-green-600 text-white rounded-lg font-bold"
+				@click="selectAddress"
+			>
 				Seleccionar dirección
 			</button>
 		</div>
@@ -70,9 +76,9 @@ function onAutocompleteChange() {
 }
 
 function getAddress() {
-	if(!autocompleteInput.value) return "Undefined"
+	if (!autocompleteInput.value) return "Undefined"
 	let raw = autocompleteInput.value.value
-	let name = raw.split(",",1)[0]
+	let name = raw.split(",", 1)[0]
 	return name
 }
 
@@ -104,74 +110,16 @@ async function selectAddress() {
 </script>
 
 <style lang="scss">
-.ASelector {
-	&__info {
-		margin-bottom: 1rem;
-	}
-
-	&__alert {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-		padding: 0.5rem;
-		background: $green;
-		color: #fff;
-		border-radius: 0.5rem;
-		font-size: 0.9rem;
-	}
-
-	&__ico {
-		display: block;
-		width: 1rem;
-		height: auto;
-	}
-
-	&__label {
-		display: block;
-		margin-bottom: 1rem;
-	}
-
-	&__autocomplete {
-		display: block;
-		width: 100%;
-		margin-top: 0.5rem;
-		padding: 0.5rem;
-	}
-
-	&__map {
-		position: relative;
-		margin-bottom: 1rem;
-		height: 20rem;
-		border: 1px solid #000;
-
-		&::after {
-			content: "";
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 1rem;
-			height: 1rem;
-			border: 2px solid red;
-			border-radius: 50%;
-		}
-	}
-
-	&__button {
-		display: block;
-		width: 100%;
-		padding: 0.5rem;
-		background: $green;
-		color: #fff;
-		border: none;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-
-		&:active {
-			background: darken($color: $green, $amount: 10%);
-		}
-	}
+.map-marker::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid red;
+	border-radius: 50%;
 }
+
 </style>

@@ -1,48 +1,40 @@
 <template>
-	<div class="Item">
-		<div class="Item__main">
-			<!-- <img class="Item__image" src="../assets/images/americana.webp" /> -->
-			<img class="Item__image" :src="item.image" />
-			<div class="Item__container Item__container--info">
-				<span class="Item__name"> {{ item.quantity }} x {{ item.name }} </span>
-				<span class="Item__price">S/ {{ item.price.toFixed(2) }}</span>
+	<div class="py-4 border-t last:border-b border-black">
+		<div class="flex gap-4">
+			<img class="block w-16 rounded-lg" :src="item.image" />
+			<div class="grow">
+				<span class="block mb-2"> {{ item.quantity }} x {{ item.name }} </span>
+				<span class="block font-bold">S/ {{ item.price.toFixed(2) }}</span>
 			</div>
-			<div class="Item__container">
-				<div class="Item__container Item__container--actions">
-					<button class="Item__button" @click="removeItem(index)">
-						<img class="Item__ico" src="../assets/icons/trash.svg" />
+			<div>
+				<div class="flex justify-between mb-2">
+					<button @click="removeItem(index)">
+						<img class="block w-6" src="../assets/icons/trash.svg" />
 					</button>
 					<button
-						class="Item__button"
 						@click="showDescription = !showDescription"
 						v-if="item.contains"
 					>
 						<img
-							class="Item__ico"
-							:class="{ 'Item__ico--rotated': showDescription }"
+							class="block w-6"
+							:class="{ 'rotate-180': showDescription }"
 							src="../assets/icons/arrow-down.svg"
 						/>
 					</button>
 				</div>
-				<div class="Item__container Item__container--quantity">
+				<div class="flex items-center gap-2">
 					<button
-						class="Item__button Item__button--quantity"
+						class="p-1 border border-black rounded-md"
 						@click="changeQuantity('-')"
 					>
-						<img
-							class="Item__ico Item__ico--quantity"
-							src="../assets/icons/minus.svg"
-						/>
+						<img class="block w-3" src="../assets/icons/minus.svg" />
 					</button>
-					<span class="Item__quantity">{{ item.quantity }}</span>
+					<span>{{ item.quantity }}</span>
 					<button
-						class="Item__button Item__button--quantity"
+						class="p-1 border border-black rounded-md"
 						@click="changeQuantity('+')"
 					>
-						<img
-							class="Item__ico Item__ico--quantity"
-							src="../assets/icons/plus-black.svg"
-						/>
+						<img class="block w-3" src="../assets/icons/plus-black.svg" />
 					</button>
 				</div>
 			</div>
@@ -56,10 +48,10 @@
 					Extra queso
 				</li>
 				<li v-for="(pizza, i) in item.contains?.pizza" :key="i">
-					{{ pizza }}
+					{{ pizza.name }}
 				</li>
 				<li v-for="(drink, i) in item.contains?.drink" :key="i">
-					{{ drink }}
+					{{ drink.name }}
 				</li>
 			</ul>
 		</div>
@@ -115,85 +107,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-@import "../assets/styles/variables";
-
-.Item {
-	padding: 1rem 0;
-	border-top: 1px solid #000;
-
-	&:last-child {
-		border-bottom: 1px solid #000;
-	}
-
-	&__main {
-		display: flex;
-		gap: 1rem;
-	}
-
-	&__image {
-		display: block;
-		width: 4rem;
-		height: auto;
-		border-radius: 0.5rem;
-	}
-
-	&__container {
-		&--info {
-			flex: 1;
-		}
-		&--actions {
-			display: flex;
-			justify-content: space-between;
-		}
-		&--quantity {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			margin-top: 0.5rem;
-		}
-	}
-
-	&__name {
-		display: block;
-	}
-
-	&__price {
-		display: block;
-		margin-top: 0.5rem;
-		font-weight: 600;
-	}
-
-	&__button {
-		background: none;
-		border: none;
-		cursor: pointer;
-
-		&--quantity {
-			padding: 0.2rem;
-			border: 1px solid #000;
-			border-radius: 0.5rem;
-		}
-	}
-
-	&__description {
-		// border: 1px solid red;
-		padding: 1rem;
-		padding-bottom: 0;
-	}
-
-	&__ico {
-		display: block;
-		width: 1.5rem;
-		height: auto;
-
-		&--quantity {
-			width: 0.9rem;
-		}
-
-		&--rotated {
-			transform: rotate(180deg);
-		}
-	}
-}
-</style>
+<style></style>

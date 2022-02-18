@@ -1,54 +1,57 @@
 <template>
-	<div class="FProduct">
+	<div class="w-full bg-white rounded-lg overflow-hidden shadow-xl">
 		<img
-			class="FProduct__image"
-			:class="{ 'FProduct__image--gray': !producExist }"
+			class="block w-full object-cover"
+			:class="{ grayscale: !producExist }"
 			:src="product.image"
 			alt="imagen de producto"
 		/>
-		<div class="FProduct__main">
-			<div class="FProduct__loading" v-if="!producExist">
+		<div class="p-4">
+			<div
+				class="flex justify-center items-center h-40 text-gray-500 text-xl font-bold"
+				v-if="!producExist"
+			>
 				Cargando producto...
 			</div>
 			<div v-else>
-				<span class="FProduct__name">{{ product.name }}</span>
-				<p class="FProduct__description">
+				<span class="block mb-4 text-lg font-medium">{{ product.name }}</span>
+				<p class="block min-h-[3rem] mb-4 text-sm">
 					{{ product.description }}
 				</p>
 				<div
-					class="FProduct__row"
-					:class="{ 'FProduct__row--reverse': !haveSelect }"
+					class="flex justify-between items-center mb-4"
+					:class="{ 'flex-row-reverse': !haveSelect }"
 				>
 					<select
-						class="FProduct__select"
+						class="block w-3/4 md:w-1/2 p-2"
 						v-if="haveSelect"
 						v-model="extraCheese"
 					>
-						<option class="FProduct__option" value="" disabled>
-							Selecciona un tamaño
-						</option>
-						<option class="FProduct__option" :value="false">
-							{{ product.name }}
-						</option>
-						<option class="FProduct__option" :value="true">
-							{{ product.name }} con extraqueso
-						</option>
+						<option value="" disabled>Selecciona un tamaño</option>
+						<option :value="false">{{ product.name }}</option>
+						<option :value="true">{{ product.name }} con extraqueso</option>
 					</select>
-					<span class="FProduct__price">S/ {{ productPrice.toFixed(2) }}</span>
+					<span class="block text-lg font-bold"
+						>S/ {{ productPrice.toFixed(2) }}</span
+					>
 				</div>
 				<button
-					class="FProduct__button"
+					class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
 					@click="$emit('buildCombo')"
 					v-if="isCombo"
 				>
-					<img class="FProduct__ico" src="../assets/icons/cart.svg" />
+					<img class="block w-4" src="../assets/icons/cart.svg" />
 					<span>Escoger pizzas</span>
-					<img class="FProduct__ico" src="../assets/icons/plus.svg" />
+					<img class="block w-4" src="../assets/icons/plus.svg" />
 				</button>
-				<button class="FProduct__button" @click="selectProduct" v-else>
-					<img class="FProduct__ico" src="../assets/icons/cart.svg" />
-					<span>Añadir</span>
-					<img class="FProduct__ico" src="../assets/icons/plus.svg" />
+				<button
+					class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
+					@click="selectProduct"
+					v-else
+				>
+					<img class="block w-4" src="../assets/icons/cart.svg" />
+					<span>Agregar</span>
+					<img class="block w-4" src="../assets/icons/plus.svg" />
 				</button>
 			</div>
 		</div>
@@ -114,98 +117,4 @@ function selectProduct() {
 }
 </script>
 
-<style lang="scss">
-.FProduct {
-	width: 100%;
-	background: #fff;
-	border-radius: 1rem;
-	overflow: hidden;
-	box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
-
-	&__image {
-		display: block;
-		width: 100%;
-		height: auto;
-		object-fit: cover;
-
-		&--gray {
-			filter: grayscale(100%) blur(5px);
-		}
-	}
-
-	&__loading {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 10rem;
-		color: gray;
-		font-size: 1.5rem;
-		font-weight: 600;
-	}
-
-	&__main {
-		padding: 1rem;
-	}
-
-	&__name {
-		display: block;
-		margin-bottom: 1rem;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	&__description {
-		min-height: 2rem;
-		margin-bottom: 1rem;
-		font-size: 0.9rem;
-	}
-
-	&__row {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		&--reverse {
-			flex-direction: row-reverse;
-		}
-	}
-
-	&__select {
-		display: block;
-		width: 50%;
-		padding: 0.5rem;
-	}
-
-	&__option {
-		padding: 1rem;
-	}
-
-	&__price {
-		display: block;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	&__button {
-		display: flex;
-		justify-content: space-around;
-		align-items: center;
-		width: 100%;
-		margin-top: 1rem;
-		padding: 0.6rem;
-		background: $green;
-		color: #fff;
-		border: none;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	&__ico {
-		display: block;
-		width: 1rem;
-		height: auto;
-	}
-}
-</style>
+<style></style>

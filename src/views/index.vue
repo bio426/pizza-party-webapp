@@ -1,25 +1,24 @@
 <template>
-	<div class="index">
-		<video class="index__video" autoplay loop muted ref="videoElement">
+	<div class="relative w-full min-h-screen bg-page bg-repeat">
+		<video class="w-full" autoplay loop muted ref="videoElement">
 			<source
 				src="https://res.cloudinary.com/dvv00flyl/video/upload/v1619132299/pizza-opt/banner_vi8bgz.webm"
 				type="video/webm"
 			/>
 		</video>
 		<Navigation :cart="isNavFixed" />
-		<div class="index__container">
+		<div class="w-9/10 mx-auto">
 			<div v-if="!productsLoaded">
-				<h4 class="index__category" id="combosSection">Combos</h4>
-				<div
-					class="index__products index__products--combos"
-					v-if="!productsLoaded"
-				>
+				<h4 class="my-8 text-center text-lg font-bold">Combos</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 					<Product v-for="i in 4" :key="i" />
 				</div>
 			</div>
 			<div v-else>
-				<h4 class="index__category" id="combosSection">Combos</h4>
-				<div class="index__products index__products--combos">
+				<h4 class="my-8 text-center text-lg font-bold" id="combosSection">
+					Combos
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 					<Product
 						v-for="combo in combos"
 						:key="combo.id"
@@ -27,35 +26,43 @@
 						@build-combo="chooseCombo(combo)"
 					/>
 				</div>
-				<h4 class="index__category" id="classicsSection">Pizzas clasicas</h4>
-				<div class="index__products">
+				<h4 class="my-8 text-center text-lg font-bold" id="classicsSection">
+					Pizzas clasicas
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					<Product
 						v-for="classic in classics"
 						:key="classic.id"
 						:product="classic"
 					/>
 				</div>
-				<h4 class="index__category" id="premiumsSection">Pizzas premiums</h4>
-				<div class="index__products">
+				<h4 class="my-8 text-center text-lg font-bold" id="premiumsSection">
+					Pizzas premiums
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					<Product
 						v-for="premium in premiums"
 						:key="premium.id"
 						:product="premium"
 					/>
 				</div>
-				<h4 class="index__category" id="drinksSection">Bebidas</h4>
-				<div class="index__products">
+				<h4 class="my-8 text-center text-lg font-bold" id="drinksSection">
+					Bebidas
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					<ProductSelect :products="filterChicha" />
 					<ProductSelect :products="filterLimonada" />
 					<ProductSelect :products="filterMaracumango" />
 				</div>
-				<h4 class="index__category" id="extrasSection">Extras</h4>
-				<div class="index__products">
+				<h4 class="my-8 text-center text-lg font-bold" id="extrasSection">
+					Extras
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					<Product v-for="extra in extras" :key="extra.id" :product="extra" />
 				</div>
 			</div>
 		</div>
-		<div class="index__spacer"></div>
+		<div class="h-8"></div>
 		<ModalCombo
 			v-if="showModalCombo"
 			:combo="baseCombo"
@@ -156,52 +163,8 @@ function chooseCombo(combo: IProduct) {
 }
 </script>
 
-<style lang="scss">
-@import "../assets/styles/mixins";
-
-.index {
-	@include page;
-
-	&__video {
-		width: 100%;
-	}
-
-	&__container {
-		width: 90%;
-		margin: 0 auto;
-	}
-
-	&__category {
-		margin: 2rem 0;
-		text-align: center;
-		font-size: 1.2rem;
-	}
-
-	&__products {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1rem;
-		margin-top: 1rem;
-	}
-
-	&__spacer {
-		height: 2rem;
-	}
-
-	@media (min-width: 768px) {
-		&__products {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	@media (min-width: 1024px) {
-		&__products {
-			grid-template-columns: repeat(3, 1fr);
-
-			&--combos {
-				grid-template-columns: repeat(4, 1fr);
-			}
-		}
-	}
+<style>
+.bg-page {
+	background-image: url("../assets/images/fondoPizza.webp");
 }
 </style>

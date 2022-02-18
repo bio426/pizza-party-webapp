@@ -1,69 +1,80 @@
 <template>
 	<ModalBase title="Confirmar pedido" @close-modal="$emit('closeConfirmation')">
-		<div class="CConfirmation">
-			<div class="CConfirmation__alert">
+		<div>
+			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
 				<img
-					class="CConfirmation__ico"
+					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p>
+				<p class="text-white">
 					si pagarss al contado, asegurate de indicar la cantidad con la cual
 					pagaras
 				</p>
 			</div>
-			<div class="CConfirmation__alert">
+			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
 				<img
-					class="CConfirmation__ico"
+					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p>
+				<p class="text-white">
 					Al pagar con Yape o Transferencia, te enviaremos los datos al numero
 					de teléfono
 				</p>
 			</div>
-			<div class="CConfirmation__flex">
-				<label class="CConfirmation__label">
-					Teléfono del cliente
+			<div class="flex flex-col items-center gap-4">
+				<label class="block">
+					Nombre y apellido
 					<input
-						class="CConfirmation__input"
+						class="block w-56 mt-2 p-2 border border-black"
+						type="text"
+						placeholder="ej. Mario Merino"
+					/>
+				</label>
+				<label class="block">
+					Número de teléfono
+					<input
+						class="block w-56 mt-2 p-2 border border-black"
 						type="text"
 						placeholder="ej. 910282313"
 						v-model="phone"
 					/>
 				</label>
-				<label class="CConfirmation__label">
+				<label class="block">
 					Tipo de pago
-					<select class="CConfirmation__input" v-model="payType">
+					<select
+						class="block w-56 mt-2 p-2 border border-black"
+						v-model="payType"
+					>
 						<option value="contado">Contra entrega</option>
 						<option value="yape">Yape</option>
 						<option value="banco">Transferencia</option>
 					</select>
 				</label>
-				<label class="CConfirmation__label" v-if="payType == 'contado'">
+				<label class="block" v-if="payType == 'contado'">
 					Paga con
 					<input
-						class="CConfirmation__input"
+						class="block w-56 mt-2 p-2 border border-black"
 						type="number"
 						v-model="paysWith"
 					/>
 				</label>
 			</div>
-			<div class="CConfirmation__row">
-				<span class="CConfirmation__description">Tiempo de entrega: </span>
-				<span class="CConfirmation__bold">{{ totalTime }} min</span>
+			<div class="grid grid-cols-2 gap-4 my-4">
+				<span class="block text-right">Tiempo de entrega: </span>
+				<span class="block font-bold">{{ totalTime }} min</span>
 			</div>
-			<div class="CConfirmation__row">
-				<span class="CConfirmation__description">Direccion de entrega: </span>
-				<span class="CConfirmation__bold">{{ address.name }}</span>
+			<div class="grid grid-cols-2 gap-4 my-4">
+				<span class="block text-right">Direccion de entrega: </span>
+				<span class="block font-bold">{{ address.name }}</span>
 			</div>
-			<div class="CConfirmation__row">
-				<span class="CConfirmation__description">Costo del pedido: </span>
-				<span class="CConfirmation__bold">S/ {{ price.toFixed(2) }}</span>
+			<div class="grid grid-cols-2 gap-4 my-4">
+				<span class="block text-right">Costo del pedido: </span>
+				<span class="block font-bold">S/ {{ price.toFixed(2) }}</span>
 			</div>
 			<button
-				class="CConfirmation__button"
+				class="block w-full p-2 bg-green-500 active:bg-green-600 disabled:bg-green-600 text-white rounded-lg font-bold"
 				:disabled="isSending"
 				@click="sendOrder"
 			>
@@ -160,91 +171,4 @@ async function sendOrder() {
 }
 </script>
 
-<style lang="scss">
-.CConfirmation {
-	&__alert {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-		padding: 0.5rem;
-		background: $green;
-		color: #fff;
-		border-radius: 0.5rem;
-		font-size: 0.9rem;
-	}
-
-	&__ico {
-		display: block;
-		width: 1rem;
-		height: auto;
-	}
-
-	&__flex {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	&__label {
-		display: block;
-		// margin-bottom: 1rem;
-	}
-
-	&__input {
-		display: block;
-		min-width: 14rem;
-		margin-top: 0.5rem;
-		padding: 0.5rem;
-		// padding-left: 2rem;
-		// background-image: url("../../assets/icons/info.svg");
-
-		&::-webkit-outer-spin-button,
-		&::-webkit-inner-spin-button {
-			-webkit-appearance: none;
-			margin: 0;
-		}
-		&[type="number"] {
-			-moz-appearance: none;
-		}
-	}
-
-	&__row {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
-		margin: 1rem 0;
-	}
-
-	&__description {
-		display: block;
-		text-align: right;
-	}
-
-	&__bold {
-		display: block;
-		text-align: left;
-		font-weight: 600;
-	}
-
-	&__button {
-		display: block;
-		width: 100%;
-		padding: 0.5rem;
-		background: $green;
-		color: #fff;
-		border: none;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-
-		&:active {
-			background: darken($color: $green, $amount: 10%);
-		}
-		&:disabled {
-			background: darken($color: $green, $amount: 10%);
-		}
-	}
-}
-</style>
+<style></style>

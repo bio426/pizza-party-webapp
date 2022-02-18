@@ -1,36 +1,33 @@
 <template>
-	<div class="MProduct">
+	<div class="w-full bg-white rounded-lg overflow-hidden shadow-xl">
 		<img
-			class="MProduct__image"
+			class="block w-full object-cover"
 			:src="mainProduct.image"
 			alt="imagen de producto"
 		/>
-		<div class="MProduct__main">
-			<span class="MProduct__name">{{ formattedName }}</span>
-			<p class="MProduct__description">
+		<div class="p-4">
+			<span class="block mb-4 text-lg font-medium">{{ formattedName }}</span>
+			<p class="block min-h-[3rem] mb-4 text-sm">
 				{{ mainProduct.description }}
 			</p>
-			<div class="MProduct__row">
-				<select class="MProduct__select" v-model="activeOption">
-					<option class="MProduct__option" value="" disabled>
-						Selecciona un producto
-					</option>
-					<option
-						class="MProduct__option"
-						v-for="(product, i) in products"
-						:value="i"
-					>
+			<div class="flex justify-between items-center mb-4">
+				<select class="block w-3/4 md:w-1/2 p-2" v-model="activeOption">
+					<option value="" disabled>Selecciona un producto</option>
+					<option v-for="(product, i) in products" :value="i">
 						{{ product.name }}
 					</option>
 				</select>
-				<span class="MProduct__price"
+				<span class="block text-lg font-bold"
 					>S/ {{ selectedProduct.price.toFixed(2) }}</span
 				>
 			</div>
-			<button class="MProduct__button" @click="selectProduct">
-				<img class="MProduct__ico" src="../assets/icons/cart.svg" />
-				<span>Añadir</span>
-				<img class="MProduct__ico" src="../assets/icons/plus.svg" />
+			<button
+				class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
+				@click="selectProduct"
+			>
+				<img class="block w-4" src="../assets/icons/cart.svg" />
+				<span>Agregar</span>
+				<img class="block w-4" src="../assets/icons/plus.svg" />
 			</button>
 		</div>
 	</div>
@@ -85,84 +82,4 @@ function selectProduct() {
 }
 </script>
 
-<style lang="scss">
-.MProduct {
-	width: 100%;
-	background: #fff;
-	border-radius: 1rem;
-	overflow: hidden;
-	box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
-
-	&__image {
-		display: block;
-		width: 100%;
-		height: auto;
-		object-fit: cover;
-	}
-
-	&__main {
-		padding: 1rem;
-	}
-
-	&__name {
-		display: block;
-		margin-bottom: 1rem;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	&__description {
-		min-height: 2rem;
-		margin-bottom: 1rem;
-		font-size: 0.9rem;
-	}
-
-	&__row {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		&--reverse {
-			flex-direction: row-reverse;
-		}
-	}
-
-	&__select {
-		display: block;
-		width: 50%;
-		padding: 0.5rem;
-	}
-
-	&__option {
-		padding: 1rem;
-	}
-
-	&__price {
-		display: block;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	&__button {
-		display: flex;
-		justify-content: space-around;
-		align-items: center;
-		width: 100%;
-		margin-top: 1rem;
-		padding: 0.6rem;
-		background: $green;
-		color: #fff;
-		border: none;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	&__ico {
-		display: block;
-		width: 1rem;
-		height: auto;
-	}
-}
-</style>
+<style></style>

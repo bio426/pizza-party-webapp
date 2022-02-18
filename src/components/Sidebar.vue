@@ -1,35 +1,33 @@
 <template>
-	<div class="Sidebar">
+	<div class="fixed top-0 w-full h-screen bg-modal z-20">
 		<transition name="slide">
-			<div class="Sidebar__main" v-if="showMain">
-				<div class="Sidebar__container Sidebar__container--close">
-					<button class="Sidebar__close" @click="$emit('hideSidebar')">
-						<img class="Sidebar__ico" src="../assets/icons/close.svg" />
+			<div class="absolute right-0 w-4/5 h-full p-6 bg-white" v-if="showMain">
+				<div class="flex justify-end">
+					<button @click="$emit('hideSidebar')">
+						<img class="block w-6" src="../assets/icons/close.svg" />
 					</button>
 				</div>
-				<div class="Sidebar__container">
-					<img class="Sidebar__logo" src="../assets/images/logoFull.webp" />
-					<div class="Sidebar__container">
-						<router-link class="Sidebar__link" to="/">Menu</router-link>
-					</div>
-					<div class="Sidebar__container Sidebar__container--social">
+				<div class="flex flex-col items-center">
+					<img class="block w-32 my-8" src="../assets/images/logoFull.webp" />
+					<router-link class="mb-4 text-xl" to="/">Menu</router-link>
+					<div class="flex gap-4">
 						<a
-							class="Sidebar__link Sidebar__link--social"
+							class="flex justify-center items-center w-10 h-10 bg-black rounded-full"
 							href="https://www.facebook.com/todalapizzaquepuedas"
 						>
-							<img class="Sidebar__ico" src="../assets/icons/facebook.svg" />
+							<img class="block w-6" src="../assets/icons/facebook.svg" />
 						</a>
 						<a
-							class="Sidebar__link Sidebar__link--social"
+							class="flex justify-center items-center w-10 h-10 bg-black rounded-full"
 							href="https://www.instagram.com/pizza.party.peru"
 						>
-							<img class="Sidebar__ico" src="../assets/icons/instagram.svg" />
+							<img class="block w-6" src="../assets/icons/instagram.svg" />
 						</a>
 						<a
-							class="Sidebar__link Sidebar__link--social"
+							class="flex justify-center items-center w-10 h-10 bg-black rounded-full"
 							href="https://goo.gl/maps/nL7YBBZ12Rb7mVaUA"
 						>
-							<img class="Sidebar__ico" src="../assets/icons/maps.svg" />
+							<img class="block w-6" src="../assets/icons/maps.svg" />
 						</a>
 					</div>
 				</div>
@@ -55,77 +53,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-.Sidebar {
-	position: fixed;
-	top: 0;
-	width: 100%;
-	height: 100vh;
-	background: rgba($color: #000000, $alpha: 0.5);
-	z-index: 10;
-
-	&__main {
-		position: absolute;
-		right: 0;
-		width: 80%;
-		height: 100%;
-		padding: 1.5rem;
-		background: #fff;
-	}
-
-	&__container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		&--close {
-			flex-direction: row;
-			justify-content: flex-end;
-		}
-
-		&--social {
-			flex-direction: row;
-			margin-top: 1rem;
-		}
-	}
-
-	&__close {
-		padding-left: auto;
-		background: none;
-		border: none;
-	}
-
-	&__logo {
-		display: block;
-		width: 8rem;
-		height: auto;
-		margin: 2rem 0;
-	}
-
-	&__link {
-		margin: 0.5rem;
-		color: #000;
-		font-size: 1.2rem;
-		text-decoration: none;
-
-		&--social {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 2.5rem;
-			width: 2.5rem;
-			background: #000;
-			border-radius: 50%;
-		}
-	}
-
-	&__ico {
-		display: block;
-		width: 1.5rem;
-		height: auto;
-	}
-}
-
+<style>
 .slide-enter-active,
 .slide-leave-active {
 	transition: transform 0.5s ease;

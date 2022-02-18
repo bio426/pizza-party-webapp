@@ -2,7 +2,7 @@ import { ref, onBeforeUnmount } from "vue"
 
 export default function () {
 	const isLargeMQ = window.matchMedia("(min-width: 1024px)")
-	let isLarge = ref<boolean>()
+	let isLarge = ref<boolean>(false)
 	if (isLargeMQ.matches) {
 		isLarge.value = true
 	}

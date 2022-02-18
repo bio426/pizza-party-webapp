@@ -1,59 +1,57 @@
 <template>
-	<div class="Navigation" :class="[cart ? 'Navigation--fixed' : '']">
-		<div class="Navigation__container">
+	<div class="sticky top-0 w-full bg-white shadow-lg z-10">
+		<div class="flex md:justify-center px-4 overflow-x-auto">
 			<a
-				class="Navigation__link"
+				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#combosSection"
-				:class="[activeLink == 1 ? 'Navigation__link--active' : '']"
+				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 1 }"
 				@click="activeLink = 1"
 			>
-				<img class="Navigation__ico" src="../assets/icons/combos.svg" />
+				<img class="block w-6" src="../assets/icons/combos.svg" />
 				Combos</a
 			>
 			<a
-				class="Navigation__link"
+				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#classicsSection"
-				:class="[activeLink == 2 ? 'Navigation__link--active' : '']"
+				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 2 }"
 				@click="activeLink = 2"
 			>
-				<img class="Navigation__ico" src="../assets/icons/pizza.svg" />
+				<img class="block w-6" src="../assets/icons/pizza.svg" />
 				Clasicas</a
 			>
 			<a
-				class="Navigation__link"
+				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#premiumsSection"
-				:class="[activeLink == 3 ? 'Navigation__link--active' : '']"
+				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 3 }"
 				@click="activeLink = 3"
 			>
-				<img
-					class="Navigation__ico"
-					src="../assets/icons/special.svg"
-				/>Premium</a
+				<img class="block w-6" src="../assets/icons/special.svg" />Premium</a
 			>
 			<a
-				class="Navigation__link"
+				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#drinksSection"
-				:class="[activeLink == 4 ? 'Navigation__link--active' : '']"
+				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 4 }"
 				@click="activeLink = 4"
 			>
-				<img class="Navigation__ico" src="../assets/icons/drinks.svg" />
+				<img class="block w-6" src="../assets/icons/drinks.svg" />
 				Bebidas</a
 			>
 			<a
-				class="Navigation__link"
+				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#extrasSection"
-				:class="[activeLink == 5 ? 'Navigation__link--active' : '']"
+				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 5 }"
 				@click="activeLink = 5"
 			>
-				<img class="Navigation__ico" src="../assets/icons/extras.svg" />
+				<img class="block w-6" src="../assets/icons/extras.svg" />
 				Extras</a
 			>
-			<div
-				class="Navigation__container Navigation__container--cart"
-				v-if="cart"
-			>
-				<button class="Navigation__cart" ref="cartButton" @click="toogleCart">
-					<img class="Navigation__ico" src="../assets/icons/cart.svg" />
+			<div class="flex items-center" v-if="cart">
+				<button
+					class="flex items-center gap-2 py-2 px-4 bg-red-500 text-white rounded-lg font-bold"
+					ref="cartButton"
+					@click="toogleCart"
+				>
+					<img class="block w-6" src="../assets/icons/cart.svg" />
 					S/ {{ cartPrice.toFixed(2) }}
 				</button>
 			</div>
@@ -111,79 +109,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-@import "../assets/styles/variables";
-
-.Navigation {
-	position: sticky;
-	top: 0;
-	width: 100%;
-	background: #fff;
-	box-shadow: 0 0.2rem 0.2rem rgba($color: #000000, $alpha: 0.5);
-	z-index: 5;
-
-	@media (min-width: 1024px) {
-		width: 70%;
-		margin: 1rem auto;
-		border-radius: 0.5rem;
-
-		&--fixed {
-			width: 100%;
-		}
-	}
-
-	&__container {
-		display: flex;
-		overflow-x: auto;
-
-		&--cart {
-			justify-content: center;
-			align-items: center;
-			overflow-x: visible;
-		}
-
-		@media (min-width: 768px) {
-			justify-content: center;
-		}
-	}
-
-	&__link {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 1rem 1.5rem;
-		color: #000;
-		font-weight: 600;
-		text-decoration: none;
-
-		&--active {
-			color: $red;
-			border-bottom: 2px solid $green;
-		}
-	}
-
-	&__cart {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 1rem;
-		background: $red;
-		color: #fff;
-		border: none;
-		border-radius: 0.5rem;
-		font-size: 1rem;
-		font-weight: 600;
-		cursor: pointer;
-	}
-
-	&__ico {
-		display: block;
-		width: 1.5rem;
-		height: auto;
-	}
-}
-
+<style>
 .animate__animated {
 	-webkit-animation-duration: 1s;
 	animation-duration: 1s;
