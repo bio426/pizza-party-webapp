@@ -1,12 +1,12 @@
 <template>
-	<div class="admin">
-		<div class="admin__spacer"></div>
-		<div class="admin__container">
-			<div class="admin__grid">
-				<div class="admin__box">
+	<div class="relative w-full min-h-screen bg-page bg-repeat">
+		<div class="h-10"></div>
+		<div class="w-9/10 mx-auto">
+			<div class="grid grid-cols-2 gap-8">
+				<div class="p-4 bg-white rounded-xl shadow-xl">
 					<AdminOrders :orders="orders" @watch-order="viewDetails" />
 				</div>
-				<div class="admin__box">
+				<div class="p-4 bg-white rounded-xl shadow-xl">
 					<AdminAlarm
 						:alerting="orderIncoming"
 						@attended="orderIncoming = false"
@@ -15,7 +15,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="admin__spacer"></div>
 	</div>
 </template>
 
@@ -65,42 +64,8 @@ let selectedOrder = reactive<IOrder>({
 })
 </script>
 
-<style lang="scss">
-@import "../assets/styles/mixins";
-
-.admin {
-	@include page;
-
-	&__container {
-		width: 90%;
-		margin: 0 auto;
-	}
-
-	&__grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 2rem;
-	}
-
-	&__box {
-		padding: 1rem;
-		background: #fff;
-		border-radius: 1rem;
-		box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.3);
-	}
-
-	&__subtitle {
-		display: block;
-		font-size: 1.5rem;
-	}
-
-	&__orderInfo {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
-
-	&__spacer {
-		height: 5vh;
-	}
+<style>
+.bg-page {
+	background-image: url("../assets/images/fondoPizza.webp");
 }
 </style>

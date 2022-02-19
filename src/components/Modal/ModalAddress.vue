@@ -109,7 +109,7 @@ async function selectAddress() {
 }
 </script>
 
-<style lang="scss">
+<style>
 .map-marker::after {
 	content: "";
 	position: absolute;

@@ -116,6 +116,11 @@ FirestoreService.getKitchenInfo().then((info) => {
 
 function calculateDeliveryTime() {
 	let timePerPizzas
+	if (store.getters.pizzaCount < 4) {
+		timePerPizzas = 10 + store.getters.pizzaCount * 5
+	} else {
+		timePerPizzas = 25
+	}
 	let timePerKitchen
 	let timePerTravel
 

@@ -1,7 +1,7 @@
 <template>
 	<button
-		class="Alarm"
-		:class="[alerting ? 'Alarm--animated' : '']"
+		class="block w-full mb-4 p-4 bg-white text-red-500 border-2 border-red-500 rounded-lg text-xl font-bold"
+		:class="{ 'alert-animate': alerting }"
 		@click="$emit('attended')"
 	>
 		{{ alerting ? "Hay pedidos nuevos" : "Sin nuevos pedidos" }}
@@ -39,34 +39,20 @@ watch(
 )
 </script>
 
-<style lang="scss">
-.Alarm {
-	display: block;
-	width: 100%;
-	margin-bottom: 1rem;
-	padding: 1rem;
-	background: #fff;
-	color: $red;
-	border: 2px solid $red;
-	border-radius: 0.5rem;
-	cursor: pointer;
-	font-size: 1.2rem;
-	font-weight: 600;
-
-	&--animated {
-		animation: changeColor 2s infinite;
-		box-shadow: 0 0 10px rgba($color: $red, $alpha: 0.3);
-	}
+<style>
+.alert-animate {
+	animation: changeColor 2s infinite;
+	box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
 
 @keyframes changeColor {
 	0%,
 	100% {
 		background: #fff;
-		color: $red;
+		color: rgb(239, 68, 68);
 	}
 	50% {
-		background: $red;
+		background: rgb(239, 68, 68);
 		color: #fff;
 	}
 }

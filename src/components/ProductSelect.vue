@@ -38,6 +38,7 @@ import { computed, PropType, ref } from "vue"
 
 import { useStore } from "../store"
 import useNotyf from "../composables/useNotyf"
+import cartStore from "../composables/useCartStore"
 import { ICartItem, IProduct } from "../interfaces"
 
 const props = defineProps({
@@ -79,6 +80,8 @@ function selectProduct() {
 	store.commit({ type: "addToCart", product: item })
 	let toastMsg = `x1 ${selectedProduct.value.name} agregado`
 	notyf.success(toastMsg)
+	// test
+	cartStore.addToCart(item)
 }
 </script>
 

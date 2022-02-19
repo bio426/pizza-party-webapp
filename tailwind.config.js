@@ -4,11 +4,13 @@ module.exports = {
 		extend: {
 			spacing: {
 				"7/10": "70%",
-				"9/10": "90%"
+				"9/10": "90%",
 			},
 			colors: {
-				"modal":"rgba(0, 0, 0, 0.5);"
-			}
+				modal: "rgba(0, 0, 0, 0.5)",
+				ppgreen: "#00795b",
+				ppred: "#da2308",
+			},
 		},
 	},
 	plugins: [],

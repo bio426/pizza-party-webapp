@@ -69,6 +69,7 @@
 			:options="comboOptions"
 			@close-selector="showModalCombo = false"
 		/>
+		<ModalCustom v-if="false" />
 	</div>
 </template>
 
@@ -84,6 +85,7 @@ import Navigation from "../components/Navigation.vue"
 import Product from "../components/Product.vue"
 import ProductSelect from "../components/ProductSelect.vue"
 import ModalCombo from "../components/Modal/ModalCombo.vue"
+import ModalCustom from "../components/Modal/ModalCustom.vue"
 
 // Toogle position of navigation
 const { isLarge } = useLargeScreen()

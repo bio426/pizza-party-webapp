@@ -1,18 +1,25 @@
 <template>
-	<table class="AOrders">
+	<table class="w-full border-collapse">
 		<thead>
 			<tr>
-				<th>Time</th>
-				<th>Phone</th>
-				<th>Select</th>
+				<th class="p-2 bg-black text-white">Time</th>
+				<th class="p-2 bg-black text-white">Phone</th>
+				<th class="p-2 bg-black text-white">Select</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr v-for="(order, i) in orders" @click="selectOrder(i)">
-				<td>{{ order.createdAt.toTimeString().substring(0,5) }}</td>
-				<td>{{ order.user.phone }}</td>
-				<td style="text-align:center">
-					<button @click="$emit('watchOrder',i)">Watch</button>
+				<td class="p-2 border border-black">
+					{{ order.createdAt.toTimeString().substring(0, 5) }}
+				</td>
+				<td class="p-2 border border-black">{{ order.user.phone }}</td>
+				<td class="p-2 border border-black text-center">
+					<button
+						class="p-1 bg-green-500 text-white rounded"
+						@click="$emit('watchOrder', i)"
+					>
+						<img class="block w-4" src="../../assets/icons/eye.svg" />
+					</button>
 				</td>
 			</tr>
 		</tbody>
@@ -34,22 +41,4 @@ const emits = defineEmits(["watchOrder"])
 function selectOrder(index: number) {}
 </script>
 
-<style lang="scss">
-.AOrders {
-	width: 100%;
-	border-collapse: collapse;
-
-	th {
-		padding: 0.5rem;
-		background: #000;
-		color: #fff;
-		border: 1px solid #fff;
-	}
-
-	td {
-		padding: 0.5rem;
-		background: #fff;
-		border: 1px solid black;
-	}
-}
-</style>
+<style></style>

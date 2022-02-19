@@ -1,10 +1,10 @@
 <template>
-	<div class="ADetails">
-		<div class="ADetails__map">
-			<div class="ADetails__mapV" ref="mapDiv"></div>
+	<div>
+		<div class="relative h-80 mb-4 border border-gray-400 map-marker">
+			<div class="w-full h-full" ref="mapDiv"></div>
 		</div>
-		<h4 class="ADetails__subtitle">Información</h4>
-		<strong v-if="order.id == ''">Orden sin seleccionar</strong>
+		<h4 class="block mb-2 text-xl font-medium">Información</h4>
+		<span v-if="order.id == ''">Orden sin seleccionar</span>
 		<div v-else>
 			<strong>Id: </strong><span>{{ order.id }}</span
 			><br />
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, PropType, computed } from "vue"
+import { ref, onMounted, watch, PropType } from "vue"
 
 import MapsService from "../../services/MapsService"
 import { IOrder } from "../../interfaces"
@@ -58,6 +58,7 @@ const props = defineProps({
 
 let mapDiv = ref()
 let mapInstance: google.maps.Map
+let markerInstance: google.maps.Marker | null
 onMounted(() => {
 	mapInstance = MapsService.getMap(mapDiv.value as HTMLDivElement)
 })
@@ -67,6 +68,16 @@ watch(
 		mapInstance.panTo({
 			lat: props.order.address.lat,
 			lng: props.order.address.lng,
+		})
+
+		if (markerInstance) {
+			markerInstance.setMap(null)
+			markerInstance = null
+		}
+
+		markerInstance = new google.maps.Marker({
+			position: { lat: props.order.address.lat, lng: props.order.address.lng },
+			map: mapInstance,
 		})
 	}
 )
@@ -100,30 +111,16 @@ function getCopy() {
 }
 </script>
 
-<style lang="scss">
-.ADetails {
-	&__map {
-		position: relative;
-		height: 20rem;
-		margin-bottom: 1rem;
-		border: 1px solid #000;
-
-		&::after {
-			content: "";
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 1rem;
-			height: 1rem;
-			border: 2px solid red;
-			border-radius: 50%;
-		}
-	}
-
-	&__mapV {
-		width: 100%;
-		height: 100%;
-	}
+<style>
+.map-marker::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid red;
+	border-radius: 50%;
 }
 </style>
