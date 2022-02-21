@@ -5,14 +5,14 @@
 			<p class="block mb-4">
 				{{ combo.description }}
 			</p>
-			<div class="flex gap-2 p-2 bg-green-500 rounded-lg text-sm">
+			<div class="flex gap-2 p-2 bg-yellow-500 rounded-lg text-sm">
 				<img
 					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p class="text-white">
-					Haz click para selecSitemonar o quitar elementos para tu combo.
+				<p class="text-black">
+					Haz click para seleccionar o quitar elementos para tu combo.
 				</p>
 			</div>
 			<hr class="my-4" />
@@ -108,7 +108,7 @@
 				</div>
 			</div>
 			<button
-				class="block w-full p-2 bg-green-500 text-white rounded-lg font-bold"
+				class="block w-full p-2 bg-red-500 text-white rounded-lg font-bold"
 				@click="addCombo"
 			>
 				Agregar al carrito

@@ -1,5 +1,5 @@
 <template>
-	<header class="bg-white">
+	<header class="bg-yellow-500">
 		<div class="flex justify-between items-center gap-4 w-9/10 mx-auto py-2">
 			<router-link to="/">
 				<img class="block" src="../assets/images/logoLetras.webp" />
@@ -12,10 +12,10 @@
 			</div>
 			<div class="flex gap-4" v-if="isLarge">
 				<a
-					class="flex gap-2 py-2 px-4 bg-green-500 text-white rounded-md font-bold"
+					class="flex gap-2 py-2 px-4 bg-white text-black rounded-md font-bold"
 					href="tel:555-555-5555"
 				>
-					<img class="block w-6" src="../assets/icons/phone-solid.svg" />
+					<img class="block w-6" src="../assets/icons/phone.svg" />
 					973-942-055
 				</a>
 				<button

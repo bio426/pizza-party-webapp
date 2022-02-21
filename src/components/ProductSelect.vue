@@ -22,7 +22,7 @@
 				>
 			</div>
 			<button
-				class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
+				class="flex justify-around items-center w-full p-2 bg-red-500 text-white rounded-md font-semibold"
 				@click="selectProduct"
 			>
 				<img class="block w-4" src="../assets/icons/cart.svg" />
@@ -38,7 +38,6 @@ import { computed, PropType, ref } from "vue"
 
 import { useStore } from "../store"
 import useNotyf from "../composables/useNotyf"
-import cartStore from "../composables/useCartStore"
 import { ICartItem, IProduct } from "../interfaces"
 
 const props = defineProps({
@@ -80,8 +79,6 @@ function selectProduct() {
 	store.commit({ type: "addToCart", product: item })
 	let toastMsg = `x1 ${selectedProduct.value.name} agregado`
 	notyf.success(toastMsg)
-	// test
-	cartStore.addToCart(item)
 }
 </script>
 

@@ -36,7 +36,7 @@
 					>
 				</div>
 				<button
-					class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
+					class="flex justify-around items-center w-full p-2 bg-red-500 text-white rounded-md font-semibold"
 					@click="$emit('buildCombo')"
 					v-if="isCombo"
 				>
@@ -45,7 +45,7 @@
 					<img class="block w-4" src="../assets/icons/plus.svg" />
 				</button>
 				<button
-					class="flex justify-around items-center w-full p-2 bg-green-500 text-white rounded-md font-semibold"
+					class="flex justify-around items-center w-full p-2 bg-red-500 text-white rounded-md font-semibold"
 					@click="selectProduct"
 					v-else
 				>

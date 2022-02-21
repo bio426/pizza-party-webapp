@@ -1,5 +1,5 @@
 <template>
-	<div class="sticky top-0 w-full bg-white shadow-lg z-10">
+	<div class="sticky top-0 w-full bg-yellow-500 shadow-lg z-10">
 		<div class="flex md:justify-center px-4 overflow-x-auto">
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
