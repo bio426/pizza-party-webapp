@@ -30,6 +30,7 @@
 						class="block w-56 mt-2 p-2 border border-black"
 						type="text"
 						placeholder="ej. Mario Merino"
+						v-model="username"
 					/>
 				</label>
 				<label class="block">
@@ -91,6 +92,7 @@ import ModalBase from "./ModalBase.vue"
 
 import useCartStore from "../../composables/useCartStore"
 import useUserStore from "../../composables/useUserStore"
+import useKitchenStore from "../../composables/useKitchenStore"
 import useNotyf from "../../composables/useNotyf"
 import FirestoreService from "../../services/FirestoreService"
 
@@ -101,32 +103,26 @@ const props = defineProps({
 	},
 })
 const emits = defineEmits(["closeConfirmation"])
-const { pizzaCount, cart, clearCart } = useCartStore()
-const { address } = useUserStore()
+const { pizzaCount, cart, clearCart, cartPrice } = useCartStore()
+const { address, deliveryPrice } = useUserStore()
+const { kitchenStore, updateKitchenStore } = useKitchenStore()
 const { notyf } = useNotyf()
-
-let deliveryTime = address.deliveryTime
 
 // obtener tiempo de entrega
 let totalTime = ref(0)
-FirestoreService.getKitchenStatus().then((info) => {
-	let cookingTime = info.kitchenWaitTime
-	totalTime.value = cookingTime + deliveryTime
-})
-
-function calculateDeliveryTime() {
-	let timePerPizzas
+updateKitchenStore().then(() => {
+	let timePerPizzas: number
 	if (pizzaCount.value < 4) {
 		timePerPizzas = 10 + pizzaCount.value * 5
 	} else {
 		timePerPizzas = 25
 	}
-	let timePerKitchen
-	let timePerTravel
+	let timePerKitchen: number = kitchenStore.kitchenWaitTime
+	let timePerTravel: number = address.travelTime
+	totalTime.value = Math.round(timePerPizzas + timePerKitchen + timePerTravel)
+})
 
-	// return timePerPizzas + timePerKitchen + timePerTravel
-}
-
+let username = ref("")
 let phone = ref("")
 function phoneIsValid() {
 	let validator = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,5}$/
@@ -161,8 +157,8 @@ async function sendOrder() {
 			lat: address.cords.lat,
 			lng: address.cords.lng,
 		},
-		price: { delivery: 10, items: 15 },
-		user: { name: "Bild", phone: "111222333", id: "firstUUid" },
+		price: { delivery: deliveryPrice.value, items: cartPrice.value },
+		user: { name: username.value, phone: phone.value },
 		createdAt: new Date(),
 		completed: false,
 		items,

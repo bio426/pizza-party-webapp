@@ -95,7 +95,7 @@ async function selectAddress() {
 	const { travelTime, distance } = await MapsService.getTravelInfo(mapCenter)
 	updateAddress({
 		cords: { lat: mapCenter.lat(), lng: mapCenter.lng() },
-		deliveryTime: travelTime,
+		travelTime: Math.round(travelTime / 60),
 		distance: distance,
 		name: getAddress(),
 	})

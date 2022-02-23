@@ -12,8 +12,7 @@
     "firebase": "^9.4.1",
     "notyf": "^3.10.0",
     "vue": "^3.2.16",
-    "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@types/google.maps": "^3.47.0",

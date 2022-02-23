@@ -1,4 +1,4 @@
-import { computed, reactive, readonly } from "vue"
+import { computed, reactive } from "vue"
 
 import useKitchenStore from "./useKitchenStore"
 
@@ -16,26 +16,30 @@ const address = reactive({
 		lng: 0,
 	},
 	name: "",
-	deliveryTime: 0,
+	travelTime: 0,
 	distance: 0,
 })
 
-let deliveryPrice = computed(
-	() =>
-		Math.floor(Math.round(address.distance / 1000)) * kitchenStore.deliveryPrice
-)
+let deliveryPrice = computed(() => {
+	let distanceKm = Math.round(address.distance / 1000)
+	if(distanceKm < 2.5){
+		return distanceKm * 2	
+	}
+	return distanceKm * kitchenStore.deliveryPrice
+})
 
 function updateAddress(newAddress: typeof address) {
 	address.cords = newAddress.cords
 	address.name = newAddress.name
-	address.deliveryTime = newAddress.deliveryTime
+	address.travelTime = newAddress.travelTime
 	address.distance = newAddress.distance
+	console.log(address.travelTime)
 }
 
 export default function () {
 	return {
-		user: readonly(user),
-		address: readonly(address),
+		user,
+		address,
 		updateAddress,
 		deliveryPrice,
 	}

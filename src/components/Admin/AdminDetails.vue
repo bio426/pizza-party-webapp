@@ -18,8 +18,6 @@
 			><br />
 			<strong>Precio Delivery: </strong><span>{{ order.price.delivery }}</span
 			><br />
-			<strong>Delivery: </strong><span>{{ order.price.delivery }}</span
-			><br />
 			<hr />
 			<h4>Items</h4>
 			<ul>
@@ -108,6 +106,7 @@ function getCopy() {
 	})
 	let resultCopy = `Hora: ${timeStr}\nNombre: ${userName}\nTelefono: ${userPhone}\nPedido: ${items}\nPago: ${itemsPrice}\nDelivery: ${deliveryPrice}\nDireccion: ${address}\nLink: ${addressLink}`
 	console.log(resultCopy)
+	alert(resultCopy)
 }
 </script>
 

@@ -23,7 +23,7 @@
 				/>
 			</label>
 			<label class="block">
-				Precio de delivery (Km)
+				Precio de delivery (S/.)
 				<input
 					class="block mt-2 p-2 disabled:bg-gray-200 disabled:text-gray-500 border border-black"
 					type="number"
