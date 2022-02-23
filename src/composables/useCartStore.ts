@@ -50,12 +50,13 @@ function clearCart() {
 }
 
 function changeItemQuantity(index: number, change: number) {
+	if (cart.value[index].quantity + change < 1) return
 	cart.value[index].quantity += change
 }
 
 export default function () {
 	return {
-		cart: readonly(cart),
+		cart,
 		cartPrice,
 		pizzaCount,
 		addItem,

@@ -70,23 +70,15 @@ class FirestoreService {
 		return res
 	}
 
-	async getKitchenInfo() {
+	async getKitchenStatus() {
 		let snap = await getDoc(doc(this.db, "admin", "status"))
 		let raw = { ...snap.data() } as IAdminStatus
 		return raw
 	}
 
-	async updateKitchenLoad(load: number) {
-		let resolved = await updateDoc(doc(this.db, "admin", "status"), {
-			kitchenLoad: load,
-		})
+	async updateKitchenStatus(status: Partial<IAdminStatus>) {
+		let resolved = await updateDoc(doc(this.db, "admin", "status"), status)
 		return resolved
-	}
-
-	// cambiar implementacion
-	subscribeKitchenLoad(onSnap: (doc: DocumentSnapshot) => void) {
-		let unsubscribe = onSnapshot(doc(this.db, "admin", "status"), onSnap)
-		return unsubscribe
 	}
 
 	subscribeOrders(onSnap: (orders: IOrder[]) => void) {

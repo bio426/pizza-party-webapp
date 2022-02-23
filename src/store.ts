@@ -102,6 +102,6 @@ export default createStore<State>({
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
-export function useStore() {
-	return baseUseStore(key)
-}
+// export function useStore() {
+// 	return baseUseStore(key)
+// }

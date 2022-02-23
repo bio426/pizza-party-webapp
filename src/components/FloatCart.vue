@@ -6,7 +6,7 @@
 		>
 			<span
 				class="flex justify-center items-center w-6 h-6 mr-8 bg-white text-red-500 rounded-full"
-				>{{ cartLength }}</span
+				>{{ cart.length }}</span
 			>
 			Ver carrito
 			<span class="font-bold">S/ {{ cartPrice.toFixed(2) }}</span>
@@ -14,27 +14,12 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue"
-import { useStore } from "vuex"
-
-import { key } from "../store"
-
+<script setup lang="ts">
+import useCartStore from "../composables/useCartStore"
 import useCart from "../composables/useCart"
 
-export default defineComponent({
-	name: "FloatCart",
-	setup() {
-		const store = useStore(key)
-		const { toogleCart } = useCart()
-
-		return {
-			toogleCart,
-			cartPrice: computed<number>(() => store.getters.cartPrice),
-			cartLength: computed(() => store.state.cart.length),
-		}
-	},
-})
+const { cartPrice, cart } = useCartStore()
+const { toogleCart } = useCart()
 </script>
 
 <style></style>

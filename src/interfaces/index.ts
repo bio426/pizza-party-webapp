@@ -62,14 +62,8 @@ export interface IOrder {
 }
 
 export interface IAdminStatus {
-	kitchenLoad: number
-}
-
-interface INewAdminStatus {
-	kitchenWorkload: string
-	extracheesePrice: number
-	deliveryPrice: {
-		near: number
-		far: number
-	}
+	deliveryPrice: number
+	kitchenActive: boolean
+	kitchenWaitTime: number
+	extraCheesePrice: number
 }

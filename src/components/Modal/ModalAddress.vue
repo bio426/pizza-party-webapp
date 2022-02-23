@@ -4,18 +4,13 @@
 		@close-modal="$emit('closeSelector')"
 	>
 		<div>
-			<p class="mb-4">
-				Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid cumque
-				nobis iure rerum quis accusamus, beatae est placeat aperiam odio id
-				ratione cum culpa nulla perspiciatis iusto. Eveniet, cupiditate facilis!
-			</p>
-			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
+			<div class="flex gap-2 mb-4 p-2 bg-yellow-500 rounded-lg text-sm">
 				<img
 					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p class="text-white">
+				<p>
 					Asegurate de incluir el numero en tu dirección, y seleccionar las
 					opciones de la barra de busqueda.
 				</p>
@@ -34,7 +29,7 @@
 				ref="mapView"
 			></div>
 			<button
-				class="block w-full p-2 bg-green-500 active:bg-green-600 text-white rounded-lg font-bold"
+				class="block w-full p-2 bg-red-500 active:bg-green-600 text-white rounded-lg font-bold"
 				@click="selectAddress"
 			>
 				Seleccionar dirección
@@ -48,12 +43,12 @@ import { ref, onMounted } from "vue"
 
 import ModalBase from "./ModalBase.vue"
 
-import { useStore } from "../../store"
+import useUserStore from "../../composables/useUserStore"
 import useNotyf from "../../composables/useNotyf"
 import MapsService from "../../services/MapsService"
 
 const emits = defineEmits(["closeSelector"])
-const store = useStore()
+const { updateAddress } = useUserStore()
 const { notyf } = useNotyf()
 
 let mapView = ref<HTMLDivElement>()
@@ -98,12 +93,11 @@ async function selectAddress() {
 	let mapCenter = mapInstance.getCenter()
 	if (!mapCenter) return 0
 	const { travelTime, distance } = await MapsService.getTravelInfo(mapCenter)
-	store.commit({
-		type: "setUserAddress",
+	updateAddress({
 		cords: { lat: mapCenter.lat(), lng: mapCenter.lng() },
+		deliveryTime: travelTime,
+		distance: distance,
 		name: getAddress(),
-		travelTime,
-		distance,
 	})
 	emits("closeSelector")
 }
@@ -121,5 +115,4 @@ async function selectAddress() {
 	border: 2px solid red;
 	border-radius: 50%;
 }
-
 </style>

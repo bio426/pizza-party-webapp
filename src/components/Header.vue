@@ -15,7 +15,7 @@
 					class="flex gap-2 py-2 px-4 bg-white text-black rounded-md font-bold"
 					href="tel:555-555-5555"
 				>
-					<img class="block w-6" src="../assets/icons/phone.svg" />
+					<img class="block w-6" src="../assets/icons/phone-solid.svg" />
 					973-942-055
 				</a>
 				<button
@@ -42,16 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-
-import { useStore } from "../store"
+import useCartStore from "../composables/useCartStore"
 import useLargeScreen from "../composables/useLargeScreen"
 import useCart from "../composables/useCart"
 
-const store = useStore()
+const { cartPrice } = useCartStore()
 const { isLarge } = useLargeScreen()
 const { toogleCart } = useCart()
-const cartPrice = computed<number>(() => store.getters.cartPrice)
 </script>
 
 <style></style>

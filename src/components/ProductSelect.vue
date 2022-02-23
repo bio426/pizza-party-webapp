@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { computed, PropType, ref } from "vue"
 
-import { useStore } from "../store"
+import useCartStore from "../composables/useCartStore"
 import useNotyf from "../composables/useNotyf"
 import { ICartItem, IProduct } from "../interfaces"
 
@@ -46,7 +46,7 @@ const props = defineProps({
 		required: true,
 	},
 })
-const store = useStore()
+const { addItem } = useCartStore()
 const { notyf } = useNotyf()
 
 let mainProduct = props.products[0]
@@ -76,7 +76,7 @@ function selectProduct() {
 		tag: selectedProduct.value.tag,
 		quantity: 1,
 	}
-	store.commit({ type: "addToCart", product: item })
+	addItem(item)
 	let toastMsg = `x1 ${selectedProduct.value.name} agregado`
 	notyf.success(toastMsg)
 }

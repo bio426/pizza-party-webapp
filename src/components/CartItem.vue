@@ -25,21 +25,21 @@
 				<div class="flex items-center gap-2">
 					<button
 						class="p-1 border border-black rounded-md"
-						@click="changeQuantity('-')"
+						@click="changeQuantity(-1)"
 					>
 						<img class="block w-3" src="../assets/icons/minus.svg" />
 					</button>
 					<span>{{ item.quantity }}</span>
 					<button
 						class="p-1 border border-black rounded-md"
-						@click="changeQuantity('+')"
+						@click="changeQuantity(1)"
 					>
 						<img class="block w-3" src="../assets/icons/plus-black.svg" />
 					</button>
 				</div>
 			</div>
 		</div>
-		<div class="Item__description" v-if="showDescription">
+		<div class="block mt-2" v-if="showDescription">
 			<ul>
 				<li v-if="item.contains?.cheese">
 					<span v-if="item.contains.pizza"
@@ -58,53 +58,37 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, PropType } from "vue"
-import { useStore } from "vuex"
+<script setup lang="ts">
+import { ref, PropType } from "vue"
 
-import { key } from "../store"
+import useCartStore from "../composables/useCartStore"
 import { ICartItem } from "../interfaces"
 
-export default defineComponent({
-	name: "CartItem",
-	props: {
-		item: {
-			type: Object as PropType<ICartItem>,
-			required: true,
-		},
-		index: {
-			type: Number,
-			required: true,
-		},
+const props = defineProps({
+	item: {
+		type: Object as PropType<ICartItem>,
+		required: true,
 	},
-	setup(props, ctx) {
-		const store = useStore(key)
-
-		function removeItem(index: number) {
-			store.commit({
-				type: "removeFromCart",
-				index,
-			})
-		}
-
-		type operation = "+" | "-"
-		function changeQuantity(operation: operation) {
-			store.commit({
-				type: "changeItemQuantity",
-				operation,
-				index: props.index,
-			})
-		}
-
-		let showDescription = ref(false)
-
-		return {
-			removeItem,
-			changeQuantity,
-			showDescription,
-		}
+	index: {
+		type: Number,
+		required: true,
 	},
 })
+
+const { removeItem, changeItemQuantity } = useCartStore()
+
+// function removeItem(index: number) {
+// 	store.commit({
+// 		type: "removeFromCart",
+// 		index,
+// 	})
+// }
+
+function changeQuantity(amount: number) {
+	changeItemQuantity(props.index, amount)
+}
+
+let showDescription = ref(false)
 </script>
 
 <style></style>

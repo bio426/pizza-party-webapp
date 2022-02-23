@@ -122,7 +122,7 @@ import { ref, PropType, computed } from "vue"
 
 import ModalBase from "./ModalBase.vue"
 
-import { useStore } from "../../store"
+import useCartStore from "../../composables/useCartStore"
 import { IProduct, IComboItem, ICartItem } from "../../interfaces"
 import useNotyf from "../../composables/useNotyf"
 
@@ -137,7 +137,7 @@ const props = defineProps({
 	},
 })
 const emits = defineEmits(["closeSelector"])
-const store = useStore()
+const { addItem } = useCartStore()
 const { notyf } = useNotyf()
 
 // Initializing blank item slots
@@ -237,7 +237,7 @@ function addCombo() {
 		cheese: true,
 	}
 
-	store.commit({ type: "addToCart", product: cartItem })
+	addItem(cartItem)
 	notyf.success(`x1 Combo ${props.combo.name} agregado`)
 	emits("closeSelector")
 }

@@ -1,24 +1,24 @@
 <template>
 	<ModalBase title="Confirmar pedido" @close-modal="$emit('closeConfirmation')">
 		<div>
-			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
+			<div class="flex gap-2 mb-4 p-2 bg-yellow-500 rounded-lg text-sm">
 				<img
 					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p class="text-white">
+				<p>
 					si pagarss al contado, asegurate de indicar la cantidad con la cual
 					pagaras
 				</p>
 			</div>
-			<div class="flex gap-2 mb-4 p-2 bg-green-500 rounded-lg text-sm">
+			<div class="flex gap-2 mb-4 p-2 bg-yellow-500 rounded-lg text-sm">
 				<img
 					class="block w-4"
 					src="../../assets/icons/info.svg"
 					alt="alert ico"
 				/>
-				<p class="text-white">
+				<p>
 					Al pagar con Yape o Transferencia, te enviaremos los datos al numero
 					de teléfono
 				</p>
@@ -74,7 +74,7 @@
 				<span class="block font-bold">S/ {{ price.toFixed(2) }}</span>
 			</div>
 			<button
-				class="block w-full p-2 bg-green-500 active:bg-green-600 disabled:bg-green-600 text-white rounded-lg font-bold"
+				class="block w-full p-2 bg-red-500 active:bg-red-600 disabled:bg-red-600 text-white rounded-lg font-bold"
 				:disabled="isSending"
 				@click="sendOrder"
 			>
@@ -85,11 +85,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, unref } from "vue"
 
 import ModalBase from "./ModalBase.vue"
 
-import { useStore } from "../../store"
+import useCartStore from "../../composables/useCartStore"
+import useUserStore from "../../composables/useUserStore"
 import useNotyf from "../../composables/useNotyf"
 import FirestoreService from "../../services/FirestoreService"
 
@@ -100,24 +101,23 @@ const props = defineProps({
 	},
 })
 const emits = defineEmits(["closeConfirmation"])
-const store = useStore()
+const { pizzaCount, cart, clearCart } = useCartStore()
+const { address } = useUserStore()
 const { notyf } = useNotyf()
 
-let address = store.state.address
-let deliveryTime = store.getters.deliveryTimeInMin
-let pizzaCount = store.getters.pizzaCount
+let deliveryTime = address.deliveryTime
 
 // obtener tiempo de entrega
 let totalTime = ref(0)
-FirestoreService.getKitchenInfo().then((info) => {
-	let cookingTime = info.kitchenLoad * 10 - 10
+FirestoreService.getKitchenStatus().then((info) => {
+	let cookingTime = info.kitchenWaitTime
 	totalTime.value = cookingTime + deliveryTime
 })
 
 function calculateDeliveryTime() {
 	let timePerPizzas
-	if (store.getters.pizzaCount < 4) {
-		timePerPizzas = 10 + store.getters.pizzaCount * 5
+	if (pizzaCount.value < 4) {
+		timePerPizzas = 10 + pizzaCount.value * 5
 	} else {
 		timePerPizzas = 25
 	}
@@ -154,12 +154,12 @@ async function sendOrder() {
 		return 0
 	}
 	isSending.value = true
-	let items = store.state.cart
+	let items = unref(cart.value)
 	let res = await FirestoreService.sendOrder({
 		address: {
-			name: store.state.address.name,
-			lat: store.state.address.cords.lat,
-			lng: store.state.address.cords.lng,
+			name: address.name,
+			lat: address.cords.lat,
+			lng: address.cords.lng,
 		},
 		price: { delivery: 10, items: 15 },
 		user: { name: "Bild", phone: "111222333", id: "firstUUid" },
@@ -170,7 +170,7 @@ async function sendOrder() {
 	if (res) {
 		isSending.value = false
 		emits("closeConfirmation")
-		store.commit({ type: "clearCart" })
+		clearCart()
 		notyf.success("Orden enviada exitosamente")
 	}
 }

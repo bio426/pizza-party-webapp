@@ -59,54 +59,41 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, watch } from "vue"
-import { useStore } from "vuex"
-
-import { key } from "../store"
+<script setup lang="ts">
+import { ref, computed, watch } from "vue"
+import useCartStore from "../composables/useCartStore"
 import useCart from "../composables/useCart"
 
-export default defineComponent({
-	name: "Navigation",
-	props: {
-		cart: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		const store = useStore(key)
-		const { toogleCart } = useCart()
-
-		let activeLink = ref(1)
-
-		let cartButton = ref<HTMLButtonElement>()
-		function onCartAdd() {
-			cartButton.value?.classList.add("animate__animated", "animate__headShake")
-			cartButton.value?.addEventListener("animationend", (e) => {
-				e.stopPropagation()
-				cartButton.value?.classList.remove(
-					"animate__animated",
-					"animate__headShake"
-				)
-			})
-		}
-
-		watch(
-			() => store.getters.cartPrice,
-			(now, prev) => {
-				onCartAdd()
-			}
-		)
-
-		return {
-			toogleCart,
-			cartPrice: computed<number>(() => store.getters.cartPrice),
-			activeLink,
-			cartButton,
-		}
+const props = defineProps({
+	cart: {
+		type: Boolean,
+		default: false,
 	},
 })
+
+const { cartPrice } = useCartStore()
+const { toogleCart } = useCart()
+
+let activeLink = ref(1)
+
+let cartButton = ref<HTMLButtonElement>()
+function onCartAdd() {
+	cartButton.value?.classList.add("animate__animated", "animate__headShake")
+	cartButton.value?.addEventListener("animationend", (e) => {
+		e.stopPropagation()
+		cartButton.value?.classList.remove(
+			"animate__animated",
+			"animate__headShake"
+		)
+	})
+}
+
+watch(
+	() => cartPrice.value,
+	(now, prev) => {
+		onCartAdd()
+	}
+)
 </script>
 
 <style>

@@ -55,7 +55,7 @@
 						</div>
 						<div class="flex justify-between">
 							<span>Delivery</span>
-							<span>S/ {{ delivery.toFixed(2) }}</span>
+							<span>S/ {{ deliveryPrice.toFixed(2) }}</span>
 						</div>
 						<div
 							class="flex justify-betweenflex justify-between pt-2 border-t border-black text-xl font-bold"
@@ -101,6 +101,10 @@
 			v-if="showModalAddress"
 			@close-selector="showModalAddress = false"
 		/>
+		<ModalUnavailable
+			v-if="showModalUnavailable"
+			@close-unavailable="showModalUnavailable = false"
+		/>
 		<ModalConfirmation
 			:price="finalPrice"
 			v-if="showModalConfirmation"
@@ -112,38 +116,48 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
 
-import { useStore } from "../store"
+import useCartStore from "../composables/useCartStore"
+import useKitchenStore from "../composables/useKitchenStore"
+import useUserStore from "../composables/useUserStore"
 import useCart from "../composables/useCart"
 import useNotyf from "../composables/useNotyf"
 
 import CartItem from "./CartItem.vue"
 import ModalAddress from "./Modal/ModalAddress.vue"
+import ModalUnavailable from "./Modal/ModalUnavailable.vue"
 import ModalConfirmation from "./Modal/ModalConfirmation.vue"
 
-const store = useStore()
+const { cart, cartPrice } = useCartStore()
+const { kitchenStore } = useKitchenStore()
+const { address, deliveryPrice } = useUserStore()
 const { toogleCart } = useCart()
 const { notyf } = useNotyf()
-const cart = computed(() => store.state.cart)
+// const cart = computed(() => store.state.cart)
 
 let showMain = ref(false)
 
 onMounted(() => (showMain.value = true))
 
-let userAddress = computed(() => store.state.address)
+// let userAddress = computed(() => store.state.address)
+let userAddress = address
 
-let cartPrice = computed<number>(() => store.getters.cartPrice)
-let delivery = computed(() => store.getters.deliveryPrice)
-let finalPrice = computed<number>(() => cartPrice.value + delivery.value)
+// let cartPrice = computed<number>(() => store.getters.cartPrice)
+let finalPrice = computed<number>(() => cartPrice.value + deliveryPrice.value)
 
 function finishOrder() {
-	if (store.state.cart.length < 1) {
+	if (cart.value.length < 1) {
 		notyf.error("No hay productos en el carrito")
-		return 0
+		return
+	}
+	if (!kitchenStore.kitchenActive) {
+		showModalUnavailable.value = true
+		return
 	}
 	showModalConfirmation.value = true
 }
 
 let showModalAddress = ref(false)
+let showModalUnavailable = ref(false)
 let showModalConfirmation = ref(false)
 </script>
 

@@ -2,7 +2,7 @@
 	<div class="relative w-full min-h-screen bg-page bg-repeat">
 		<div class="h-10"></div>
 		<div class="w-9/10 mx-auto">
-			<div class="grid grid-cols-2 gap-8">
+			<div class="grid grid-cols-2 gap-8 mb-8">
 				<div class="p-4 bg-white rounded-xl shadow-xl">
 					<AdminOrders :orders="orders" @watch-order="viewDetails" />
 				</div>
@@ -13,6 +13,9 @@
 					/>
 					<AdminDetails :order="selectedOrder" />
 				</div>
+			</div>
+			<div class="p-4 bg-white rounded-xl shadow-xl">
+				<AdminStatus />
 			</div>
 		</div>
 	</div>
@@ -26,6 +29,7 @@ import { IOrder } from "../interfaces"
 import AdminOrders from "../components/Admin/AdminOrders.vue"
 import AdminAlarm from "../components/Admin/AdminAlarm.vue"
 import AdminDetails from "../components/Admin/AdminDetails.vue"
+import AdminStatus from "../components/Admin/AdminStatus.vue"
 import FirestoreService from "../services/FirestoreService"
 
 // Get Orders

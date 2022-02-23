@@ -61,7 +61,8 @@
 <script setup lang="ts">
 import { computed, PropType, ref } from "vue"
 
-import { useStore } from "../store"
+import useCartStore from "../composables/useCartStore"
+import useKitchenStore from "../composables/useKitchenStore"
 import useNotyf from "../composables/useNotyf"
 import { ICartItem, IProduct } from "../interfaces"
 
@@ -81,7 +82,8 @@ const props = defineProps({
 	},
 })
 const emits = defineEmits(["buildCombo"])
-const store = useStore()
+const { addItem } = useCartStore()
+const { kitchenStore } = useKitchenStore()
 const { notyf } = useNotyf()
 
 let producExist = props.product.id! != ""
@@ -90,7 +92,7 @@ let optionalCheese = ["classic", "premium"]
 let haveSelect = optionalCheese.includes(props.product.tag)
 
 let extraCheese = ref(false)
-const cheesePrice = 2.5
+const cheesePrice = kitchenStore.extraCheesePrice
 let productPrice = computed(() =>
 	extraCheese.value ? props.product.price + cheesePrice : props.product.price
 )
@@ -109,7 +111,7 @@ function selectProduct() {
 		item.contains = { cheese: true }
 		item.price = productPrice.value
 	}
-	store.commit({ type: "addToCart", product: item })
+	addItem(item)
 	let toastMsg = `x1 ${props.product.name} ${
 		extraCheese.value ? "con extra queso" : ""
 	} agregado`
