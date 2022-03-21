@@ -40,18 +40,10 @@
 			</div>
 		</div>
 		<div class="block mt-2" v-if="showDescription">
-			<ul>
-				<li v-if="item.contains?.cheese">
-					<span v-if="item.contains.pizza"
-						>x{{ item.contains.pizza?.length }}</span
-					>
-					Extra queso
-				</li>
-				<li v-for="(pizza, i) in item.contains?.pizza" :key="i">
-					{{ pizza.name }}
-				</li>
-				<li v-for="(drink, i) in item.contains?.drink" :key="i">
-					{{ drink.name }}
+			<ul v-if="item.contains">
+				<li v-if="item.contains.includes('extraChese')">Extra queso</li>
+				<li v-for="(included, i) in item.contains" :key="i">
+					{{ included }}
 				</li>
 			</ul>
 		</div>

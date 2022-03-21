@@ -14,7 +14,7 @@
 					<AdminDetails :order="selectedOrder" />
 				</div>
 			</div>
-			<div class="p-4 bg-white rounded-xl shadow-xl">
+			<div class="mb-8 p-4 bg-white rounded-xl shadow-xl">
 				<AdminStatus />
 			</div>
 		</div>

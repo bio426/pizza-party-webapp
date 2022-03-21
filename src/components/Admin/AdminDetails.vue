@@ -23,13 +23,9 @@
 			<ul>
 				<li v-for="item in order.items" style="margin-left: 1rem">
 					x{{ item.quantity }} -{{ item.name }}
-					<ul v-if="item.contains" style="margin-left: 1rem">
-						<li v-if="item.contains.cheese">Con extraqueso</li>
-						<li v-for="pizza in item.contains.pizza">
-							{{ pizza }}
-						</li>
-						<li v-for="drink in item.contains.drink">
-							{{ drink }}
+					<ul class="ml-4" v-if="item.contains">
+						<li v-for="included in item.contains">
+							{{ included }}
 						</li>
 					</ul>
 				</li>
@@ -94,7 +90,7 @@ function getCopy() {
 		if (item.quantity > 1) {
 			str = str.concat(item.quantity.toString(), " ")
 		}
-		if (item.contains?.cheese) {
+		if (item.contains?.includes("extraCheese")) {
 			str = str.concat(item.code, " QQQ")
 		} else {
 			str = str.concat(item.code, "")

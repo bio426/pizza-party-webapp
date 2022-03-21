@@ -9,6 +9,12 @@
 				<router-link class="block text-black font-bold" to="/admin"
 					>Admin</router-link
 				>
+				<button
+					class="block text-black font-bold"
+					@click="showModalCarta = true"
+				>
+					Carta
+				</button>
 			</div>
 			<div class="flex gap-4" v-if="isLarge">
 				<a
@@ -39,9 +45,14 @@
 			</div>
 		</div>
 	</header>
+	<ModalCarta v-if="showModalCarta" @close-carta="showModalCarta = false" />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue"
+
+import ModalCarta from "./Modal/ModalCarta.vue"
+
 import useCartStore from "../composables/useCartStore"
 import useLargeScreen from "../composables/useLargeScreen"
 import useCart from "../composables/useCart"
@@ -49,6 +60,10 @@ import useCart from "../composables/useCart"
 const { cartPrice } = useCartStore()
 const { isLarge } = useLargeScreen()
 const { toogleCart } = useCart()
+
+const emits = defineEmits(["showSidebar"])
+
+let showModalCarta = ref(false)
 </script>
 
 <style></style>

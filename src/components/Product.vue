@@ -108,7 +108,7 @@ function selectProduct() {
 		quantity: 1,
 	}
 	if (extraCheese.value) {
-		item.contains = { cheese: true }
+		item.contains = ["extraCheese"]
 		item.price = productPrice.value
 	}
 	addItem(item)

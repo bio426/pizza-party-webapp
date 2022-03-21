@@ -8,13 +8,13 @@ import * as functions from "firebase-functions"
 //   response.send("Hello from Firebase!");
 // });
 
-export const checkOrderPrice = functions.firestore
-	.document("orders/{docId}")
-	.onCreate((snap, context) => {
-		let newValue = { ...snap.data() }
-    functions.logger.log("Testing onCreate firestore",context.params.docId, newValue)
+// export const checkOrderPrice = functions.firestore
+// 	.document("orders/{docId}")
+// 	.onCreate((snap, context) => {
+// 		let newValue = { ...snap.data() }
+//     functions.logger.log("Testing onCreate firestore",context.params.docId, newValue)
 
-    const updated = {...newValue,testField: "allOk"}
+//     const updated = {...newValue,testField: "allOk"}
 
-    return snap.ref.set({...updated})
-	})
+//     return snap.ref.set({...updated})
+// 	})

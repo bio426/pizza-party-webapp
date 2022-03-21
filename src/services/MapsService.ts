@@ -39,6 +39,23 @@ class MapsService {
 		})
 	}
 
+	isFreeDelivery(cords: google.maps.LatLngLiteral): boolean {
+		let isInside = google.maps.geometry.poly.containsLocation(
+			cords,
+			new google.maps.Polygon({
+				paths: [
+					{ lat: -12.070400202748038, lng: -77.0778252869507 },
+					{ lat: -12.063288737229966, lng: -77.07836266372217 },
+					{ lat: -12.063392848725371, lng: -77.07060694377753 },
+					{ lat: -12.06457134716165, lng: -77.06716849602589 },
+					{ lat: -12.067671930305337, lng: -77.06850057105544 },
+					{ lat: -12.07217296072528, lng: -77.06885464184623 },
+				],
+			})
+		)
+		return isInside
+	}
+
 	async getTravelInfo(destination: google.maps.LatLng) {
 		if (!this.directionsInstance) throw new Error("Directions not initialized")
 		let res = await this.directionsInstance.route({

@@ -19,7 +19,7 @@ const pizzaCount = computed(() => {
 			count++
 		}
 		if (item.tag == "combo" && item.contains) {
-			count += item.contains.pizza?.length || 0
+			count += item.contains.length || 0
 		}
 	})
 	return count

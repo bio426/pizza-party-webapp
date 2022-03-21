@@ -10,6 +10,12 @@
 				<div class="flex flex-col items-center">
 					<img class="block w-32 my-8" src="../assets/images/logoFull.webp" />
 					<router-link class="mb-4 text-xl" to="/">Menu</router-link>
+					<a
+						class="mb-4 text-xl"
+						href="https://res.cloudinary.com/pizza-party/image/upload/v1647637341/pizza-products-v2/carta_wahv0b.webp"
+						download
+						>Carta</a
+					>
 					<div class="flex gap-4">
 						<a
 							class="flex justify-center items-center w-10 h-10 bg-black rounded-full"
@@ -36,21 +42,12 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent, ref, onMounted } from "vue"
 
-export default defineComponent({
-	name: "Sidebar",
-	setup() {
-		let showMain = ref(false)
+let showMain = ref(false)
 
-		onMounted(() => (showMain.value = true))
-
-		return {
-			showMain,
-		}
-	},
-})
+onMounted(() => (showMain.value = true))
 </script>
 
 <style>

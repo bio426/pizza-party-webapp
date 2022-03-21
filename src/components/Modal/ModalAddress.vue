@@ -77,7 +77,7 @@ function getAddress() {
 	return name
 }
 
-function addresHasNumbers() {
+function validateAddress() {
 	if (!autocompleteInput.value) return false
 	let raw = autocompleteInput.value.value || "undefined,undefined"
 	let toCompare = raw.split(",", 1)
@@ -86,18 +86,23 @@ function addresHasNumbers() {
 }
 
 async function selectAddress() {
-	if (!addresHasNumbers()) {
+	if (!validateAddress()) {
 		notyf.error("No se detecto numero en la direccion seleccionada")
 		return 0
 	}
 	let mapCenter = mapInstance.getCenter()
 	if (!mapCenter) return 0
 	const { travelTime, distance } = await MapsService.getTravelInfo(mapCenter)
+	let freeDelivery = MapsService.isFreeDelivery({
+		lat: mapCenter.lat(),
+		lng: mapCenter.lng(),
+	})
 	updateAddress({
 		cords: { lat: mapCenter.lat(), lng: mapCenter.lng() },
 		travelTime: Math.round(travelTime / 60),
 		distance: distance,
 		name: getAddress(),
+		freeDelivery,
 	})
 	emits("closeSelector")
 }

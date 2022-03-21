@@ -31,14 +31,14 @@ export interface ICartItem {
 	price: number
 	quantity: number
 	tag: string
-	contains?: ItemContains
+	contains?: string[]
 }
 
-interface ItemContains {
-	cheese?: boolean
-	pizza?: { name: string; code: string }[]
-	drink?: { name: string; code: string }[]
-}
+// interface ItemContains {
+// 	cheese?: boolean
+// 	pizza?: { name: string; code: string }[]
+// 	drink?: { name: string; code: string }[]
+// }
 
 export interface IOrder {
 	id?: string

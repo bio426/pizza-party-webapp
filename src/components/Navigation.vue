@@ -4,7 +4,7 @@
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#combosSection"
-				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 1 }"
+				:class="{ 'text-red-500 border-b-2 border-black': activeLink == 1 }"
 				@click="activeLink = 1"
 			>
 				<img class="block w-6" src="../assets/icons/combos.svg" />
@@ -13,7 +13,7 @@
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#classicsSection"
-				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 2 }"
+				:class="{ 'text-red-500 border-b-2 border-black': activeLink == 2 }"
 				@click="activeLink = 2"
 			>
 				<img class="block w-6" src="../assets/icons/pizza.svg" />
@@ -22,7 +22,7 @@
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#premiumsSection"
-				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 3 }"
+				:class="{ 'text-red-500 border-b-2 border-black': activeLink == 3 }"
 				@click="activeLink = 3"
 			>
 				<img class="block w-6" src="../assets/icons/special.svg" />Premium</a
@@ -30,7 +30,7 @@
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#drinksSection"
-				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 4 }"
+				:class="{ 'text-red-500 border-b-2 border-black': activeLink == 4 }"
 				@click="activeLink = 4"
 			>
 				<img class="block w-6" src="../assets/icons/drinks.svg" />
@@ -39,7 +39,7 @@
 			<a
 				class="flex items-center gap-2 py-4 px-6 text-black font-bold"
 				href="#extrasSection"
-				:class="{ 'text-red-500 border-b-2 border-green-500': activeLink == 5 }"
+				:class="{ 'text-red-500 border-b-2 border-black': activeLink == 5 }"
 				@click="activeLink = 5"
 			>
 				<img class="block w-6" src="../assets/icons/extras.svg" />

@@ -69,7 +69,7 @@
 			:options="comboOptions"
 			@close-selector="showModalCombo = false"
 		/>
-		<ModalCustom v-if="false" />
+		<ModalCustom v-if="showModalCustom" @close-custom="showModalCustom = false" />
 	</div>
 </template>
 
@@ -163,6 +163,9 @@ function chooseCombo(combo: IProduct) {
 	baseCombo.includes = combo.includes
 	showModalCombo.value = true
 }
+
+// For testing customModal
+let showModalCustom = ref(true)
 </script>
 
 <style>

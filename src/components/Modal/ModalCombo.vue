@@ -231,11 +231,17 @@ function addCombo() {
 			drinks.push({ name: item.name, code: item.code })
 		}
 	})
-	cartItem.contains = {
-		pizza: pizzas,
-		drink: drinks,
-		cheese: true,
-	}
+	// cartItem.contains = {
+	// 	pizza: pizzas,
+	// 	drink: drinks,
+	// 	cheese: true,
+	// }
+
+	let contains: string[] = []
+	pizzas.forEach((pizza) => contains.push(pizza.name))
+	drinks.forEach((drink) => contains.push(drink.name))
+	contains.push("extraCheese")
+	cartItem.contains = contains
 
 	addItem(cartItem)
 	notyf.success(`x1 Combo ${props.combo.name} agregado`)

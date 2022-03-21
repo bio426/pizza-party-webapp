@@ -12,6 +12,7 @@ import {
 	Firestore,
 	onSnapshot,
 	DocumentSnapshot,
+	setDoc,
 	updateDoc,
 	query,
 	where,
@@ -89,7 +90,6 @@ class FirestoreService {
 			where("createdAt", ">=", Timestamp.fromDate(todayInit)),
 			orderBy("createdAt", "desc")
 		)
-		// let unsubscribe = onSnapshot(q, onSnap)
 		let unsubscribe = onSnapshot(q, (snap) => {
 			let orders: IOrder[] = []
 			snap.forEach((doc) => {
