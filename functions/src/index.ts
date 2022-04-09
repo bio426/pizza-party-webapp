@@ -1,20 +1,15 @@
 import * as functions from "firebase-functions"
+// import Ajv from "ajv"
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// export const handleOrder = functions.https.onCall((data, context) => {
+// 	const { text } = data as { text: string }
+// 	const id = context.auth?.uid
+// 	const email = context.auth?.token.email
+// 	const error = true
 
-// export const checkOrderPrice = functions.firestore
-// 	.document("orders/{docId}")
-// 	.onCreate((snap, context) => {
-// 		let newValue = { ...snap.data() }
-//     functions.logger.log("Testing onCreate firestore",context.params.docId, newValue)
+// 	if (!context.auth) {
+// 		throw new functions.https.HttpsError("permission-denied", "error message")
+// 	}
 
-//     const updated = {...newValue,testField: "allOk"}
-
-//     return snap.ref.set({...updated})
-// 	})
+// 	return new Promise((resolve, reject) => {})
+// })

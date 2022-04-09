@@ -1,11 +1,87 @@
-# Vue 3 + Typescript + Vite
+# Pizza Party Webapp
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A web application to manage `delivery` pizza orders, with custom styles and `admin page`, made for the Pizza Party Restaurant.
 
-## Recommended IDE Setup
+## Table of Contents
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+- [Pizza Party Webapp](#pizza-party-webapp)
+  - [Table of Contents](#table-of-contents)
+  - [Objectives](#objectives)
+  - [Technologies](#technologies)
+  - [Screenshots](#screenshots)
+  - [Installation](#installation)
+  - [References](#references)
 
-## Type Support For `.vue` Imports in TS
+## Objectives
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+This project was made to have a web based solution for helping the customers with the `ordering process` of the different available items in the restaurant menu, and based on their address data, show them relevant information about the `delivery time` and prices to let them decide if the order fulfill their requirements.
+
+## Technologies
+
+Some of the technologies that were used to build this project.
+
+- [Vue.js](https://vuejs.org/)
+- [Firebase](https://firebase.google.com/?hl=es-419)
+- [Google Maps Api](https://developers.google.com/maps/documentation/javascript)
+
+<div style="display:flex;justify-content:center;gap:16px">
+
+  <img src="./docs/vue-ico.svg" alt="vuejs icon" width="50" height="50">
+  <img src="./docs/firebase-ico.svg" alt="firebase icon" width="50" height="50"/>
+  <img src="./docs/maps-ico.svg" alt="maps icon" width="50" height="50"/>
+</div>
+
+## Screenshots
+
+Some of the main views of the project.
+
+- Mobile views
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2rem">
+
+![screenshot](docs/index-mobile.png "index mobile view")
+
+![screenshot](docs/cart-mobile.png "cart mobile view")
+
+![screenshot](docs/address-mobile.png "address mobile view")
+
+![screenshot](docs/confirm-mobile.png "confirm mobile view")
+
+</div>
+
+- Desktop views
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+![screenshot](docs/index-desktop.png "index desktop view")
+
+![screenshot](docs/cart-desktop.png "cart desktop view")
+
+![screenshot](docs/combo-desktop.png "combo desktop view")
+
+![screenshot](docs/admin-desktop.png "admin desktop view")
+
+</div>
+
+## Installation
+
+```bash
+# bash
+# Install the dependencies
+$ npm install
+# Start developtment server
+$ npm run dev
+# Build project and generate static files
+$ npm run build
+# View generated files
+$ npm run serve
+```
+
+For more details, you can check [Vite docs](https://vitejs.dev/guide/build.html)
+
+## References
+
+The documentation sites and other resources that help with the project.
+
+- [Firebase Docs](https://firebase.google.com/docs)
+- [Maps Api Docs](https://developers.google.com/maps/documentation/javascript)
